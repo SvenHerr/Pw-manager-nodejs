@@ -48,3 +48,10 @@ Updates die folgen werden sind:
 - Pw teilen mit anderen Nutzern auf deinem System.
 - Automatischer logout nach 5 Minuten
 - Text übersetzen in deutsch und spanisch.
+
+![image](https://user-images.githubusercontent.com/19588101/156414735-43d82950-c763-4738-b53f-07c36b56606b.png)
+![image](https://user-images.githubusercontent.com/19588101/156414766-1d074d1b-68c9-4150-b240-c27d91c56970.png)
+![image](https://user-images.githubusercontent.com/19588101/156414790-b5d313c6-4b84-4b38-bb9b-102850d1563d.png)
+
+
+
