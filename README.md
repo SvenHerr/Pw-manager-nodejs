@@ -26,6 +26,9 @@ Updates that will follow are:
 - Automatic logout after 5 minutes
 - Translate text into German and Spanish.
 
+im open to suggestions and happy to hear from you
+[message me](mailto:githubprojects@herrmannsven.de?subject=[GitHub]%20Source%20Han%20Sans)
+
 # German
 Dieser Pw Tressor wurde von mir in NodeJs erstellt. Das ist mein erstes Projekt mit NodeJs, Express und Crypto.
 Außerdem wird eine mysql Db benötigt.
@@ -48,6 +51,9 @@ Updates die folgen werden sind:
 - Pw teilen mit anderen Nutzern auf deinem System.
 - Automatischer logout nach 5 Minuten
 - Text übersetzen in deutsch und spanisch.
+
+schreibt mir gerne bei Fragen und Anregungen.
+[message me](mailto:githubprojects@herrmannsven.de?subject=[GitHub]%20Source%20Han%20Sans)
 
 ![image](https://user-images.githubusercontent.com/19588101/156414735-43d82950-c763-4738-b53f-07c36b56606b.png)
 ![image](https://user-images.githubusercontent.com/19588101/156414766-1d074d1b-68c9-4150-b240-c27d91c56970.png)
