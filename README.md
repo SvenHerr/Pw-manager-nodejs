@@ -16,6 +16,8 @@ What can it do?
 - Change pw from data
 - delete pw
 
+there is a table installscript provided.
+
 The design template comes from Bootstrapdash, some adjustments were made by me.
 Template link: Bootstrapdash.com/demo/corona-free/jquery/template/index.html
 The main focus of the project is the logic and function of the Pw Tressor.
