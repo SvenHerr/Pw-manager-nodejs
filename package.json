@@ -1,0 +1,34 @@
+{
+  "name": "sven-pw-tressor",
+  "version": "1.0.0",
+  "description": "Local pw tressor for raspberry",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sven Herrmann",
+  "license": "",
+  "dependencies": {
+    "body-parser": "^1.18.0",
+    "crypto": "^1.0.1",
+    "date-and-time": "^2.0.1",
+    "dotenv": "^10.0.0",
+    "ejs": "^2.7.4",
+    "express": "^4.17.2",
+    "mongoose": "^6.1.5",
+    "mysql": "^2.18.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SvenHerr/PwTressor.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/SvenHerr/PwTressor/issues"
+  },
+  "homepage": "https://github.com/SvenHerr/PwTressor#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
