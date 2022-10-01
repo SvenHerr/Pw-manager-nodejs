@@ -13,6 +13,7 @@ var app = express();
 const dateObject = new Date();
 var languageImport = require('../PwTressor/language');
 const { redirect } = require("express/lib/response");
+var customer = require("customer");
 
 var language = languageImport.getEnglish();
 
@@ -250,12 +251,6 @@ function loadData(req, res, pwcopycalled = false) {
 };
 
 
-function logout(req, res) {
-    user.loggedIn = false;
-    user = "";
-    currentUserPw = "";
-    return res.render("login", { errormsg: language.loggedOut });
-};
 
 function addNewPw(req, res) {
 
@@ -291,102 +286,9 @@ function deletePw(req, res) {
     }
 };
 
-function signIn(req, res) {
-    console.log("in signin");
-    connection.query('SELECT * FROM user WHERE Username = ?', [req.body.username], function(err, users) {
-        console.log("in signin db");
-        currentDate = `${month}/${date}/${year}`;
-        
-        if (users != null) {
-            if (users[0] != null) {
 
-                user = new User(null,users[0].Username,users[0].Surname,users[0].Lastname,users[0].CreateDate,users[0].Pw);                
-            }
-        }
-        console.log(user.username);
 
-        if (users == null) {
-            console.log("in return");
-            return res.render("login", { errormsg: language.loginError });
-        }
 
-        if (users[0] == null) {
-            console.log("in return");
-            return res.render("login", { errormsg: language.loginError });
-        }
-
-        var tempEncryptPW = encrypt1.hashPw(req.body.pw)
-        
-        if (bcrypt.compare(tempEncryptPW,user.pw)) {
-
-            user.username = req.body.username;
-            currentUserPw = req.body.pw
-            
-            user.loggedIn = true;
-            console.log("user.loggedIn: " + user.loggedIn);
-            console.log("redirect to / (signIn)");
-            res.redirect("/");
-
-        } else {
-            console.log("pw incorrect");
-            return res.render("login", { errormsg: language.loginError });
-        }
-    })
-};
-
-function signUp(req, res) {
-
-    var pw = req.body.pw;
-    var pw1 = req.body.pw1;
-
-    if (pw != pw1) {
-        return "pw missmatch";
-    }
-
-    var hashedPw = encrypt1.hashPw(pw);
-    if (hashedPw == null) {
-        return "error: Pw hash problem!";
-    }
-
-    var tempDate = new Date();
-    tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
-    var randomId = Math.random().toString();
-    var user = new User(randomId,req.body.username,req.body.surname,req.body.lastname,tempDate,hashedPw,null);
-
-    if (pw == null || pw1 == null) {
-        return "error: Pw not found!";
-    }
-
-    if (user.username == null || user.surname == null || user.lastname == null) {
-        return "error: User data not found!";
-    }    
-
-    var userExists = false;
-    connection.query('SELECT Id FROM user WHERE User = ?', [user.username], function(err, complete) {
-        if (complete != null) {
-            userExists = true;
-        }
-    });
-
-    if (userExists) {
-        return "User already exists!";
-    }    
-
-    connection.query('INSERT INTO user VALUES(?,?,?,?,?,?)', [user.id, user.username, user.surname, user.lastname, tempDate, user.pw], function(err, complete) {
-
-        if (err == null) {
-            currentUser = user.username;
-            currentUserPw = pw;
-           
-            user.loggedIn = true;
-        } else {
-            console.log("Db error: " + err);
-            return "Db error! Talk to your admin";
-        }
-    });
-
-    return "ok";
-};
 
 // routing
 app.get("/", function(req, res) {
@@ -426,11 +328,11 @@ app.get("/login", function(req, res) {
 });
 
 app.post("/logout", function(req, res) {
-    logout(req, res);
+    customer.logout(req, res);
 });
 
 app.get("/logout", function(req, res) {
-    logout(req, res);
+    customer.logout(req, res);
 });
 
 app.post("/deletepw", function(req, res) {
@@ -444,7 +346,7 @@ app.post("/signup", function(req, res) {
 
         if (status == "ok") {
             console.log("werde user einloggen");
-            signIn(req, res);
+            customer.signIn(req, res);
         } else {
             return res.render("signup", { userData: user, errormsg: status });
         }
@@ -456,7 +358,7 @@ app.post("/signup", function(req, res) {
 });
 
 app.post("/signin", function(req, res) {
-    signIn(req, res);
+    customer.signIn(req, res);
 });
 
 app.post("/showpw", function(req, res) {
@@ -469,7 +371,7 @@ app.get("/signup", function(req, res) {
 
 app.get("/documentation", function(req, res) {
     if (user.loggedIn == false) {
-        signIn(req, res);
+        customer.signIn(req, res);
     } else {
         return res.render("documentation", { userData: user});
     }
@@ -477,7 +379,7 @@ app.get("/documentation", function(req, res) {
 
 app.get("/changepw", function(req, res) {
     if (user.loggedIn == false) {
-        signIn(req, res);
+        customer.signIn(req, res);
     } else {
         return res.render("changepw", { userData: user});
     }
