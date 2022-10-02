@@ -1,6 +1,6 @@
-<% if(userData.loggedIn == true){ %>
+<% if(userData.loggedIn==true){ %>
 
-    <% naviActive = "documentation" %>
+    <% naviActive="documentation" %>
         <!DOCTYPE html>
         <html lang="en">
 
@@ -23,9 +23,10 @@
                             <p>PW Tressor Sven</p>
                         </div>
                         <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
-                            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-              
-            </button>
+                            <button class="navbar-toggler navbar-toggler align-self-center" type="button"
+                                data-toggle="minimize">
+
+                            </button>
 
                             <ul class="navbar-nav navbar-nav-right">
                                 <li class="nav-item dropdown d-none d-lg-block">
@@ -33,15 +34,17 @@
                                     <form action="/logout" method="POST">
 
                                         <input type="text" name="newtask" placeholder="add new task" hidden>
-                                        <button class="nav-link btn btn-danger create-new-button d-inline-block">Logout</button>
+                                        <button
+                                            class="nav-link btn btn-danger create-new-button d-inline-block">Logout</button>
 
                                     </form>
 
                                 </li>
                             </ul>
-                            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-              <span class="mdi mdi-format-line-spacing"></span>
-            </button>
+                            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
+                                type="button" data-toggle="offcanvas">
+                                <span class="mdi mdi-format-line-spacing"></span>
+                            </button>
                         </div>
                     </nav>
                     <!-- partial -->
@@ -59,7 +62,8 @@
                                         <h4 class="card-title">Some information</h4>
                                         <div>
                                             <p>
-                                                To change your profil picture you need to add the image with the name of your username in images/faces/n
+                                                To change your profil picture you need to add the image with the name of
+                                                your username in images/faces/n
                                             </p>
                                             <p>
                                                 The new version will come soon. Some new features will be:
@@ -112,17 +116,11 @@
             <script src="../../assets/vendors/chart.js/Chart.min.js"></script>
             <!-- End plugin js for this page -->
             <!-- inject:js -->
-            <script src="../../assets/js/off-canvas.js"></script>
-            <script src="../../assets/js/hoverable-collapse.js"></script>
-            <script src="../../assets/js/misc.js"></script>
-            <script src="../../assets/js/settings.js"></script>
-            <script src="../../assets/js/todolist.js"></script>
-            <script src="../../assets/js/dbconnection.js"></script>
             <!-- endinject -->
             <!-- Custom js for this page -->
             <script src="../../assets/js/chart.js"></script>
             <!-- End custom js for this page -->
-            <script src="/node_modules/date-and-time/date-and-time.min.js"></script>
+
         </body>
 
         </html>
