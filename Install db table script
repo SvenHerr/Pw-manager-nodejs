@@ -7,6 +7,7 @@ CREATE TABLE `pw` (
   `CreateDate` date DEFAULT NULL,
   `Id` varchar(50) COLLATE utf8_bin NOT NULL,
   `Loginname` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `CustomerId` varchar(50) NOT NULL
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
 
@@ -17,4 +18,17 @@ CREATE TABLE `user` (
   `Lastname` varchar(50) NOT NULL,
   `CreateDate` date NOT NULL,
   `Pw` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `customer` (
+  `Id` varchar(50) NOT NULL,
+  `Name` varchar(50) NOT NULL,
+  `CreateDate` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `customerrights` (
+  `Id` varchar(50) NOT NULL,
+  `UserId` varchar(50) NOT NULL,
+  `CustomerId` varchar(50) NOT NULL,
+  `CreateDate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
