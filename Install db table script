@@ -1,13 +1,13 @@
 Install db table script
 
 CREATE TABLE `pw` (
-  `User` varchar(256) COLLATE utf8_bin DEFAULT NULL,
+  `Username` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `Name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `Pw` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `CreateDate` date DEFAULT NULL,
   `Id` varchar(50) COLLATE utf8_bin NOT NULL,
   `Loginname` varchar(256) COLLATE utf8_bin DEFAULT NULL,
-  `CustomerId` varchar(50) NOT NULL
+  `CustomerId` varchar(50) NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
 

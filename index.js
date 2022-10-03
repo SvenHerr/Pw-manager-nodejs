@@ -4,13 +4,13 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 const dateLib = require('date-and-time');
-var connection = require('../PwTressor/database');
+var connection = require('../Pw-manager-nodejs/databaseConnection');
 const session = require('express-session');
 const { decrypt } = require('./crypto');
 const crypto = require('crypto');
 var app = express();
 const dateObject = new Date();
-var languageImport = require('../PwTressor/language');
+var languageImport = require('../Pw-manager-nodejs/language');
 var user = require('../Pw-manager-nodejs/user');
 var customer = require('../Pw-manager-nodejs/customer');
 var administration = require('../Pw-manager-nodejs/administration'); // Change name!!!
@@ -57,7 +57,11 @@ var pwcopycalled = false; // TODO: Nochmal drüber nachdenken
 function loadData(req, res, pwcopycalled = false) {
 
     try {
-        connection.query('SELECT * FROM pw WHERE User =  ?', [req.session.username], function(err, complete) {
+        if(req.session.loggedIn != true){
+            return res.render("login", { errormsg: "" });
+        }
+        console.log("LoadDate Username= " + req.session.username);
+        connection.query('SELECT * FROM pw WHERE Username =  ?', [req.session.username], function(err, complete) {
             currentDate = `${month}/${date}/${year}`;
             if (req.session.loggedIn) {
 

@@ -1,10 +1,10 @@
 // This script runs on serverside
 
 //dependencies required for the app
-var connection = require('../PwTressor/database');
+var connection = require('../Pw-manager-nodejs/database');
 
 const dateObject = new Date();
-var languageImport = require('../PwTressor/language');
+var languageImport = require('../Pw-manager-nodejs/language');
 const { encrypt, decrypt } = require('./crypto');
 const dateLib = require('date-and-time');
 const session = require('express-session');
@@ -23,32 +23,20 @@ var encryptArray = [];
 function addNewPw(req, res) {
 
     try {
-        var encryptedpw = encrypt(req.body.pw, req.session.pw);
-        var tempDate = new Date();
-        tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
-        var applicationname = encrypt(req.body.applicationname, req.session.pw);
-        var loginname = encrypt(req.body.loginname, req.session.pw);
-
-        connection.query('INSERT INTO `pw`(`User`, `Name`, `Pw`, `Loginname`, `CreateDate`, `Id`) VALUES (?,?,?,?,?,?)', [req.session.username, applicationname, encryptedpw, loginname, tempDate, Math.floor(Math.random() * 1000001).toString()], function(err, complete) {
-            if (err != null) {
-                console.log("addnewpw db error: " + err);
-            }
-
-            res.redirect("/");
-        })
+        connection.addPw(req,res);
     } catch (err) {
         console.log("addnewpw err: " + err);
     }
 };
 
 function deletePw(req, res) {
-    var id = req.body.elementId;
-    var confirmation = req.body.confirmation;
-
-    if (confirmation == "yes") {
-        connection.query('DELETE FROM `pw` WHERE Id = ?', [id], function(err, complete) {
-            res.redirect("/");
-        })
+    
+    try{
+        if (req.body.confirmation == "yes") {
+            connection.deletePw(req.body.elementI,res);
+        }
+    }catch(err){
+        console.log("deletePw err: " + err);
     }
 };
 
@@ -72,7 +60,10 @@ function showPw(req, res) {
         var temp = encryptArray[index];
 
         if (temp != null) {
-            connection.query('SELECT * FROM pw WHERE User =  ? AND Id = ?', [req.session.username, req.body.id], (err, rows) => {
+
+            connection.getPw(req,res);
+            
+            connection.query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [req.session.username, req.body.id], (err, rows) => {
 
                 if (err != null) {
                     console.log("showpw sql error");
