@@ -2,6 +2,7 @@
 
 //dependencies required for the app
 var connection = require('../Pw-manager-nodejs/database');
+var conn = require('../Pw-manager-nodejs/databaseConnection'); // wieder löschen!
 
 const dateObject = new Date();
 var languageImport = require('../Pw-manager-nodejs/language');
@@ -16,6 +17,7 @@ const date = (`0 ${dateObject.getDate()}`).slice(-2);
 const month = (`0 ${dateObject.getMonth() + 1}`).slice(-2);
 // current year
 const year = dateObject.getFullYear();
+var escape = require('lodash.escape');
 
 var encryptArray = [];
 
@@ -50,7 +52,7 @@ function showPw(req, res) {
             encryptArray.splice(index, 1);
         }
 
-        res.send("*****");
+        res.send(escape("*****"));
 
     } else {
         encryptArray.push(req.body.id);
@@ -61,9 +63,9 @@ function showPw(req, res) {
 
         if (temp != null) {
 
-            connection.getPw(req,res);
-            
-            connection.query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [req.session.username, req.body.id], (err, rows) => {
+            //connection.getPw(req,res);
+
+            conn.query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [req.session.username, req.body.id], (err, rows) => {
 
                 if (err != null) {
                     console.log("showpw sql error");
@@ -72,7 +74,7 @@ function showPw(req, res) {
                 if (rows[0] != null) {
                     if (rows[0].Pw != null) {
                         decryptedPw = decrypt(rows[0].Pw, req.session.pw);
-                        res.send(decryptedPw);
+                        res.send(escape(decryptedPw));
                     }
                 }
             });
@@ -90,9 +92,9 @@ function copyPw(req, res) {
 
             if (rows[0] != null) {
                 encryptedPwCopy = decrypt(rows[0].Pw, req.session.pw);
-                res.send(encryptedPwCopy);
+                res.send(escape(encryptedPwCopy));
             } else {
-                res.send("error");
+                res.send(escape("error"));
             }
         });
     }

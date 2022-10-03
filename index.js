@@ -14,8 +14,6 @@ var languageImport = require('../Pw-manager-nodejs/language');
 var user = require('../Pw-manager-nodejs/user');
 var customer = require('../Pw-manager-nodejs/customer');
 var administration = require('../Pw-manager-nodejs/administration'); // Change name!!!
-
-
 var language = languageImport.getEnglish();
 
 // current date
@@ -27,6 +25,20 @@ const year = dateObject.getFullYear();
 
 
 
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
+// Apply the rate limiting middleware to all requests
+app.use(limiter)
+
+
+
 // Why do i need extended false and not true?
 //https://stackoverflow.com/questions/35931135/cannot-post-error-using-express
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -34,6 +46,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.set("view engine", "ejs");
 //render css files
 app.use(express.static("public"));
+
 
 app.use(session({
     secret: 'secret',
