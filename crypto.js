@@ -10,17 +10,11 @@ const encrypt = (text, secretKey) => {
     try {
         const key = crypto.scryptSync(secretKey, 'GfG', 32);
         const cipher = crypto.createCipheriv(algorithm, key, iv);
-        const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
-
-        //console.log("encrypt fertig");
-
+        const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);    
         var returnObject = {iv: iv.toString('hex'), content: encrypted.toString('hex')};
+        
         return JSON.stringify(returnObject);
 
-        /*return {
-            iv: iv.toString('hex'),
-            content: encrypted.toString('hex')
-        };*/
     } catch (err) {
         console.log(err);
         return "error";
@@ -33,10 +27,9 @@ const decrypt = (hashJson, secretKey) => {
         
         var hash = JSON.parse(hashJson);
         const key = crypto.scryptSync(secretKey, 'GfG', 32);
-
         const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(hash.iv, 'hex'));
         const decrpyted = Buffer.concat([decipher.update(Buffer.from(hash.content, 'hex')), decipher.final()]);
-        //console.log("in decrypt:" + decrpyted.toString());
+
         return decrpyted.toString();
 
     } catch (err) {
