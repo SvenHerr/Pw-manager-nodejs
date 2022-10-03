@@ -43,7 +43,7 @@ app.use(session({
 
 
 // What does it do? Do i need it?
-app.post(function (req, res, next) {
+app.post(function(req, res, next) {
     console.log("next() called!");
     next();
 });
@@ -53,12 +53,11 @@ var encryptedPwCopy = "";
 var pwcopycalled = false; // TODO: Nochmal drüber nachdenken
 
 
-var count1 = 0;
 // Why does this function get called 11 Times?
 function loadData(req, res, pwcopycalled = false) {
 
     try {
-        connection.query('SELECT * FROM pw WHERE User =  ?', [req.session.username], function (err, complete) {
+        connection.query('SELECT * FROM pw WHERE User =  ?', [req.session.username], function(err, complete) {
             currentDate = `${month}/${date}/${year}`;
             if (req.session.loggedIn) {
 
@@ -102,14 +101,12 @@ function loadData(req, res, pwcopycalled = false) {
     } catch (err) {
         console.log("Error on load: " + err);
     }
-
-    console.log("finish load data" + count1);
 };
 
 
 
 // routing
-app.get("/", function (req, res) {
+app.get("/", function(req, res) {
     console.log("redirect to / (loadData)");
 
     if (req.session.loggedIn === false) {
@@ -118,46 +115,45 @@ app.get("/", function (req, res) {
     }
 
     loadData(req, res);
-
 });
 
-app.get("/index", function (req, res) {
+app.get("/index", function(req, res) {
     res.redirect("/");
 })
 
-app.post("/addnewpw", function (req, res) {
+app.post("/addnewpw", function(req, res) {
     administration.addNewPw(req, res);
 });
 
-app.post("/copypw", function (req, res) {
+app.post("/copypw", function(req, res) {
     administration.copyPw(req, res);
 });
 
-app.post("/changepw", function (req, res) {
+app.post("/changepw", function(req, res) {
     administration.changePw(req, res);
 });
 
-app.post("/changepwapp", function (req, res) {
+app.post("/changepwapp", function(req, res) {
     administration.changePwApp(req, res);
 });
 
-app.get("/login", function (req, res) {
+app.get("/login", function(req, res) {
     res.render("login", { errormsg: "" });
 });
 
-app.post("/logout", function (req, res) {
+app.post("/logout", function(req, res) {
     customer.logout(req, res);
 });
 
-app.get("/logout", function (req, res) {
+app.get("/logout", function(req, res) {
     customer.logout(req, res);
 });
 
-app.post("/deletepw", function (req, res) {
+app.post("/deletepw", function(req, res) {
     administration.deletePw(req, res);
 });
 
-app.post("/signup", function (req, res) {
+app.post("/signup", function(req, res) {
 
     try {
         var status = customer.signUp(req, res);
@@ -176,20 +172,20 @@ app.post("/signup", function (req, res) {
     }
 });
 
-app.post("/signin", function (req, res) {
+app.post("/signin", function(req, res) {
     customer.signIn(req, res);
 });
 
-app.post("/showpw", function (req, res) {
+app.post("/showpw", function(req, res) {
     administration.showPw(req, res);
 });
 
-app.get("/signup", function (req, res) {
+app.get("/signup", function(req, res) {
     user = customer.getUserFromSession(req);
     return res.render("signup", { userData: user, errormsg: "" });
 });
 
-app.get("/documentation", function (req, res) {
+app.get("/documentation", function(req, res) {
     user = customer.getUserFromSession(req);
     if (user.loggedIn == false) {
         customer.signIn(req, res);
@@ -198,7 +194,7 @@ app.get("/documentation", function (req, res) {
     }
 });
 
-app.get("/changepw", function (req, res) {
+app.get("/changepw", function(req, res) {
     user = customer.getUserFromSession(req);
     if (user.loggedIn == false) {
         customer.signIn(req, res);
@@ -214,12 +210,12 @@ app.get("/changepw", function (req, res) {
     return res.redirect('/');
 });*/
 
-app.post('*', function (req, res) {
+app.post('*', function(req, res) {
     console.log("redirect to / (*2)");
     return res.redirect('/');
 });
 
 //set app to listen on port 3001
-app.listen(3001, function () {
+app.listen(3001, function() {
     console.log("server is running on port 3001");
 });

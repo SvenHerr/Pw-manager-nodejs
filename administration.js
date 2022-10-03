@@ -8,8 +8,6 @@ var languageImport = require('../PwTressor/language');
 const { encrypt, decrypt } = require('./crypto');
 const dateLib = require('date-and-time');
 const session = require('express-session');
-
-
 var language = languageImport.getEnglish();
 
 // current date
@@ -29,7 +27,7 @@ function addNewPw(req, res) {
         var tempDate = new Date();
         tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
         var applicationname = encrypt(req.body.applicationname, req.session.pw);
-        var loginname = encrypt(req.body.loginname, req.session.pw);        
+        var loginname = encrypt(req.body.loginname, req.session.pw);
 
         connection.query('INSERT INTO `pw`(`User`, `Name`, `Pw`, `Loginname`, `CreateDate`, `Id`) VALUES (?,?,?,?,?,?)', [req.session.username, applicationname, encryptedpw, loginname, tempDate, Math.floor(Math.random() * 1000001).toString()], function(err, complete) {
             if (err != null) {
@@ -72,7 +70,7 @@ function showPw(req, res) {
         const index = encryptArray.indexOf(req.body.id);
 
         var temp = encryptArray[index];
-        
+
         if (temp != null) {
             connection.query('SELECT * FROM pw WHERE User =  ? AND Id = ?', [req.session.username, req.body.id], (err, rows) => {
 
@@ -176,4 +174,4 @@ function changePwApp(req, res) {
     res.redirect("/");
 };
 
-module.exports = {changePwApp,changePw,copyPw,showPw,deletePw,addNewPw}
+module.exports = { changePwApp, changePw, copyPw, showPw, deletePw, addNewPw }
