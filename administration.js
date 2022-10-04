@@ -65,7 +65,7 @@ function showPw(req, res) {
 
             //connection.getPw(req,res);
 
-            conn.query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [req.session.username, req.body.id], (err, rows) => {
+            conn.query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [escape(req.session.username), escape(req.body.id)], (err, rows) => {
 
                 if (err != null) {
                     console.log("showpw sql error");
@@ -135,9 +135,9 @@ function changePw(req, res) {
 };
 
 function changePwApp(req, res) {
-    var newPw = req.body.newPw;
-    var newPwConfirmation = req.body.newPw1;
-    var id = req.body.changeelement;
+    var newPw = escape(req.body.newPw);
+    var newPwConfirmation = escape(req.body.newPw1);
+    var id = escape(req.body.changeelement);
 
     if (newPw != newPwConfirmation) {
         return language.pwMissmatch;
@@ -152,7 +152,7 @@ function changePwApp(req, res) {
 
     if (req.session.loggedIn) {
 
-        var encriptedPw = encrypt(newPw.toString(), req.session.pw);
+        var encriptedPw = encrypt(newPw, req.session.pw);
 
         try {
             connection.query('UPDATE pw SET Pw = ?, CreateDate = ? WHERE Id = ?', [encriptedPw, currentDate, id]);

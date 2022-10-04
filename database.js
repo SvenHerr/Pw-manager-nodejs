@@ -12,6 +12,7 @@ var userClass = require('../Pw-manager-nodejs/user');
 var encrypt1 = require('../Pw-manager-nodejs/encrypt');
 const bcrypt = require('bcrypt');
 const { encrypt, decrypt } = require('./crypto');
+var escape = require('lodash.escape');
 
 
 
@@ -97,11 +98,11 @@ function deletePw(id, res) {
 
 function addPw(req, res) {
 
-    var encryptedpw = encrypt(req.body.pw, req.session.pw);
-    var applicationname = encrypt(req.body.applicationname, req.session.pw);
+    var encryptedpw = encrypt(escape(req.body.pw), escape(req.session.pw));
+    var applicationname = encrypt(escape(req.body.applicationname), escape(req.session.pw));
     var loginname = encrypt(req.body.loginname, req.session.pw);
 
-    conn.query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate`, `Id`) VALUES (?,?,?,?,?,?)', [req.session.username, applicationname, encryptedpw, loginname, getCurrentDate(), Math.floor(Math.random() * 1000001).toString()], function(err, complete) {
+    conn.query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate`, `Id`) VALUES (?,?,?,?,?,?)', [escape(req.session.username), applicationname, encryptedpw, loginname, getCurrentDate(), Math.floor(Math.random() * 1000001).toString()], function(err, complete) {
         if (err != null) {
             console.log("addnewpw db error: " + err);
         }
