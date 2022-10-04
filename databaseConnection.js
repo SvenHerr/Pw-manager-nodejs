@@ -1,11 +1,12 @@
 // This script runs on serverside
 
+var config = require('./config.json');
 
 var mysql = require('mysql');
 var conn = mysql.createConnection({
     host: 'localhost',
-    user: 'nodetest',
-    password: 'Start1234',
+    user: config.username,
+    password: config.pw,
     database: 'nodepw1',
     debug: false
 });
