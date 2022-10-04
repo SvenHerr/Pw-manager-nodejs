@@ -5,6 +5,9 @@ var connection = require('../Pw-manager-nodejs/database');
 var encrypt1 = require('../Pw-manager-nodejs/encrypt');
 const dateLib = require('date-and-time');
 var userClass = require('../Pw-manager-nodejs/user');
+var encrypt1 = require('../Pw-manager-nodejs/encrypt');
+const bcrypt = require('bcrypt');
+const { encrypt, decrypt } = require('./crypto');
 
 
 
@@ -33,7 +36,7 @@ function signUp(req, res) {
         return "error: User data not found!";
     }
 
-    var userExists = connection.getUserExists(req,res,user.username);
+    var userExists = connection.getUserExists(req, res, user.username);
 
     if (userExists) {
         return "User already exists!";
@@ -43,9 +46,34 @@ function signUp(req, res) {
     tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
 
     connection.addUser(user)
+    .then(function(user){
+        req.session.pw = user.pw;
+        req.session.loggedIn = true;
+        return "ok";
+
+    }).catch(function(err) {
+        console.log('Caught an error!', err);
+    });
 
     return "ok";
 };
+
+function setUserToSession(req, res, user) {
+    console.log("in setUserToSession");
+    var tempEncryptPW = encrypt1.hashPw(req.body.pw);
+
+    if (bcrypt.compare(tempEncryptPW, user.pw)) {
+        req.session.loggedIn = true;
+        req.session.id = user.id;
+        req.session.username = user.username;
+        req.session.surname = user.surname;
+        req.session.lastname = user.lastname;
+        req.session.pw = user.pw;
+
+    } else {
+        return res.render("login", { errormsg: language.loginError });
+    }
+}
 
 
 function signIn(req, res) {
@@ -54,12 +82,24 @@ function signIn(req, res) {
         res.redirect("/");
     }
 
-    try{
-        console.log("vor getuser");
-        connection.getUser(req,res);
-        console.log("nach getuser");
-        console.log("LoggedIn= " +req.session.loggedIn + "Username=" + req.session.username)
-    }catch (err){
+    try {
+        
+        connection.getUser(req, res)
+            .then(function (user) {
+                setUserToSession(req, res, user);
+
+                if (user == null) {
+                    return res.render("login", { errormsg: language.loginError });
+                }
+
+                res.redirect("/");
+                console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)
+            })
+            .catch(function(err) {
+                console.log('Caught an error!', err);
+            });
+
+    } catch (err) {
         console.log("Error on singIn: " + err);
     }
 };
@@ -73,7 +113,7 @@ function logout(req, res) {
     return res.redirect("/");
 };
 
-function getUserFromSession(req,res) {
+function getUserFromSession(req, res) {
     return new userClass(req.session.id, req.session.username, req.session.surname, req.session.lastname, null, req.session.loggedIn);
 };
 

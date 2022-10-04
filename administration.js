@@ -2,21 +2,12 @@
 
 //dependencies required for the app
 var connection = require('../Pw-manager-nodejs/database');
-var conn = require('../Pw-manager-nodejs/databaseConnection'); // wieder löschen!
-
 const dateObject = new Date();
 var languageImport = require('../Pw-manager-nodejs/language');
 const { encrypt, decrypt } = require('./crypto');
 const dateLib = require('date-and-time');
 const session = require('express-session');
 var language = languageImport.getEnglish();
-
-// current date
-const date = (`0 ${dateObject.getDate()}`).slice(-2);
-// current month
-const month = (`0 ${dateObject.getMonth() + 1}`).slice(-2);
-// current year
-const year = dateObject.getFullYear();
 var escape = require('lodash.escape');
 
 var encryptArray = [];
@@ -25,25 +16,28 @@ var encryptArray = [];
 function addNewPw(req, res) {
 
     try {
-        connection.addPw(req,res);
+        connection.addPw(req, res)
+            .then(res.redirect("/"))
+            .catch(function () {
+                console.log("addnewpw err: " + err);
+            });
     } catch (err) {
         console.log("addnewpw err: " + err);
     }
 };
 
 function deletePw(req, res) {
-    
-    try{
+
+    try {
         if (req.body.confirmation == "yes") {
-            connection.deletePw(req.body.elementI,res);
+            connection.deletePw(req.body.elementI, res);
         }
-    }catch(err){
+    } catch (err) {
         console.log("deletePw err: " + err);
     }
 };
 
 function showPw(req, res) {
-    var decryptedPw = "";
 
     if (encryptArray.includes(req.body.id)) {
 
@@ -63,21 +57,7 @@ function showPw(req, res) {
 
         if (temp != null) {
 
-            //connection.getPw(req,res);
-
-            conn.query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [escape(req.session.username), escape(req.body.id)], (err, rows) => {
-
-                if (err != null) {
-                    console.log("showpw sql error");
-                }
-
-                if (rows[0] != null) {
-                    if (rows[0].Pw != null) {
-                        decryptedPw = decrypt(rows[0].Pw, req.session.pw);
-                        res.send(escape(decryptedPw));
-                    }
-                }
-            });
+            return getDecriptedPw(req, res);
 
         } else {
             console.log("encryptArray on index is null");
@@ -85,27 +65,29 @@ function showPw(req, res) {
     }
 };
 
-function copyPw(req, res) {
-    pwcopycalled = true;
+function getDecriptedPw(req, res, pwcopycalled) {
     if (req.session.loggedIn) {
-        connection.query('SELECT Pw FROM pw WHERE Id =  ?', [req.body.id], function(err, rows) {
 
-            if (rows[0] != null) {
-                encryptedPwCopy = decrypt(rows[0].Pw, req.session.pw);
-                res.send(escape(encryptedPwCopy));
-            } else {
-                res.send(escape("error"));
-            }
-        });
+        connection.getDecriptedPw(req, res)
+            .then(function (decryptedPw) {
+                res.send(escape(decryptedPw));
+            }).catch(function (err) {
+                console.log("showpw: " + err);
+            });
     }
+}
+
+function copyPw(req, res) {
+
+    pwcopycalled = true;
+    return getDecriptedPw(req, res, pwcopycalled);
 };
 
 function changePw(req, res) {
     var oldPw = escape(req.body.oldPw);
     var newPw = escape(req.body.newPw);
 
-    connection.query('SELECT * FROM pw WHERE User =  ?', [req.session.username], function(err, complete) {
-        currentDate = `${month}/${date}/${year}`;
+    connection.query('SELECT * FROM pw WHERE User =  ?', [req.session.username], function (err, complete) {
 
         if (req.session.loggedIn) {
             if (complete != null) {
