@@ -101,8 +101,8 @@ function copyPw(req, res) {
 };
 
 function changePw(req, res) {
-    var oldPw = req.body.oldPw;
-    var newPw = req.body.newPw;
+    var oldPw = escape(req.body.oldPw);
+    var newPw = escape(req.body.newPw);
 
     connection.query('SELECT * FROM pw WHERE User =  ?', [req.session.username], function(err, complete) {
         currentDate = `${month}/${date}/${year}`;
@@ -111,10 +111,10 @@ function changePw(req, res) {
             if (complete != null) {
                 complete.forEach(row => {
 
-                    var decriptedName = decrypt(row.Name.toString(), oldPw.toString());
-                    var encriptedName = encrypt(decriptedName.toString(), newPw.toString());
-                    var decriptedPw = decrypt(row.Pw.toString(), oldPw.toString());
-                    var encriptedPw = encrypt(decriptedPw.toString(), newPw.toString());
+                    var decriptedName = decrypt(row.Name, oldPw);
+                    var encriptedName = encrypt(decriptedName, newPw);
+                    var decriptedPw = decrypt(row.Pw, oldPw);
+                    var encriptedPw = encrypt(decriptedPw, newPw);
 
                     try {
                         connection.query('UPDATE pw SET Name = ?, Pw = ? WHERE Id = ?', [encriptedName, encriptedPw, row.Id]);
