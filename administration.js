@@ -28,12 +28,14 @@ function deletePw(req, res) {
 
     try {
         if (req.body.confirmation == "yes") {
-            connection.deletePw(req.body.elementI, res)
+            console.log("in delete");
+            console.log("in delete elementId" + req.body.elementId);
+            connection.deletePw(req.body.elementId)
             .then(function(value){
                 res.redirect("/");
             })
-            .catch(function () {
-                
+            .catch(function (err) {
+                console.log(err);
             });
         }
     } catch (err) {
