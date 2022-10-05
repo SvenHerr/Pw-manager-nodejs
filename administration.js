@@ -30,7 +30,11 @@ function deletePw(req, res) {
 
     try {
         if (req.body.confirmation == "yes") {
-            connection.deletePw(req.body.elementI, res);
+            connection.deletePw(req.body.elementI, res).then(function(value){
+                res.redirect("/");
+            }).catch(err){
+                
+            };
         }
     } catch (err) {
         console.log("deletePw err: " + err);

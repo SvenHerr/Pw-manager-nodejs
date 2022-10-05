@@ -1,14 +1,14 @@
 // This script runs on serverside
 
 var conn = require('../Pw-manager-nodejs/databaseConnection');
-const dateLib = require('date-and-time');
 var userClass = require('../Pw-manager-nodejs/user');
 const { encrypt, decrypt } = require('./crypto');
 var escape = require('lodash.escape');
+var helper = require('./helper');
 
 
 
-function getUser(req, res) {
+function getUser(req) {
 
     return new Promise(function (resolve, reject) {
 
@@ -26,13 +26,16 @@ function getUser(req, res) {
     });
 }
 
-function getUserExists(req, res, username) {
-    conn.query('SELECT Id FROM user WHERE Username = ?', [username], function (err, complete) {
-        if (complete != null) {
-            return true;
-        }
+function getUserExists(username) {
+    return new Promise(function (resolve, reject) {
+        conn.query('SELECT Id FROM user WHERE Username = ?', [username], function (err, complete) {
+            if (complete != null) {
+                resolve(true);
+            }
 
-        return false;
+            //resolve(false);
+            reject(false);
+        });
     });
 }
 
@@ -40,7 +43,7 @@ function addUser(user) {
     return new Promise(function (resolve, reject) {
         let query = `INSERT INTO user (id, username, surname, lastname, createdate, pw) VALUES (?,?,?,?,?,?);`;
 
-        conn.query(query, [user.id, user.username, user.surname, user.lastname, getCurrentDate(), user.pw], function (err, complete) {
+        conn.query(query, [user.id, user.username, user.surname, user.lastname, helper.getCurrentDate(), user.pw], function (err, complete) {
 
             if (err == null) {
                 resolve(new userClass(null, user.username, user.surname, user.lastname, user.pw));
@@ -52,11 +55,11 @@ function addUser(user) {
     });
 }
 
-function getPw(req, res) {
+function getPw(req) {
 
 }
 
-function getDecriptedPw(req, res) {
+function getDecriptedPw(req) {
 
     return new Promise(function (resolve, reject) {
         conn.query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [escape(req.session.username), escape(req.body.id)], (err, rows) => {
@@ -75,24 +78,33 @@ function getDecriptedPw(req, res) {
     });
 }
 
-function getPwList(req, res) {
+function getPwList(req) {
 
 }
 
-function deletePw(id, res) {
-    connection.query('DELETE FROM `pw` WHERE Id = ?', [id], function (err, complete) {
-        res.redirect("/");
+function deletePw(id) {
+
+    return new Promise(function (resolve, reject) {
+
+        connection.query('DELETE FROM `pw` WHERE Id = ?', [id], function (err, complete) {
+            if(err == null){
+                reject(false);
+            }else{
+                resolve(true);
+            }
+        });
     });
+
 }
 
-function addPw(req, res) {
+function addPw(req) {
 
     return new Promise(function (resolve, reject) {
         var encryptedpw = encrypt(escape(req.body.pw), escape(req.session.pw));
         var applicationname = encrypt(escape(req.body.applicationname), escape(req.session.pw));
         var loginname = encrypt(req.body.loginname.toString(), req.session.pw.toString());
 
-        conn.query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate`, `Id`) VALUES (?,?,?,?,?,?)', [escape(req.session.username), applicationname, encryptedpw, loginname, getCurrentDate(), Math.floor(Math.random() * 1000001).toString()], function (err, complete) {
+        conn.query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate`, `Id`) VALUES (?,?,?,?,?,?)', [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate(), Math.floor(Math.random() * 1000001).toString()], function (err, complete) {
             if (err != null) {
                 reject(false);
                 console.log("addnewpw db error: " + err);
@@ -103,10 +115,7 @@ function addPw(req, res) {
     });
 }
 
-function getCurrentDate() {
-    var tempDate = new Date();
-    return dateLib.format(tempDate, 'YYYY-MM-DD');
-}
+
 
 
 

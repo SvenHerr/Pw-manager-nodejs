@@ -7,11 +7,10 @@ const dateLib = require('date-and-time');
 var userClass = require('../Pw-manager-nodejs/user');
 var encrypt1 = require('../Pw-manager-nodejs/encrypt');
 const bcrypt = require('bcrypt');
-const { encrypt, decrypt } = require('./crypto');
 
 
 
-function signUp(req, res) {
+function signUp(req) {
 
     var pw = req.body.pw;
     var pw1 = req.body.pw1;
@@ -36,26 +35,26 @@ function signUp(req, res) {
         return "error: User data not found!";
     }
 
-    var userExists = connection.getUserExists(req, res, user.username);
-
-    if (userExists) {
-        return "User already exists!";
-    }
-
-    var tempDate = new Date();
-    tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
-
-    connection.addUser(user)
-    .then(function(user){
-        req.session.pw = user.pw;
-        req.session.loggedIn = true;
-        return "ok";
-
-    }).catch(function(err) {
-        console.log('Caught an error!', err);
-    });
-
-    return "ok";
+    connection.getUserExists(user.username)
+    .then(function(){
+        var tempDate = new Date();
+        tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
+    
+        connection.addUser(user)
+        .then(function(user){
+            req.session.pw = user.pw;
+            req.session.loggedIn = true;
+            return "ok";
+    
+        }).catch(function(err) {
+            console.log('Caught an error!', err);
+        });
+    })
+    .catch(function(userExists){
+        if (userExists) {
+            return "User already exists!";
+    }      
+    }); 
 };
 
 function setUserToSession(req, res, user) {
