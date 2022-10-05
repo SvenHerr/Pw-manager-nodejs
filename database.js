@@ -9,7 +9,6 @@ var helper = require('./helper');
 
 
 function getUser(req) {
-
     return new Promise(function (resolve, reject) {
 
         conn.query('SELECT * FROM user WHERE Username = ?', [req.body.username], function (err, users) {
@@ -20,21 +19,26 @@ function getUser(req) {
                 }
             } else {
                 console.log("reject");
-                reject(null);
+                resolve(null);
             }
+
+            reject(err);
         });
     });
 }
 
 function getUserExists(username) {
     return new Promise(function (resolve, reject) {
+
         conn.query('SELECT Id FROM user WHERE Username = ?', [username], function (err, complete) {
             if (complete != null) {
                 resolve(true);
+            }else{
+                resolve(false);
             }
-
-            //resolve(false);
-            reject(false);
+            if(err != null){
+                reject(err);
+            }
         });
     });
 }
@@ -48,15 +52,45 @@ function addUser(user) {
             if (err == null) {
                 resolve(new userClass(null, user.username, user.surname, user.lastname, user.pw));
             } else {
-                console.log("Db error: " + err);
-                reject(null);
-            }
+                
+                reject(err);
+            }            
         });
     });
 }
 
-function getPw(req) {
+function updateUserPw(req){
+    return new Promise(function (resolve, reject) {
+        var newPw = escape(req.body.newPw);
 
+        conn.query('UPDATE user SET Pw = ? WHERE Username = ?', [newPw, req.session.username], function (err, complete){
+
+            if (err == null) {
+                resolve();
+            } else {
+                reject(err);
+            }  
+        });
+    });
+    
+}
+
+
+function updatePwById(req) {
+    return new Promise(function (resolve, reject) {
+
+        var id = escape(req.body.changeelement);
+        var newPw = escape(req.body.newPw);
+        var encriptedPw = encrypt(newPw, req.session.pw);
+
+        conn.query('UPDATE pw SET Pw = ?, CreateDate = ? WHERE Id = ?', [encriptedPw, helper.getCurrentDate(), id], (err, rows) => {
+            if(err == null){
+                resolve();
+            }else{
+                reject();
+            }
+        });
+    });
 }
 
 function getDecriptedPw(req) {
@@ -66,7 +100,7 @@ function getDecriptedPw(req) {
 
             if (err != null) {
                 console.log("showpw sql error");
-                reject(null);
+                reject(err);
             }
 
             if (rows[0] != null) {
@@ -74,11 +108,27 @@ function getDecriptedPw(req) {
                     resolve(decrypt(rows[0].Pw, escape(req.session.pw)))
                 }
             }
+
+            resolve(null);
         });
     });
 }
 
-function getPwList(req) {
+function getAllPwFromUser(req) {
+
+    return new Promise(function (resolve, reject) {
+        connection.query('SELECT * FROM pw WHERE Username =  ?', [req.session.username], function (err, pws) {
+        if(err == null){
+            resolve(pws);
+        }else{
+            reject(err);
+        }
+        });
+    });
+    
+}
+
+function getPw(req) { 
 
 }
 
@@ -88,13 +138,12 @@ function deletePw(id) {
 
         connection.query('DELETE FROM `pw` WHERE Id = ?', [id], function (err, complete) {
             if(err == null){
-                reject(false);
+                reject(err);
             }else{
                 resolve(true);
             }
         });
     });
-
 }
 
 function addPw(req) {
@@ -106,7 +155,7 @@ function addPw(req) {
 
         conn.query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate`, `Id`) VALUES (?,?,?,?,?,?)', [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate(), Math.floor(Math.random() * 1000001).toString()], function (err, complete) {
             if (err != null) {
-                reject(false);
+                reject(err);
                 console.log("addnewpw db error: " + err);
             }
             console.log("in addPw");
@@ -119,4 +168,4 @@ function addPw(req) {
 
 
 
-module.exports = { conn, getUserExists, addUser, getUser, addPw, deletePw, getPw, getDecriptedPw };
+module.exports = { conn, getUserExists, addUser, getUser, addPw, deletePw, getPw, getDecriptedPw,updatePwById,getAllPwFromUser,updateUserPw };

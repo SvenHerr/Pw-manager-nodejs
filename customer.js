@@ -36,7 +36,12 @@ function signUp(req) {
     }
 
     connection.getUserExists(user.username)
-    .then(function(){
+    .then(function(userExists){
+
+        if(userExists){
+            return "User already exists!";
+        }
+
         var tempDate = new Date();
         tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
     
@@ -85,11 +90,12 @@ function signIn(req, res) {
         
         connection.getUser(req, res)
             .then(function (user) {
-                setUserToSession(req, res, user);
 
                 if (user == null) {
                     return res.render("login", { errormsg: language.loginError });
                 }
+
+                setUserToSession(req, res, user);
 
                 res.redirect("/");
                 console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)

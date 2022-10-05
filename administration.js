@@ -2,10 +2,8 @@
 
 //dependencies required for the app
 var connection = require('../Pw-manager-nodejs/database');
-const dateObject = new Date();
 var languageImport = require('../Pw-manager-nodejs/language');
 const { encrypt, decrypt } = require('./crypto');
-const dateLib = require('date-and-time');
 const session = require('express-session');
 var language = languageImport.getEnglish();
 var escape = require('lodash.escape');
@@ -30,11 +28,13 @@ function deletePw(req, res) {
 
     try {
         if (req.body.confirmation == "yes") {
-            connection.deletePw(req.body.elementI, res).then(function(value){
+            connection.deletePw(req.body.elementI, res)
+            .then(function(value){
                 res.redirect("/");
-            }).catch(err){
+            })
+            .catch(function () {
                 
-            };
+            });
         }
     } catch (err) {
         console.log("deletePw err: " + err);
@@ -81,17 +81,25 @@ function getDecriptedPw(req, res, pwcopycalled) {
     }
 }
 
+
 function copyPw(req, res) {
 
     pwcopycalled = true;
     return getDecriptedPw(req, res, pwcopycalled);
 };
 
+/**
+ * Changes pw from User (for login etc..)
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 function changePw(req, res) {
     var oldPw = escape(req.body.oldPw);
     var newPw = escape(req.body.newPw);
 
-    connection.query('SELECT * FROM pw WHERE User =  ?', [req.session.username], function (err, complete) {
+    //await connection.getAllPwFromUser(res);
+    connection.query('SELECT * FROM pw WHERE Username =  ?', [req.session.username], function (err, complete) {
 
         if (req.session.loggedIn) {
             if (complete != null) {
@@ -116,10 +124,17 @@ function changePw(req, res) {
 
     req.session.pw = newPw;
     connection.query('UPDATE user SET Pw = ? WHERE Username = ?', [newPw, req.session.username]);
+    //connection.updateUserPw(req);
 
     return res.render("login", { errormsg: language.loginErrorPwChange });
 };
 
+/**
+ * Changes the pw from row
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 function changePwApp(req, res) {
     var newPw = escape(req.body.newPw);
     var newPwConfirmation = escape(req.body.newPw1);
@@ -133,15 +148,17 @@ function changePwApp(req, res) {
         return language.idIsNotDefined;
     }
 
-    var currentDate = new Date();
-    currentDate = dateLib.format(currentDate, 'YYYY-MM-DD');
-
     if (req.session.loggedIn) {
 
-        var encriptedPw = encrypt(newPw, req.session.pw);
-
         try {
-            connection.query('UPDATE pw SET Pw = ?, CreateDate = ? WHERE Id = ?', [encriptedPw, currentDate, id]);
+            connection.updatePwById(req)
+            .then(function (){
+                console.log("redirect to / (changePwApp)");
+                res.redirect("/");
+            })
+            .catch(function (err) {
+                console.log("ChangePW update sql: " + err);
+            });;
         } catch (err) {
             console.log("ChangePW update sql: " + err);
         }
@@ -149,8 +166,6 @@ function changePwApp(req, res) {
     } else {
         console.log("ChangePW else!");
     }
-    console.log("redirect to / (changePwApp)");
-    res.redirect("/");
 };
 
 module.exports = { changePwApp, changePw, copyPw, showPw, deletePw, addNewPw }
