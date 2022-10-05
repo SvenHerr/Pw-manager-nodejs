@@ -117,7 +117,7 @@ function getDecriptedPw(req) {
 function getAllPwFromUser(req) {
 
     return new Promise(function (resolve, reject) {
-        connection.query('SELECT * FROM pw WHERE Username =  ?', [req.session.username], function (err, pws) {
+        conn.query('SELECT * FROM pw WHERE Username =  ?', [req.session.username], function (err, pws) {
         if(err == null){
             resolve(pws);
         }else{
@@ -136,11 +136,11 @@ function deletePw(id) {
 
     return new Promise(function (resolve, reject) {
 
-        connection.query('DELETE FROM `pw` WHERE Id = ?', [id], function (err, complete) {
+        conn.query('DELETE FROM `pw` WHERE Id = ?', [id], function (err, complete) {
             if(err == null){
-                reject(err);
+                resolve(err);
             }else{
-                resolve(true);
+                reject(err);
             }
         });
     });

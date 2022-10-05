@@ -74,6 +74,8 @@ function loadData(req, res, pwcopycalled = false) {
             return res.render("login", { errormsg: "" });
         }
         console.log("LoadDate Username= " + req.session.username);
+
+        //connection.getAllPwFromUser(req);
         connection.query('SELECT * FROM pw WHERE Username =  ?', [req.session.username], function(err, complete) {
             currentDate = `${month}/${date}/${year}`;
             if (req.session.loggedIn) {
