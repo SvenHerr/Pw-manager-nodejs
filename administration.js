@@ -1,13 +1,11 @@
 // This script runs on serverside
 
 //dependencies required for the app
-var connection = require('../Pw-manager-nodejs/database');
+var connection = require('../Pw-manager-nodejs/Database/database');
 var languageImport = require('../Pw-manager-nodejs/language');
-const session = require('express-session');
 var language = languageImport.getEnglish();
 var escape = require('lodash.escape');
-
-var encryptArray = [];
+let encryptArray = []; // Darf nicht in die function rein.
 
 
 async function addNewPw(req, res) {
@@ -46,6 +44,7 @@ async function deletePw(req, res) {
 
 async function showPw(req, res) {
 
+   
     if (encryptArray.includes(req.body.id)) {
 
         const index = encryptArray.indexOf(req.body.id);
@@ -60,7 +59,7 @@ async function showPw(req, res) {
 
         const index = encryptArray.indexOf(req.body.id);
 
-        var temp = encryptArray[index];
+        let temp = encryptArray[index];
 
         if (temp != null) {
 
@@ -103,10 +102,10 @@ async function getDecriptedPw(req, res, pwcopycalled) {
  * @param {*} res 
  * @returns 
  */
-function changePwApp(req, res) {
-    var newPw = escape(req.body.newPw);
-    var newPwConfirmation = escape(req.body.newPw1);
-    var id = escape(req.body.changeelement);
+async function changePwApp(req, res) {
+    let newPw = escape(req.body.newPw);
+    let newPwConfirmation = escape(req.body.newPw1);
+    let id = escape(req.body.changeelement);
 
     if (newPw != newPwConfirmation) {
         return language.pwMissmatch;
@@ -119,14 +118,10 @@ function changePwApp(req, res) {
     if (req.session.loggedIn) {
 
         try {
-            connection.updatePwById(req)
-            .then(function (){
-                console.log("redirect to / (changePwApp)");
-                res.redirect("/");
-            })
-            .catch(function (err) {
-                console.log("ChangePW update sql: " + err);
-            });;
+            await connection.updatePwById(req)
+            
+            res.redirect("/");
+            
         } catch (err) {
             console.log("ChangePW update sql: " + err);
         }
@@ -138,4 +133,10 @@ function changePwApp(req, res) {
 
 
 
-module.exports = { changePwApp, copyPw, showPw, deletePw, addNewPw }
+module.exports = { 
+    changePwApp, 
+    copyPw, 
+    showPw, 
+    deletePw, 
+    addNewPw 
+}

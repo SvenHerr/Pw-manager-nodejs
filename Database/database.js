@@ -1,10 +1,10 @@
 // This script runs on serverside
 
 var conn = require('./databaseConnection');
-var User = require('../Pw-manager-nodejs/user');
-const { encrypt, decrypt } = require('./crypto');
+var User = require('../user');
+const { encrypt, decrypt } = require('../crypto/crypto');
 var escape = require('lodash.escape');
-var helper = require('./helper');
+var helper = require('../helper');
 let connection = null;
 
 
