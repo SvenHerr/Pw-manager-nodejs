@@ -65,6 +65,7 @@ var encryptedPwCopy = "";
 var pwcopycalled = false; // TODO: Nochmal drüber nachdenken
 
 
+
 // Why does this function get called 11 Times?
 async function loadData(req, res, pwcopycalled = false) {
 
@@ -147,36 +148,36 @@ app.get("/index", function(req, res) {
     res.redirect("/");
 })
 
-app.post("/addnewpw", function(req, res) {
-    administration.addNewPw(req, res);
+app.post("/addnewpw", async function(req, res) {
+    await administration.addNewPw(req, res);
 });
 
-app.post("/copypw", function(req, res) {
-    administration.copyPw(req, res);
+app.post("/copypw", async function(req, res) {
+    await administration.copyPw(req, res);
 });
 
-app.post("/changepw", function(req, res) {
-    administration.changePw(req, res);
+app.post("/changepw", async function(req, res) {
+    await administration.changePw(req, res);
 });
 
-app.post("/changepwapp", function(req, res) {
-    administration.changePwApp(req, res);
+app.post("/changepwapp", async function(req, res) {
+    await administration.changePwApp(req, res);
 });
 
 app.get("/login", function(req, res) {
     res.render("login", { errormsg: "" });
 });
 
-app.post("/logout", function(req, res) {
-    customer.logout(req, res);
+app.post("/logout", async function(req, res) {
+    await customer.logout(req, res);
 });
 
-app.get("/logout", function(req, res) {
-    customer.logout(req, res);
+app.get("/logout", async function(req, res) {
+    await customer.logout(req, res);
 });
 
-app.post("/deletepw", function(req, res) {
-    administration.deletePw(req, res);
+app.post("/deletepw", async function(req, res) {
+    await administration.deletePw(req, res);
 });
 
 app.post("/signup", async function(req, res) {
@@ -187,7 +188,7 @@ app.post("/signup", async function(req, res) {
 
         if (status == "ok") {
             console.log("werde user einloggen");
-            customer.signIn(req, res);
+            await customer.signIn(req, res);
         } else {
             return res.render("signup", { userData: user, errormsg: status });
         }
@@ -198,12 +199,12 @@ app.post("/signup", async function(req, res) {
     }
 });
 
-app.post("/signin", function(req, res) {
-    customer.signIn(req, res);
+app.post("/signin", async function(req, res) {
+    await customer.signIn(req, res);
 });
 
-app.post("/showpw", function(req, res) {
-    administration.showPw(req, res);
+app.post("/showpw", async function(req, res) {
+    await administration.showPw(req, res);
 });
 
 app.get("/signup", function(req, res) {
@@ -220,10 +221,10 @@ app.get("/documentation", function(req, res) {
     }
 });
 
-app.get("/changepw", function(req, res) {
+app.get("/changepw", async function(req, res) {
     user = customer.getUserFromSession(req);
     if (user.loggedIn == false) {
-        customer.signIn(req, res);
+        await customer.signIn(req, res);
     } else {
         return res.render("changepw", { userData: user });
     }
