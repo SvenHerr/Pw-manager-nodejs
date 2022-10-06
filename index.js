@@ -34,7 +34,7 @@ const limiter = rateLimit({
 })
 
 // Apply the rate limiting middleware to all requests
-app.use(limiter)
+app.use(limiter);
 
 
 
@@ -60,64 +60,44 @@ app.post(function(req, res, next) {
     next();
 });
 
-var encryptArray = [];
-var encryptedPwCopy = "";
-var pwcopycalled = false; // TODO: Nochmal drüber nachdenken
-
 
 
 // Why does this function get called 11 Times?
-async function loadData(req, res, pwcopycalled = false) {
+async function loadData(req, res) {
 
     try {
+
         if(req.session.loggedIn != true){
             return res.render("login", { errormsg: "" });
         }
         console.log("LoadDate Username= " + req.session.username);
 
-        let complete = await connection.getAllPwFromUser(req);
+        let pwItemList = await connection.getAllPwFromUser(req);
         
-            
-        currentDate = `${month}/${date}/${year}`;
         if (req.session.loggedIn) {
 
-            var tempComplete = [];
-
-            complete.forEach(row => {
+            pwItemList.forEach(row => {
                 try {
-                    var tempApplicationnames = row;
-                    tempApplicationnames.Name = decrypt(row.Name, req.session.pw);
+                    
+                    row.Name = decrypt(row.Name, req.session.pw);
 
                     if (row.Loginname != null) {
-                        var tempLoginname = row;
-                        tempLoginname.Loginname = decrypt(row.Loginname, req.session.pw);
+                        
+                        row.Loginname = decrypt(row.Loginname, req.session.pw);
                     }
 
-                    if (encryptArray.includes(row.Id)) {
-
-                        var tempRow = row;
-                        tempRow.Pw = decrypt(row.Pw.toString(), req.session.pw);
-                        tempComplete.push(tempRow);
-
-                    } else {
-                        tempComplete.push(row);
-                    }
+                    row.Pw = decrypt(row.Pw.toString(), req.session.pw);                    
 
                 } catch (err) {
                     console.log(err);
                 }
             });
 
-            if (pwcopycalled == false) {
-                encryptedPwCopy = null;
-            }
-
-            return res.render("index", { pwDatas: complete, userData: customer.getUserFromSession(req), date: dateLib, currentDate: currentDate });
+            return res.render("index", { pwDatas: pwItemList, userData: customer.getUserFromSession(req), date: dateLib, currentDate: `${month}/${date}/${year}` });
 
         } else {
             return res.render("login", { errormsg: "" });
-        }
-            
+        }   
         
     } catch (err) {
         console.log("Error on load: " + err);
@@ -127,7 +107,7 @@ async function loadData(req, res, pwcopycalled = false) {
 
 
 // routing
-app.get("/", function(req, res) {
+app.get("/", async function(req, res) {
     console.log("redirect to / (loadData)");
 
     if (req.session.loggedIn === false) {
@@ -135,7 +115,7 @@ app.get("/", function(req, res) {
         return res.render("login", { errormsg: "" });
     }
 
-    loadData(req, res);
+    await loadData(req, res);
 });
 
 /*app.get("/test", async function (req, res) {
