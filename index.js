@@ -4,7 +4,7 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 const dateLib = require('date-and-time');
-var connection = require('../Pw-manager-nodejs/databaseConnection');
+var connection = require('../Pw-manager-nodejs/database');
 const session = require('express-session');
 const { decrypt } = require('./crypto');
 const crypto = require('crypto');
@@ -15,7 +15,6 @@ var user = require('../Pw-manager-nodejs/user');
 var customer = require('../Pw-manager-nodejs/customer');
 var administration = require('../Pw-manager-nodejs/administration'); // Change name!!!
 var language = languageImport.getEnglish();
-
 // current date
 const date = (`0 ${dateObject.getDate()}`).slice(-2);
 // current month
@@ -66,8 +65,9 @@ var encryptedPwCopy = "";
 var pwcopycalled = false; // TODO: Nochmal drüber nachdenken
 
 
+
 // Why does this function get called 11 Times?
-function loadData(req, res, pwcopycalled = false) {
+async function loadData(req, res, pwcopycalled = false) {
 
     try {
         if(req.session.loggedIn != true){
@@ -75,48 +75,50 @@ function loadData(req, res, pwcopycalled = false) {
         }
         console.log("LoadDate Username= " + req.session.username);
 
-        //connection.getAllPwFromUser(req);
-        connection.query('SELECT * FROM pw WHERE Username =  ?', [req.session.username], function(err, complete) {
-            currentDate = `${month}/${date}/${year}`;
-            if (req.session.loggedIn) {
+        let complete = await connection.getAllPwFromUser(req);
+        
+            
+        currentDate = `${month}/${date}/${year}`;
+        if (req.session.loggedIn) {
 
-                var tempComplete = [];
+            var tempComplete = [];
 
-                complete.forEach(row => {
-                    try {
-                        var tempApplicationnames = row;
-                        tempApplicationnames.Name = decrypt(row.Name, req.session.pw);
+            complete.forEach(row => {
+                try {
+                    var tempApplicationnames = row;
+                    tempApplicationnames.Name = decrypt(row.Name, req.session.pw);
 
-                        if (row.Loginname != null) {
-                            var tempLoginname = row;
-                            tempLoginname.Loginname = decrypt(row.Loginname, req.session.pw);
-                        }
-
-                        if (encryptArray.includes(row.Id)) {
-
-                            var tempRow = row;
-                            tempRow.Pw = decrypt(row.Pw.toString(), req.session.pw);
-                            tempComplete.push(tempRow);
-
-                        } else {
-                            tempComplete.push(row);
-                        }
-
-                    } catch (err) {
-                        console.log(err);
+                    if (row.Loginname != null) {
+                        var tempLoginname = row;
+                        tempLoginname.Loginname = decrypt(row.Loginname, req.session.pw);
                     }
-                });
 
-                if (pwcopycalled == false) {
-                    encryptedPwCopy = null;
+                    if (encryptArray.includes(row.Id)) {
+
+                        var tempRow = row;
+                        tempRow.Pw = decrypt(row.Pw.toString(), req.session.pw);
+                        tempComplete.push(tempRow);
+
+                    } else {
+                        tempComplete.push(row);
+                    }
+
+                } catch (err) {
+                    console.log(err);
                 }
+            });
 
-                return res.render("index", { pwDatas: complete, userData: customer.getUserFromSession(req), date: dateLib, currentDate: currentDate });
-
-            } else {
-                return res.render("login", { errormsg: "" });
+            if (pwcopycalled == false) {
+                encryptedPwCopy = null;
             }
-        })
+
+            return res.render("index", { pwDatas: complete, userData: customer.getUserFromSession(req), date: dateLib, currentDate: currentDate });
+
+        } else {
+            return res.render("login", { errormsg: "" });
+        }
+            
+        
     } catch (err) {
         console.log("Error on load: " + err);
     }
@@ -136,51 +138,57 @@ app.get("/", function(req, res) {
     loadData(req, res);
 });
 
+/*app.get("/test", async function (req, res) {
+    let exists = await database.getUserExists("sadsadas");
+
+    res.send({ exists });
+}); */
+
 app.get("/index", function(req, res) {
     res.redirect("/");
 })
 
-app.post("/addnewpw", function(req, res) {
-    administration.addNewPw(req, res);
+app.post("/addnewpw", async function(req, res) {
+    await administration.addNewPw(req, res);
 });
 
-app.post("/copypw", function(req, res) {
-    administration.copyPw(req, res);
+app.post("/copypw", async function(req, res) {
+    await administration.copyPw(req, res);
 });
 
-app.post("/changepw", function(req, res) {
-    administration.changePw(req, res);
+app.post("/changepw", async function(req, res) {
+    await administration.changePw(req, res);
 });
 
-app.post("/changepwapp", function(req, res) {
-    administration.changePwApp(req, res);
+app.post("/changepwapp", async function(req, res) {
+    await administration.changePwApp(req, res);
 });
 
 app.get("/login", function(req, res) {
     res.render("login", { errormsg: "" });
 });
 
-app.post("/logout", function(req, res) {
-    customer.logout(req, res);
+app.post("/logout", async function(req, res) {
+    await customer.logout(req, res);
 });
 
-app.get("/logout", function(req, res) {
-    customer.logout(req, res);
+app.get("/logout", async function(req, res) {
+    await customer.logout(req, res);
 });
 
-app.post("/deletepw", function(req, res) {
-    administration.deletePw(req, res);
+app.post("/deletepw", async function(req, res) {
+    await administration.deletePw(req, res);
 });
 
-app.post("/signup", function(req, res) {
+app.post("/signup", async function(req, res) {
 
     try {
-        var status = customer.signUp(req, res);
+        var status = await customer.signUp(req, res);
         user = customer.getUserFromSession(req);
 
         if (status == "ok") {
             console.log("werde user einloggen");
-            customer.signIn(req, res);
+            await customer.signIn(req, res);
         } else {
             return res.render("signup", { userData: user, errormsg: status });
         }
@@ -191,12 +199,12 @@ app.post("/signup", function(req, res) {
     }
 });
 
-app.post("/signin", function(req, res) {
-    customer.signIn(req, res);
+app.post("/signin", async function(req, res) {
+    await customer.signIn(req, res);
 });
 
-app.post("/showpw", function(req, res) {
-    administration.showPw(req, res);
+app.post("/showpw", async function(req, res) {
+    await administration.showPw(req, res);
 });
 
 app.get("/signup", function(req, res) {
@@ -213,10 +221,10 @@ app.get("/documentation", function(req, res) {
     }
 });
 
-app.get("/changepw", function(req, res) {
+app.get("/changepw", async function(req, res) {
     user = customer.getUserFromSession(req);
     if (user.loggedIn == false) {
-        customer.signIn(req, res);
+        await customer.signIn(req, res);
     } else {
         return res.render("changepw", { userData: user });
     }
