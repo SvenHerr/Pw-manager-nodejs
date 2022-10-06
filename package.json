@@ -22,7 +22,7 @@
     "express-session": "^1.17.3",
     "lodash.escape": "^4.0.1",
     "mongoose": "^6.1.5",
-    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
     "raw-body": "^2.5.1"
   },
   "repository": {

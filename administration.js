@@ -11,39 +11,39 @@ var escape = require('lodash.escape');
 var encryptArray = [];
 
 
-function addNewPw(req, res) {
+async function addNewPw(req, res) {
 
     try {
-        connection.addPw(req, res)
-            .then(res.redirect("/"))
-            .catch(function () {
-                console.log("addnewpw err: " + err);
-            });
+
+        if(await connection.addPw(req, res) === false){
+            console.log("addnewpw Err");
+        }
+           
     } catch (err) {
         console.log("addnewpw err: " + err);
     }
 };
 
-function deletePw(req, res) {
+async function deletePw(req, res) {
 
     try {
         if (req.body.confirmation == "yes") {
             console.log("in delete");
             console.log("in delete elementId" + req.body.elementId);
-            connection.deletePw(req.body.elementId)
-            .then(function(value){
+            
+            if(await connection.deletePw(req.body.elementId)){
                 res.redirect("/");
-            })
-            .catch(function (err) {
-                console.log(err);
-            });
+            }else{
+                console.log("deletePw Err");
+            }               
+            
         }
     } catch (err) {
         console.log("deletePw err: " + err);
     }
 };
 
-function showPw(req, res) {
+async function showPw(req, res) {
 
     if (encryptArray.includes(req.body.id)) {
 
@@ -63,7 +63,7 @@ function showPw(req, res) {
 
         if (temp != null) {
 
-            return getDecriptedPw(req, res);
+            return await getDecriptedPw(req, res);
 
         } else {
             console.log("encryptArray on index is null");
@@ -71,23 +71,24 @@ function showPw(req, res) {
     }
 };
 
-function getDecriptedPw(req, res, pwcopycalled) {
+async function getDecriptedPw(req, res, pwcopycalled) {
     if (req.session.loggedIn) {
 
-        connection.getDecriptedPw(req, res)
-            .then(function (decryptedPw) {
-                res.send(escape(decryptedPw));
-            }).catch(function (err) {
-                console.log("showpw: " + err);
-            });
+        let decryptedPw = await connection.getDecriptedPw(req, res);
+        
+        if(decryptedPw !== null){
+            res.send(escape(decryptedPw));
+        }else{
+            console.log("showpw");
+        }   
     }
 }
 
 
-function copyPw(req, res) {
+async function copyPw(req, res) {
 
     pwcopycalled = true;
-    return getDecriptedPw(req, res, pwcopycalled);
+    return await getDecriptedPw(req, res, pwcopycalled);
 };
 
 /**

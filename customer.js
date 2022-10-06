@@ -4,13 +4,13 @@
 var connection = require('../Pw-manager-nodejs/database');
 var encrypt1 = require('../Pw-manager-nodejs/encrypt');
 const dateLib = require('date-and-time');
-var userClass = require('../Pw-manager-nodejs/user');
+var User = require('../Pw-manager-nodejs/user');
 var encrypt1 = require('../Pw-manager-nodejs/encrypt');
 const bcrypt = require('bcrypt');
 
 
 
-function signUp(req) {
+async function signUp(req) {
 
     var pw = req.body.pw;
     var pw1 = req.body.pw1;
@@ -23,9 +23,9 @@ function signUp(req) {
     if (hashedPw == null) {
         return "error: Pw hash problem!";
     }
-
+    // TODO: Autoincrement in mysql
     var id = getRandomInt(1, 10000).toString();
-    var user = new userClass(id, req.body.username, req.body.surname, req.body.lastname, hashedPw, null);
+    var user = new User(id, req.body.username, req.body.surname, req.body.lastname, hashedPw, null);
 
     if (pw == null || pw1 == null) {
         return "error: Pw not found!";
@@ -35,8 +35,8 @@ function signUp(req) {
         return "error: User data not found!";
     }
 
-    connection.getUserExists(user.username)
-    .then(function(userExists){
+    try {
+        var userExists = await connection.getUserExists(user.username);
 
         if(userExists){
             return "User already exists!";
@@ -45,21 +45,14 @@ function signUp(req) {
         var tempDate = new Date();
         tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
     
-        connection.addUser(user)
-        .then(function(user){
-            req.session.pw = user.pw;
-            req.session.loggedIn = true;
-            return "ok";
-    
-        }).catch(function(err) {
-            console.log('Caught an error!', err);
-        });
-    })
-    .catch(function(userExists){
-        if (userExists) {
-            return "User already exists!";
-    }      
-    }); 
+        await connection.addUser(user);
+        
+        req.session.pw = user.pw;
+        req.session.loggedIn = true;
+        return "ok";
+    } catch (e) {
+        return e;
+    }
 };
 
 function setUserToSession(req, res, user) {
@@ -80,7 +73,7 @@ function setUserToSession(req, res, user) {
 }
 
 
-function signIn(req, res) {
+async function signIn(req, res) {
 
     if (req.session.loggedIn) {
         res.redirect("/");
@@ -88,21 +81,17 @@ function signIn(req, res) {
 
     try {
         
-        connection.getUser(req, res)
-            .then(function (user) {
+        let user = await connection.getUser(req, res);
 
-                if (user == null) {
-                    return res.render("login", { errormsg: language.loginError });
-                }
+        if (user == null) {
+            return res.render("login", { errormsg: language.loginError });
+        }
 
-                setUserToSession(req, res, user);
+        setUserToSession(req, res, user);
 
-                res.redirect("/");
-                console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)
-            })
-            .catch(function(err) {
-                console.log('Caught an error!', err);
-            });
+        res.redirect("/");
+        console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)
+           
 
     } catch (err) {
         console.log("Error on singIn: " + err);
@@ -119,7 +108,7 @@ function logout(req, res) {
 };
 
 function getUserFromSession(req, res) {
-    return new userClass(req.session.id, req.session.username, req.session.surname, req.session.lastname, null, req.session.loggedIn);
+    return new User(req.session.id, req.session.username, req.session.surname, req.session.lastname, null, req.session.loggedIn);
 };
 
 function getRandomInt(min, max) {
