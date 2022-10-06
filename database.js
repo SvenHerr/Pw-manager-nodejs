@@ -1,7 +1,7 @@
 // This script runs on serverside
 
 var conn = require('./databaseConnection');
-var userClass = require('../Pw-manager-nodejs/user');
+var User = require('../Pw-manager-nodejs/user');
 const { encrypt, decrypt } = require('./crypto');
 var escape = require('lodash.escape');
 var helper = require('./helper');
@@ -27,7 +27,7 @@ async function getUser(req) {
     
     if (rows !== null) {
         if (rows.length > 0 ) {
-            return new userClass(null, rows[0].Username, rows[0].Surname, rows[0].Lastname, rows[0].Pw);
+            return new User(null, rows[0].Username, rows[0].Surname, rows[0].Lastname, rows[0].Pw);
         }
     } else {
         console.log("reject");
@@ -59,6 +59,19 @@ async function updateUserPw(req){
 
     var newPw = escape(req.body.newPw);
     await query('UPDATE user SET Pw = ? WHERE Username = ?', [newPw, req.session.username]);
+    
+}
+
+async function updatePwDatensatz(req){
+    
+    var oldPw = escape(req.body.oldPw);
+    var newPw = escape(req.body.newPw);
+
+    var decriptedName = decrypt(row.Name, oldPw);
+                var encriptedName = encrypt(decriptedName, newPw);
+                var decriptedPw = decrypt(row.Pw, oldPw);
+                var encriptedPw = encrypt(decriptedPw, newPw);
+    await query('UPDATE pw SET Name = ?, Pw = ? WHERE Id = ?', [encriptedName, encriptedPw, row.Id]);
     
 }
 
@@ -131,4 +144,17 @@ async function addPw(req) {
 
 
 
-module.exports = { conn, getUserExists, addUser, getUser, addPw, deletePw, getPw, getDecriptedPw,updatePwById,getAllPwFromUser,updateUserPw };
+module.exports = { 
+    conn, 
+    getUserExists, 
+    addUser, 
+    getUser, 
+    addPw, 
+    deletePw, 
+    getPw, 
+    getDecriptedPw,
+    updatePwById,
+    getAllPwFromUser,
+    updateUserPw,
+    updatePwDatensatz 
+};
