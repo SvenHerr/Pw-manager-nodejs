@@ -1,20 +1,18 @@
 // This script runs on serverside
 
 //dependencies required for the app
-var connection = require('../Pw-manager-nodejs/database');
+var connection = require('../Pw-manager-nodejs/Database/database');
 var languageImport = require('../Pw-manager-nodejs/language');
-const session = require('express-session');
 var language = languageImport.getEnglish();
 var escape = require('lodash.escape');
-
-var encryptArray = [];
+let encryptArray = []; // Darf nicht in die function rein.
 
 
 async function addNewPw(req, res) {
 
     try {
 
-        await connection.addPw(req, res);
+        await connection.insertPw(req, res);
         
         res.redirect("/");
            
@@ -28,9 +26,8 @@ async function addNewPw(req, res) {
 async function deletePw(req, res) {
 
     try {
+
         if (req.body.confirmation == "yes") {
-            console.log("in delete");
-            console.log("in delete elementId" + req.body.elementId);
             
             await connection.deletePw(req.body.elementId);
 
@@ -46,6 +43,7 @@ async function deletePw(req, res) {
 
 async function showPw(req, res) {
 
+   
     if (encryptArray.includes(req.body.id)) {
 
         const index = encryptArray.indexOf(req.body.id);
@@ -60,14 +58,10 @@ async function showPw(req, res) {
 
         const index = encryptArray.indexOf(req.body.id);
 
-        var temp = encryptArray[index];
-
-        if (temp != null) {
+        if (encryptArray[index] != null) {
 
             return await getDecriptedPw(req, res);
 
-        } else {
-            console.log("encryptArray on index is null");
         }
     }
 };
@@ -76,22 +70,20 @@ async function showPw(req, res) {
 
 async function copyPw(req, res) {
 
-    pwcopycalled = true;
-    return await getDecriptedPw(req, res, pwcopycalled);
+    return await getDecriptedPw(req, res);
 };
 
 
 
-async function getDecriptedPw(req, res, pwcopycalled) {
+async function getDecriptedPw(req, res) {
+
     if (req.session.loggedIn) {
 
         let decryptedPw = await connection.getDecriptedPw(req, res);
         
         if(decryptedPw !== null){
             res.send(escape(decryptedPw));
-        }else{
-            console.log("showpw");
-        }   
+        }
     }
 }
 
@@ -103,39 +95,35 @@ async function getDecriptedPw(req, res, pwcopycalled) {
  * @param {*} res 
  * @returns 
  */
-function changePwApp(req, res) {
-    var newPw = escape(req.body.newPw);
-    var newPwConfirmation = escape(req.body.newPw1);
-    var id = escape(req.body.changeelement);
+async function changePwApp(req, res) {
 
-    if (newPw != newPwConfirmation) {
+    if (escape(req.body.newPw) !== escape(req.body.newPw1)) {
         return language.pwMissmatch;
     }
 
-    if (id == null) {
+    if (escape(req.body.changeelement) === null) {
         return language.idIsNotDefined;
     }
 
     if (req.session.loggedIn) {
 
         try {
-            connection.updatePwById(req)
-            .then(function (){
-                console.log("redirect to / (changePwApp)");
-                res.redirect("/");
-            })
-            .catch(function (err) {
-                console.log("ChangePW update sql: " + err);
-            });;
+            await connection.updatePwById(req)
+            
+            res.redirect("/");
+            
         } catch (err) {
             console.log("ChangePW update sql: " + err);
         }
-
-    } else {
-        console.log("ChangePW else!");
-    }
+    } 
 };
 
 
 
-module.exports = { changePwApp, copyPw, showPw, deletePw, addNewPw }
+module.exports = { 
+    changePwApp, 
+    copyPw, 
+    showPw, 
+    deletePw, 
+    addNewPw 
+}

@@ -1,6 +1,6 @@
 // This script runs on serverside
 
-var config = require('./config.json');
+var config = require('../config.json');
 var mysql = require('mysql2/promise');
 
 module.exports = async function () {

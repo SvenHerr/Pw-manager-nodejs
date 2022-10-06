@@ -4,9 +4,9 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 const dateLib = require('date-and-time');
-var connection = require('../Pw-manager-nodejs/database');
+var connection = require('../Pw-manager-nodejs/Database/database');
 const session = require('express-session');
-const { decrypt } = require('./crypto');
+const { decrypt } = require('./crypto/crypto');
 const crypto = require('crypto');
 var app = express();
 const dateObject = new Date();
@@ -163,7 +163,7 @@ app.post("/deletepw", async function(req, res) {
 app.post("/signup", async function(req, res) {
 
     try {
-        var status = await customer.signUp(req, res);
+        let status = await customer.signUp(req, res);
         user = customer.getUserFromSession(req);
 
         if (status == "ok") {

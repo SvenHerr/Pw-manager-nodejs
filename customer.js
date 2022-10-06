@@ -1,11 +1,10 @@
 // This script runs on serverside
 
 //dependencies required for the app
-var connection = require('../Pw-manager-nodejs/database');
-var encrypt1 = require('../Pw-manager-nodejs/encrypt');
-const dateLib = require('date-and-time');
+var connection = require('../Pw-manager-nodejs/Database/database');
+var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
 var User = require('../Pw-manager-nodejs/user');
-var encrypt1 = require('../Pw-manager-nodejs/encrypt');
+var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
 const bcrypt = require('bcrypt');
 var escape = require('lodash.escape');
 
@@ -13,20 +12,20 @@ var escape = require('lodash.escape');
 
 async function signUp(req) {
 
-    var pw = req.body.pw;
-    var pw1 = req.body.pw1;
+    let pw = req.body.pw;
+    let pw1 = req.body.pw1;
 
     if (pw !== pw1) {
         return "pw missmatch";
     }
 
-    var hashedPw = encrypt1.hashPw(pw);
+    let hashedPw = encrypt1.hashPw(pw);
     if (hashedPw === null) {
         return "error: Pw hash problem!";
     }
     // TODO: Autoincrement in mysql
-    var id = helper.getRandomInt(1, 10000).toString();
-    var user = new User(id, req.body.username, req.body.surname, req.body.lastname, hashedPw, null);
+    let id = helper.getRandomInt(1, 10000).toString();
+    let user = new User(id, req.body.username, req.body.surname, req.body.lastname, hashedPw, null);
 
     if (pw === null || pw1 === null) {
         return "error: Pw not found!";
@@ -37,19 +36,17 @@ async function signUp(req) {
     }
 
     try {
-        var userExists = await connection.getUserExists(user.username);
+        let userExists = await connection.getUserExists(user.username);
 
         if(userExists){
             return "User already exists!";
         }
-
-        var tempDate = new Date();
-        tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
     
-        await connection.addUser(user);
+        await connection.insertUser(user);
         
         req.session.pw = user.pw;
         req.session.loggedIn = true;
+
         return "ok";
     } catch (e) {
         return e;
@@ -57,7 +54,12 @@ async function signUp(req) {
 };
 
 
-
+/** signin user and store to session
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 async function signIn(req, res) {
 
     if (req.session.loggedIn) {
@@ -75,7 +77,7 @@ async function signIn(req, res) {
         setUserToSession(req, res, user);
 
         res.redirect("/");
-        console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)
+        //console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)
            
 
     } catch (err) {
@@ -84,8 +86,14 @@ async function signIn(req, res) {
 };
 
 
-
+/** Logout the current user from the session
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 function logout(req, res) {
+
     req.session.loggedIn = false;
     req.session.username = "";
     req.session.surname = "";
@@ -97,10 +105,8 @@ function logout(req, res) {
 
 
 function setUserToSession(req, res, user) {
-    console.log("in setUserToSession");
-    var tempEncryptPW = encrypt1.hashPw(req.body.pw);
 
-    if (bcrypt.compare(tempEncryptPW, user.pw)) {
+    if (bcrypt.compare(encrypt1.hashPw(req.body.pw), user.pw)) {
         req.session.loggedIn = true;
         req.session.id = user.id;
         req.session.username = user.username;
@@ -114,8 +120,13 @@ function setUserToSession(req, res, user) {
 }
 
 
-
-function getUserFromSession(req, res) {
+/** Gets the current user from the session
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns User object
+ */
+function getUserFromSession(req) {
     return new User(req.session.id, req.session.username, req.session.surname, req.session.lastname, null, req.session.loggedIn);
 };
 
@@ -137,7 +148,7 @@ function getUserFromSession(req, res) {
 
                 try {
 
-                    await connection.updatePwDatensatz(req);
+                    await connection.updatePwDatensatz(req,row);
 
                 } catch (err) {
 
