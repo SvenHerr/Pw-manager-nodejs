@@ -3,7 +3,6 @@
 //dependencies required for the app
 var connection = require('../Pw-manager-nodejs/Database/database');
 var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
-const dateLib = require('date-and-time');
 var User = require('../Pw-manager-nodejs/user');
 var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
 const bcrypt = require('bcrypt');
@@ -42,14 +41,12 @@ async function signUp(req) {
         if(userExists){
             return "User already exists!";
         }
-
-        let tempDate = new Date();
-        tempDate = dateLib.format(tempDate, 'YYYY-MM-DD');
     
-        await connection.addUser(user);
+        await connection.insertUser(user);
         
         req.session.pw = user.pw;
         req.session.loggedIn = true;
+
         return "ok";
     } catch (e) {
         return e;
@@ -80,7 +77,7 @@ async function signIn(req, res) {
         setUserToSession(req, res, user);
 
         res.redirect("/");
-        console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)
+        //console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)
            
 
     } catch (err) {
@@ -96,6 +93,7 @@ async function signIn(req, res) {
  * @returns 
  */
 function logout(req, res) {
+
     req.session.loggedIn = false;
     req.session.username = "";
     req.session.surname = "";
@@ -107,10 +105,8 @@ function logout(req, res) {
 
 
 function setUserToSession(req, res, user) {
-    console.log("in setUserToSession");
-    let tempEncryptPW = encrypt1.hashPw(req.body.pw);
 
-    if (bcrypt.compare(tempEncryptPW, user.pw)) {
+    if (bcrypt.compare(encrypt1.hashPw(req.body.pw), user.pw)) {
         req.session.loggedIn = true;
         req.session.id = user.id;
         req.session.username = user.username;
@@ -130,7 +126,7 @@ function setUserToSession(req, res, user) {
  * @param {*} res 
  * @returns User object
  */
-function getUserFromSession(req, res) {
+function getUserFromSession(req) {
     return new User(req.session.id, req.session.username, req.session.surname, req.session.lastname, null, req.session.loggedIn);
 };
 
@@ -152,7 +148,7 @@ function getUserFromSession(req, res) {
 
                 try {
 
-                    await connection.updatePwDatensatz(req);
+                    await connection.updatePwDatensatz(req,row);
 
                 } catch (err) {
 

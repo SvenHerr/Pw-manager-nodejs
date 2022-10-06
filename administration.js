@@ -12,7 +12,7 @@ async function addNewPw(req, res) {
 
     try {
 
-        await connection.addPw(req, res);
+        await connection.insertPw(req, res);
         
         res.redirect("/");
            
@@ -26,9 +26,8 @@ async function addNewPw(req, res) {
 async function deletePw(req, res) {
 
     try {
+
         if (req.body.confirmation == "yes") {
-            console.log("in delete");
-            console.log("in delete elementId" + req.body.elementId);
             
             await connection.deletePw(req.body.elementId);
 
@@ -59,14 +58,10 @@ async function showPw(req, res) {
 
         const index = encryptArray.indexOf(req.body.id);
 
-        let temp = encryptArray[index];
-
-        if (temp != null) {
+        if (encryptArray[index] != null) {
 
             return await getDecriptedPw(req, res);
 
-        } else {
-            console.log("encryptArray on index is null");
         }
     }
 };
@@ -75,22 +70,20 @@ async function showPw(req, res) {
 
 async function copyPw(req, res) {
 
-    pwcopycalled = true;
-    return await getDecriptedPw(req, res, pwcopycalled);
+    return await getDecriptedPw(req, res);
 };
 
 
 
-async function getDecriptedPw(req, res, pwcopycalled) {
+async function getDecriptedPw(req, res) {
+
     if (req.session.loggedIn) {
 
         let decryptedPw = await connection.getDecriptedPw(req, res);
         
         if(decryptedPw !== null){
             res.send(escape(decryptedPw));
-        }else{
-            console.log("showpw");
-        }   
+        }
     }
 }
 
@@ -103,15 +96,12 @@ async function getDecriptedPw(req, res, pwcopycalled) {
  * @returns 
  */
 async function changePwApp(req, res) {
-    let newPw = escape(req.body.newPw);
-    let newPwConfirmation = escape(req.body.newPw1);
-    let id = escape(req.body.changeelement);
 
-    if (newPw != newPwConfirmation) {
+    if (escape(req.body.newPw) !== escape(req.body.newPw1)) {
         return language.pwMissmatch;
     }
 
-    if (id == null) {
+    if (escape(req.body.changeelement) === null) {
         return language.idIsNotDefined;
     }
 
@@ -125,10 +115,7 @@ async function changePwApp(req, res) {
         } catch (err) {
             console.log("ChangePW update sql: " + err);
         }
-
-    } else {
-        console.log("ChangePW else!");
-    }
+    } 
 };
 
 

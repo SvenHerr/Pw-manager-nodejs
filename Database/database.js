@@ -20,7 +20,11 @@ async function query(sql, params) {
 }
 
 
-
+/** Gets user from db
+ * 
+ * @param {*} req 
+ * @returns 
+ */
 async function getUser(req) {
 
     let rows = await query('SELECT * FROM user WHERE Username = ?', [req.body.username]);
@@ -36,7 +40,11 @@ async function getUser(req) {
 }
 
 
-
+/** Returns true if user exists in db
+ * 
+ * @param {*} username 
+ * @returns true if user exists
+ */
 async function getUserExists(username) {
 
     let rows = await query('SELECT Id FROM user WHERE Username = ?', [username]);
@@ -45,8 +53,11 @@ async function getUserExists(username) {
 }
 
 
-
-async function addUser(user) {
+/** Insert user to db
+ * 
+ * @param {*} user 
+ */
+async function insertUser(user) {
     
     await query('INSERT INTO user (id, username, surname, lastname, createdate, pw) VALUES (?,?,?,?,?,?);', 
     [user.id, user.username, user.surname, user.lastname, helper.getCurrentDate(), user.pw]);
@@ -54,7 +65,10 @@ async function addUser(user) {
 }
 
 
-
+/** update user pw
+ * 
+ * @param {*} req 
+ */
 async function updateUserPw(req){
 
     var newPw = escape(req.body.newPw);
@@ -62,21 +76,29 @@ async function updateUserPw(req){
     
 }
 
-async function updatePwDatensatz(req){
+/** update pw datensatz
+ * 
+ * @param {*} req 
+ */
+async function updatePwDatensatz(req,row){
     
     var oldPw = escape(req.body.oldPw);
     var newPw = escape(req.body.newPw);
 
     var decriptedName = decrypt(row.Name, oldPw);
-                var encriptedName = encrypt(decriptedName, newPw);
-                var decriptedPw = decrypt(row.Pw, oldPw);
-                var encriptedPw = encrypt(decriptedPw, newPw);
+    var encriptedName = encrypt(decriptedName, newPw);
+    var decriptedPw = decrypt(row.Pw, oldPw);
+    var encriptedPw = encrypt(decriptedPw, newPw);
+
     await query('UPDATE pw SET Name = ?, Pw = ? WHERE Id = ?', [encriptedName, encriptedPw, row.Id]);
     
 }
 
 
-
+/** update pw by id
+ * 
+ * @param {*} req 
+ */
 async function updatePwById(req) {
 
     var id = escape(req.body.changeelement);
@@ -88,7 +110,11 @@ async function updatePwById(req) {
 }
 
 
-
+/** get descripted pw from db
+ * 
+ * @param {*} req 
+ * @returns 
+ */
 async function getDecriptedPw(req) {
 
     let rows = await query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [escape(req.session.username), escape(req.body.id)]);
@@ -107,7 +133,11 @@ async function getDecriptedPw(req) {
 }
 
 
-
+/** get all pw for user from db
+ * 
+ * @param {*} req 
+ * @returns 
+ */
 async function getAllPwFromUser(req) {
 
     let rows = await query('SELECT * FROM pw WHERE Username =  ?', [req.session.username]);
@@ -117,13 +147,19 @@ async function getAllPwFromUser(req) {
 }
 
 
-
+/** get pw from db
+ * 
+ * @param {*} req 
+ */
 async function getPw(req) { 
 
 }
 
 
-
+/** delete pw from db
+ * 
+ * @param {*} id 
+ */
 async function deletePw(id) {
 
     await query('DELETE FROM `pw` WHERE Id = ?', [id]);
@@ -131,8 +167,11 @@ async function deletePw(id) {
 }
 
 
-
-async function addPw(req) {
+/** insert pw into db
+ * 
+ * @param {*} req 
+ */
+async function insertPw(req) {
     
     var encryptedpw = encrypt(escape(req.body.pw), escape(req.session.pw));
     var applicationname = encrypt(escape(req.body.applicationname), escape(req.session.pw));
@@ -147,9 +186,9 @@ async function addPw(req) {
 module.exports = { 
     conn, 
     getUserExists, 
-    addUser, 
+    insertUser, 
     getUser, 
-    addPw, 
+    insertPw, 
     deletePw, 
     getPw, 
     getDecriptedPw,
