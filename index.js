@@ -3,24 +3,13 @@
 //dependencies required for the app
 var express = require("express");
 var bodyParser = require("body-parser");
-const dateLib = require('date-and-time');
-var connection = require('../Pw-manager-nodejs/Database/database');
 const session = require('express-session');
-const { decrypt } = require('./crypto/crypto');
-const crypto = require('crypto');
 var app = express();
-const dateObject = new Date();
 var languageImport = require('../Pw-manager-nodejs/language');
 var user = require('../Pw-manager-nodejs/user');
 var customer = require('../Pw-manager-nodejs/customer');
 var administration = require('../Pw-manager-nodejs/administration'); // Change name!!!
 var language = languageImport.getEnglish();
-// current date
-const date = (`0 ${dateObject.getDate()}`).slice(-2);
-// current month
-const month = (`0 ${dateObject.getMonth() + 1}`).slice(-2);
-// current year
-const year = dateObject.getFullYear();
 
 
 
@@ -28,7 +17,7 @@ const rateLimit = require('express-rate-limit');
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	max: 200, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
@@ -62,50 +51,6 @@ app.post(function(req, res, next) {
 
 
 
-// Why does this function get called 11 Times?
-async function loadData(req, res) {
-
-    try {
-
-        if(req.session.loggedIn != true){
-            return res.render("login", { errormsg: "" });
-        }
-        console.log("LoadDate Username= " + req.session.username);
-
-        let pwItemList = await connection.getAllPwFromUser(req);
-        
-        if (req.session.loggedIn) {
-
-            pwItemList.forEach(row => {
-                try {
-                    
-                    row.Name = decrypt(row.Name, req.session.pw);
-
-                    if (row.Loginname != null) {
-                        
-                        row.Loginname = decrypt(row.Loginname, req.session.pw);
-                    }
-
-                    row.Pw = decrypt(row.Pw.toString(), req.session.pw);                    
-
-                } catch (err) {
-                    console.log(err);
-                }
-            });
-
-            return res.render("index", { pwDatas: pwItemList, userData: customer.getUserFromSession(req), date: dateLib, currentDate: `${month}/${date}/${year}` });
-
-        } else {
-            return res.render("login", { errormsg: "" });
-        }   
-        
-    } catch (err) {
-        console.log("Error on load: " + err);
-    }
-};
-
-
-
 // routing
 app.get("/", async function(req, res) {
     console.log("redirect to / (loadData)");
@@ -115,7 +60,7 @@ app.get("/", async function(req, res) {
         return res.render("login", { errormsg: "" });
     }
 
-    await loadData(req, res);
+    await administration.loadData(req, res);
 });
 
 /*app.get("/test", async function (req, res) {
@@ -150,6 +95,18 @@ app.post("/changepwapp", async function(req, res) {
 
 app.get("/login", function(req, res) {
     res.render("login", { errormsg: "" });
+});
+
+app.get("/customers", function(req, res) {
+
+    user = customer.getUserFromSession(req);
+    if (user.loggedIn === false || typeof user.loggedIn === 'undefined') {
+        
+        res.redirect("/");
+        
+    } else {
+        return res.render("customers", { userData: user });
+    }
 });
 
 app.post("/logout", async function(req, res) {
@@ -198,7 +155,7 @@ app.get("/signup", function(req, res) {
 
 app.get("/documentation", function(req, res) {
     user = customer.getUserFromSession(req);
-    if (user.loggedIn == false) {
+    if (user.loggedIn === false) {
         customer.signIn(req, res);
     } else {
         return res.render("documentation", { userData: user });
