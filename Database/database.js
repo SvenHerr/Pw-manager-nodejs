@@ -1,10 +1,10 @@
 // This script runs on serverside
 
-var conn = require('./databaseConnection');
-var User = require('../user');
-const {encrypt, decrypt} = require('../crypto/crypto');
-var escape = require('lodash.escape');
-var helper = require('../helper');
+var conn = require("./databaseConnection");
+var User = require("../user");
+const { encrypt, decrypt } = require("../crypto/crypto");
+var escape = require("lodash.escape");
+var helper = require("../helper");
 let connection = null;
 
 async function query(sql, params) {
@@ -24,14 +24,19 @@ async function query(sql, params) {
  * @returns
  */
 async function getUser(req) {
-
-  let rows = await query('SELECT * FROM user WHERE Username = ?',
-                         [ req.body.username ]);
+  let rows = await query("SELECT * FROM user WHERE Username = ?", [
+    req.body.username,
+  ]);
 
   if (rows !== null) {
     if (rows.length > 0) {
-      return new User(rows[0].Id, rows[0].Username, rows[0].Surname,
-                      rows[0].Lastname, rows[0].Pw);
+      return new User(
+        rows[0].Id,
+        rows[0].Username,
+        rows[0].Surname,
+        rows[0].Lastname,
+        rows[0].Pw
+      );
     }
   }
 
@@ -46,9 +51,7 @@ async function getUser(req) {
  * @returns true if user exists
  */
 async function getUserExists(username) {
-
-  let rows =
-      await query('SELECT Id FROM user WHERE Username = ?', [ username ]);
+  let rows = await query("SELECT Id FROM user WHERE Username = ?", [username]);
 
   return rows.length > 0;
 }
@@ -60,8 +63,7 @@ async function getUserExists(username) {
  * @returns true if user exists
  */
 async function getCustomers() {
-
-  let rows = await query('SELECT * FROM customer');
+  let rows = await query("SELECT * FROM customer");
 
   return rows;
 }
@@ -72,13 +74,16 @@ async function getCustomers() {
  * @param {*} user
  */
 async function insertUser(user) {
-
   await query(
-      'INSERT INTO user (username, surname, lastname, createdate, pw) VALUES (?,?,?,?,?);',
-      [
-        user.username, user.surname, user.lastname, helper.getCurrentDate(),
-        user.pw
-      ]);
+    "INSERT INTO user (username, surname, lastname, createdate, pw) VALUES (?,?,?,?,?);",
+    [
+      user.username,
+      user.surname,
+      user.lastname,
+      helper.getCurrentDate(),
+      user.pw,
+    ]
+  );
 }
 
 /**
@@ -87,10 +92,11 @@ async function insertUser(user) {
  * @param {*} req
  */
 async function updateUserPw(req) {
-
   var newPw = escape(req.body.newPw);
-  await query('UPDATE user SET Pw = ? WHERE Username = ?',
-              [ newPw, req.session.username ]);
+  await query("UPDATE user SET Pw = ? WHERE Username = ?", [
+    newPw,
+    req.session.username,
+  ]);
 }
 
 /**
@@ -99,7 +105,6 @@ async function updateUserPw(req) {
  * @param {*} req
  */
 async function updatePwDatensatz(req, row) {
-
   var oldPw = escape(req.body.oldPw);
   var newPw = escape(req.body.newPw);
 
@@ -108,8 +113,11 @@ async function updatePwDatensatz(req, row) {
   var decriptedPw = decrypt(row.Pw, oldPw);
   var encriptedPw = encrypt(decriptedPw, newPw);
 
-  await query('UPDATE pw SET Name = ?, Pw = ? WHERE Id = ?',
-              [ encriptedName, encriptedPw, row.Id ]);
+  await query("UPDATE pw SET Name = ?, Pw = ? WHERE Id = ?", [
+    encriptedName,
+    encriptedPw,
+    row.Id,
+  ]);
 }
 
 /**
@@ -118,13 +126,15 @@ async function updatePwDatensatz(req, row) {
  * @param {*} req
  */
 async function updatePwById(req) {
-
   var id = escape(req.body.changeelement);
   var newPw = escape(req.body.newPw);
   var encriptedPw = encrypt(newPw, req.session.pw);
 
-  await query('UPDATE pw SET Pw = ?, CreateDate = ? WHERE Id = ?',
-              [ encriptedPw, helper.getCurrentDate(), id ]);
+  await query("UPDATE pw SET Pw = ?, CreateDate = ? WHERE Id = ?", [
+    encriptedPw,
+    helper.getCurrentDate(),
+    id,
+  ]);
 }
 
 /**
@@ -134,9 +144,10 @@ async function updatePwById(req) {
  * @returns
  */
 async function getDecriptedPw(req) {
-
-  let rows = await query('SELECT * FROM pw WHERE Username =  ? AND Id = ?',
-                         [ escape(req.session.username), escape(req.body.id) ]);
+  let rows = await query("SELECT * FROM pw WHERE Username =  ? AND Id = ?", [
+    escape(req.session.username),
+    escape(req.body.id),
+  ]);
 
   if (rows.length === 0) {
     return "";
@@ -154,9 +165,9 @@ async function getDecriptedPw(req) {
  * @returns
  */
 async function getAllPwFromUser(req) {
-
-  let rows = await query('SELECT * FROM pw WHERE Username =  ?',
-                         [ req.session.username ]);
+  let rows = await query("SELECT * FROM pw WHERE Username =  ?", [
+    req.session.username,
+  ]);
 
   return rows;
 }
@@ -174,8 +185,7 @@ async function getPw(req) {}
  * @param {*} id
  */
 async function deletePw(id) {
-
-  await query('DELETE FROM `pw` WHERE Id = ?', [ id ]);
+  await query("DELETE FROM `pw` WHERE Id = ?", [id]);
 }
 
 /**
@@ -184,19 +194,27 @@ async function deletePw(id) {
  * @param {*} req
  */
 async function insertPw(req) {
-
   var encryptedpw = encrypt(escape(req.body.pw), escape(req.session.pw));
-  var applicationname =
-      encrypt(escape(req.body.applicationname), escape(req.session.pw));
-  var loginname =
-      encrypt(req.body.loginname.toString(), req.session.pw.toString());
+  var applicationname = encrypt(
+    escape(req.body.applicationname),
+    escape(req.session.pw)
+  );
+  var loginname = encrypt(
+    req.body.loginname.toString(),
+    req.session.pw.toString()
+  );
 
   await query(
-      'INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate` , `CustomerId`) VALUES (?,?,?,?,?,?)',
-      [
-        escape(req.session.username), applicationname, encryptedpw, loginname,
-        helper.getCurrentDate(), escape(req.body.customerId)
-      ])
+    "INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate` , `CustomerId`) VALUES (?,?,?,?,?,?)",
+    [
+      escape(req.session.username),
+      applicationname,
+      encryptedpw,
+      loginname,
+      helper.getCurrentDate(),
+      escape(req.body.customerId),
+    ]
+  );
 }
 
 module.exports = {
@@ -212,5 +230,5 @@ module.exports = {
   getAllPwFromUser,
   updateUserPw,
   updatePwDatensatz,
-  getCustomers
+  getCustomers,
 };
