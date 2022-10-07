@@ -31,12 +31,12 @@ async function getUser(req) {
     
     if (rows !== null) {
         if (rows.length > 0 ) {
-            return new User(null, rows[0].Username, rows[0].Surname, rows[0].Lastname, rows[0].Pw);
+            return new User(rows[0].Id, rows[0].Username, rows[0].Surname, rows[0].Lastname, rows[0].Pw);
         }
-    } else {
-        console.log("reject");
-        return null;
     }
+
+    console.log("reject");
+    return null;
 }
 
 
@@ -59,8 +59,8 @@ async function getUserExists(username) {
  */
 async function insertUser(user) {
     
-    await query('INSERT INTO user (id, username, surname, lastname, createdate, pw) VALUES (?,?,?,?,?,?);', 
-    [user.id, user.username, user.surname, user.lastname, helper.getCurrentDate(), user.pw]);
+    await query('INSERT INTO user (username, surname, lastname, createdate, pw) VALUES (?,?,?,?,?);', 
+    [user.username, user.surname, user.lastname, helper.getCurrentDate(), user.pw]);
 
 }
 
@@ -119,11 +119,8 @@ async function getDecriptedPw(req) {
 
     let rows = await query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [escape(req.session.username), escape(req.body.id)]);
 
-    if(rows === null){
-         return null;
-    }
     if(rows.length === 0){
-        return null;
+        return "";
     }
 
     if (rows[0].Pw != null) {
@@ -177,7 +174,7 @@ async function insertPw(req) {
     var applicationname = encrypt(escape(req.body.applicationname), escape(req.session.pw));
     var loginname = encrypt(req.body.loginname.toString(), req.session.pw.toString());
 
-    await query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate`, `Id`) VALUES (?,?,?,?,?,?)', [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate(), Math.floor(Math.random() * 1000001).toString()])
+    await query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate`) VALUES (?,?,?,?,?)', [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate()])
 
 }
 

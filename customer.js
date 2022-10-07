@@ -6,6 +6,8 @@ var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
 var User = require('../Pw-manager-nodejs/user');
 var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
 const bcrypt = require('bcrypt');
+var languageImport = require('../Pw-manager-nodejs/language');
+var language = languageImport.getEnglish();
 var escape = require('lodash.escape');
 
 
@@ -23,9 +25,8 @@ async function signUp(req) {
     if (hashedPw === null) {
         return "error: Pw hash problem!";
     }
-    // TODO: Autoincrement in mysql
-    let id = helper.getRandomInt(1, 10000).toString();
-    let user = new User(id, req.body.username, req.body.surname, req.body.lastname, hashedPw, null);
+   
+    let user = new User(null, req.body.username, req.body.surname, req.body.lastname, hashedPw, null);
 
     if (pw === null || pw1 === null) {
         return "error: Pw not found!";
@@ -45,7 +46,7 @@ async function signUp(req) {
         await connection.insertUser(user);
         
         req.session.pw = user.pw;
-        req.session.loggedIn = true;
+        //req.session.loggedIn = true;
 
         return "ok";
     } catch (e) {
@@ -76,9 +77,7 @@ async function signIn(req, res) {
 
         setUserToSession(req, res, user);
 
-        res.redirect("/");
-        //console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)
-           
+        res.redirect("/");           
 
     } catch (err) {
         console.log("Error on singIn: " + err);
@@ -95,9 +94,11 @@ async function signIn(req, res) {
 function logout(req, res) {
 
     req.session.loggedIn = false;
-    req.session.username = "";
-    req.session.surname = "";
-    req.session.lastname = "";
+        req.session.id = 0
+        req.session.username = "";
+        req.session.surname = "";
+        req.session.lastname = "";
+        req.session.pw = "";
 
     return res.redirect("/");
 };
@@ -105,8 +106,9 @@ function logout(req, res) {
 
 
 function setUserToSession(req, res, user) {
+    let hastPw = encrypt1.hashPw(req.body.pw);
 
-    if (bcrypt.compare(encrypt1.hashPw(req.body.pw), user.pw)) {
+    if ( hastPw === user.pw) {
         req.session.loggedIn = true;
         req.session.id = user.id;
         req.session.username = user.username;
@@ -139,12 +141,12 @@ function getUserFromSession(req) {
  */
  async function changePw(req, res) {
     
-    let complete = await connection.getAllPwFromUser(res);
+    let pwList = await connection.getAllPwFromUser(res);
 
     if (req.session.loggedIn) {
-        if (complete !== null) {
+        if (pwList !== null) {
             
-            complete.forEach(row => async function(){
+            pwList.forEach(row => async function(){
 
                 try {
 
