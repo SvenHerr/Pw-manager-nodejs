@@ -106,8 +106,9 @@ function logout(req, res) {
 
 
 function setUserToSession(req, res, user) {
+    let hastPw = encrypt1.hashPw(req.body.pw);
 
-    if (bcrypt.compare(encrypt1.hashPw(req.body.pw), user.pw)) {
+    if ( hastPw === user.pw) {
         req.session.loggedIn = true;
         req.session.id = user.id;
         req.session.username = user.username;
