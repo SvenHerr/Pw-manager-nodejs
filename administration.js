@@ -8,6 +8,17 @@ var escape = require('lodash.escape');
 let encryptArray = []; // Darf nicht in die function rein.
 
 
+async function getCustomers(req,res) {
+
+    try {
+
+        res.send(await connection.getCustomers());
+           
+    } catch (err) {
+        console.log("addnewpw err: " + err);
+    }
+};
+
 async function addNewPw(req, res) {
 
     try {
@@ -138,5 +149,6 @@ module.exports = {
     copyPw, 
     showPw, 
     deletePw, 
-    addNewPw 
+    addNewPw,
+    getCustomers 
 }

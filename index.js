@@ -126,7 +126,11 @@ app.get("/", async function(req, res) {
 
 app.get("/index", function(req, res) {
     res.redirect("/");
-})
+});
+
+app.post("/getcustomers", async function(req, res) {
+    await administration.getCustomers(req,res);
+});
 
 app.post("/addnewpw", async function(req, res) {
     await administration.addNewPw(req, res);
@@ -203,8 +207,10 @@ app.get("/documentation", function(req, res) {
 
 app.get("/changepw", async function(req, res) {
     user = customer.getUserFromSession(req);
-    if (user.loggedIn == false) {
-        await customer.signIn(req, res);
+    if (user.loggedIn === false || typeof user.loggedIn === 'undefined') {
+        
+        res.redirect("/");
+        //await customer.signIn(req, res);
     } else {
         return res.render("changepw", { userData: user });
     }

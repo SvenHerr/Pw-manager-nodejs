@@ -187,7 +187,8 @@ async function insertPw(req) {
     var applicationname = encrypt(escape(req.body.applicationname), escape(req.session.pw));
     var loginname = encrypt(req.body.loginname.toString(), req.session.pw.toString());
 
-    await query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate`) VALUES (?,?,?,?,?)', [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate()])
+    await query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate` , `CustomerId`) VALUES (?,?,?,?,?,?)', 
+    [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate(),escape(req.body.customerId)])
 
 }
 
