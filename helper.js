@@ -1,10 +1,10 @@
 // This script runs on serverside
 
-const dateLib = require('date-and-time');
+const dateLib = require("date-and-time");
 
 function getCurrentDate() {
   let tempDate = new Date();
-  return dateLib.format(tempDate, 'YYYY-MM-DD');
+  return dateLib.format(tempDate, "YYYY-MM-DD");
 }
 
 function getRandomInt(min, max) {
@@ -14,12 +14,11 @@ function getRandomInt(min, max) {
 }
 
 function logError(functionName, err, errorDescriptionUser, debug = false) {
-
   // TODO
 }
 
 module.exports = {
   getCurrentDate,
   getRandomInt,
-  logError
+  logError,
 };
