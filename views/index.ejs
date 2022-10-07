@@ -236,7 +236,21 @@
                                             </thead>
                                             <tbody>
 
+                                                <%  var customerChanged = false; 
+                                                    var currentCustomerId = 0; 
+                                                %>
                                                 <% for(var i=0; i < pwDatas.length; i++){ %>
+
+                                                    <% if(pwDatas[i].CustomerId != 0 && customerChanged){ %>
+                                                        <tr>
+                                                            <td class="py-1">
+
+                                                                Kunde: <%= pwDatas[i].Name %>
+    
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+
                                                     <tr>
                                                         <td class="py-1">
 
@@ -319,6 +333,14 @@
 
                                                         </td>
                                                     </tr>
+
+                                                    <%  currentCustomerId = pwDatas[i].CustomerId;
+
+                                                        if(currentCustomerId != pwDatas[i].CustomerId){
+                                                            customerChanged = true;
+                                                        }
+                                                    
+                                                    %>
                                                     <% } %>
                                             </tbody>
                                         </table>

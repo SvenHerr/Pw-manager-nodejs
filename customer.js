@@ -55,6 +55,7 @@ async function signUp(req) {
 };
 
 
+
 /** signin user and store to session
  * 
  * @param {*} req 
@@ -83,6 +84,7 @@ async function signIn(req, res) {
         console.log("Error on singIn: " + err);
     }
 };
+
 
 
 /** Logout the current user from the session
