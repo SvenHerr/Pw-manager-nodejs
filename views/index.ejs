@@ -236,8 +236,8 @@
                                             </thead>
                                             <tbody>
 
-                                                <%  var customerChanged = false; 
-                                                    var currentCustomerId = 0; 
+                                                <%  var customerChanged = false;
+                                                    var currentCustomerId = 0;
                                                 %>
                                                 <% for(var i=0; i < pwDatas.length; i++){ %>
 
@@ -246,7 +246,7 @@
                                                             <td class="py-1">
 
                                                                 Kunde: <%= pwDatas[i].Name %>
-    
+
                                                             </td>
                                                         </tr>
                                                     <% } %>
@@ -319,7 +319,7 @@
                                                         <td>
                                                             <% var tempDate=null; try{
                                                                 tempDate=date.format(pwDatas[i].CreateDate, 'DD.MM.YYYY'
-                                                                ); }catch(err){ //console.log("defferentDays: " + err); 
+                                                                ); }catch(err){ //console.log("defferentDays: " + err);
                                                                 tempDate = " Error"; } %>
 
                                                                 <%= tempDate %>
@@ -339,7 +339,7 @@
                                                         if(currentCustomerId != pwDatas[i].CustomerId){
                                                             customerChanged = true;
                                                         }
-                                                    
+
                                                     %>
                                                     <% } %>
                                             </tbody>
