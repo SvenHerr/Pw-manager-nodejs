@@ -88,6 +88,12 @@
                                                         <input type="password" id="pw" name="pw"
                                                             class="form-control p_input" required>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <label>Kunde</label>
+                                                        <select id="customers" name="customerId">
+                                                            <option value="0">Allgemein</option>
+                                                          </select>
+                                                    </div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
@@ -230,7 +236,21 @@
                                             </thead>
                                             <tbody>
 
+                                                <%  var customerChanged = false; 
+                                                    var currentCustomerId = 0; 
+                                                %>
                                                 <% for(var i=0; i < pwDatas.length; i++){ %>
+
+                                                    <% if(pwDatas[i].CustomerId != 0 && customerChanged){ %>
+                                                        <tr>
+                                                            <td class="py-1">
+
+                                                                Kunde: <%= pwDatas[i].Name %>
+    
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+
                                                     <tr>
                                                         <td class="py-1">
 
@@ -313,6 +333,14 @@
 
                                                         </td>
                                                     </tr>
+
+                                                    <%  currentCustomerId = pwDatas[i].CustomerId;
+
+                                                        if(currentCustomerId != pwDatas[i].CustomerId){
+                                                            customerChanged = true;
+                                                        }
+                                                    
+                                                    %>
                                                     <% } %>
                                             </tbody>
                                         </table>

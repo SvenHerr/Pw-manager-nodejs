@@ -34,6 +34,8 @@ $(document).ready(function() {
         });
     });
 
+
+
     $('.copyFormId').submit(function(e) {
         e.preventDefault();
 
@@ -75,7 +77,8 @@ $(document).ready(function() {
     });
 
 
-    $('#sharewithModalCenter').on('shown.bs.modal', function(e) {
+
+    /*$('#exampleModalCenter').on('shown.bs.modal', function(e) {
         e.preventDefault();
         var target = $('#sharewithdiv');
 
@@ -114,5 +117,48 @@ $(document).ready(function() {
                 });
             }
         });
+    });*/
+
+
+
+    $('#exampleModalCenter').on('shown.bs.modal', function(e) {
+        e.preventDefault();
+        var target = $('#customers');
+        console.log("Test");
+
+        $.ajax({
+            type: 'POST',
+            cache: false,
+            datatype: "json",
+            url: '/getcustomers',
+            success: function(result) {
+
+                if (result === null)
+                    return;
+
+                if (result.length <= 0)
+                    return;
+            
+                var resultString = '<option value="0">Allgemein</option>';
+                result.forEach(element => {
+                    
+                    resultString += '<option value="'+element.Id+'">'+element.Name+'</option>'
+                });                    
+                
+                target.html(resultString);                
+            },
+            error: function(error) {
+                console.log("error: " + error);
+
+                showmessage({
+                    type: 'danger',
+                    speed: 200,
+                    content: 'error: Customers'
+                });
+            }
+        });
     });
+
+
+
 });
