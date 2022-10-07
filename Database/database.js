@@ -53,6 +53,19 @@ async function getUserExists(username) {
 }
 
 
+/** Get customers from db
+ * 
+ * @param {*} username 
+ * @returns true if user exists
+ */
+ async function getCustomers() {
+
+    let rows = await query('SELECT * FROM customer');
+
+    return rows;
+}
+
+
 /** Insert user to db
  * 
  * @param {*} user 
@@ -192,5 +205,6 @@ module.exports = {
     updatePwById,
     getAllPwFromUser,
     updateUserPw,
-    updatePwDatensatz 
+    updatePwDatensatz,
+    getCustomers 
 };
