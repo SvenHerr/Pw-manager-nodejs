@@ -23,9 +23,8 @@ async function signUp(req) {
     if (hashedPw === null) {
         return "error: Pw hash problem!";
     }
-    // TODO: Autoincrement in mysql
-    let id = helper.getRandomInt(1, 10000).toString();
-    let user = new User(id, req.body.username, req.body.surname, req.body.lastname, hashedPw, null);
+   
+    let user = new User(null, req.body.username, req.body.surname, req.body.lastname, hashedPw, null);
 
     if (pw === null || pw1 === null) {
         return "error: Pw not found!";
@@ -76,9 +75,7 @@ async function signIn(req, res) {
 
         setUserToSession(req, res, user);
 
-        res.redirect("/");
-        //console.log("LoggedIn= " + req.session.loggedIn + "Username=" + req.session.username)
-           
+        res.redirect("/");           
 
     } catch (err) {
         console.log("Error on singIn: " + err);
@@ -95,9 +92,11 @@ async function signIn(req, res) {
 function logout(req, res) {
 
     req.session.loggedIn = false;
-    req.session.username = "";
-    req.session.surname = "";
-    req.session.lastname = "";
+        req.session.id = 0
+        req.session.username = "";
+        req.session.surname = "";
+        req.session.lastname = "";
+        req.session.pw = "";
 
     return res.redirect("/");
 };
@@ -139,12 +138,12 @@ function getUserFromSession(req) {
  */
  async function changePw(req, res) {
     
-    let complete = await connection.getAllPwFromUser(res);
+    let pwList = await connection.getAllPwFromUser(res);
 
     if (req.session.loggedIn) {
-        if (complete !== null) {
+        if (pwList !== null) {
             
-            complete.forEach(row => async function(){
+            pwList.forEach(row => async function(){
 
                 try {
 

@@ -5,14 +5,14 @@ CREATE TABLE `pw` (
   `Name` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `Pw` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `CreateDate` date DEFAULT NULL,
-  `Id` varchar(50) COLLATE utf8_bin NOT NULL,
+  `Id` INT NOT NULL auto_increment primary key,
   `Loginname` varchar(256) COLLATE utf8_bin DEFAULT NULL,
   `CustomerId` varchar(50) NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
 
 CREATE TABLE `user` (
-  `Id` varchar(50) NOT NULL,
+  `Id` INT NOT NULL auto_increment primary key,
   `Username` varchar(50) NOT NULL,
   `Surname` varchar(50) NOT NULL,
   `Lastname` varchar(50) NOT NULL,
@@ -21,13 +21,13 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 CREATE TABLE `customer` (
-  `Id` varchar(50) NOT NULL,
+  `Id` INT NOT NULL auto_increment primary key,
   `Name` varchar(50) NOT NULL,
   `CreateDate` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 CREATE TABLE `customerrights` (
-  `Id` varchar(50) NOT NULL,
+  `Id` INT NOT NULL auto_increment primary key,
   `UserId` varchar(50) NOT NULL,
   `CustomerId` varchar(50) NOT NULL,
   `CreateDate` date NOT NULL
