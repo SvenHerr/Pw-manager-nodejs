@@ -5,10 +5,10 @@ var mysql = require('mysql2/promise');
 
 module.exports = async function () {
     var conn = await mysql.createConnection({
-        host: 'localhost',
+        host: config.host,
         user: config.username,
         password: config.password,
-        database: 'nodepw1',
+        database: config.database,
         debug: false
     });
 

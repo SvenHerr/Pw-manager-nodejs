@@ -6,6 +6,8 @@ var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
 var User = require('../Pw-manager-nodejs/user');
 var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
 const bcrypt = require('bcrypt');
+var languageImport = require('../Pw-manager-nodejs/language');
+var language = languageImport.getEnglish();
 var escape = require('lodash.escape');
 
 
@@ -44,7 +46,7 @@ async function signUp(req) {
         await connection.insertUser(user);
         
         req.session.pw = user.pw;
-        req.session.loggedIn = true;
+        //req.session.loggedIn = true;
 
         return "ok";
     } catch (e) {

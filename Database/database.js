@@ -31,12 +31,12 @@ async function getUser(req) {
     
     if (rows !== null) {
         if (rows.length > 0 ) {
-            return new User(null, rows[0].Username, rows[0].Surname, rows[0].Lastname, rows[0].Pw);
+            return new User(rows[0].Id, rows[0].Username, rows[0].Surname, rows[0].Lastname, rows[0].Pw);
         }
-    } else {
-        console.log("reject");
-        return new User();
     }
+
+    console.log("reject");
+    return null;
 }
 
 
