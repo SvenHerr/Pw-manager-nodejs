@@ -52,14 +52,16 @@
 
                         <div class="content-wrapper">
                             <div class="page-header">
-                                <h3 class="page-title">Customers Admin</h3>
+                                <h3 class="page-title">Change account pw</h3>
                                 <div class="message"></div>
                             </div>
-
+                            <div class="col-lg-12 grid-margin stretch-card">
+                                <a href="/customers" class="nav-link btn btn-warning create-new-button d-inline-block">Zurück</a>
+                            </div>
                             <div class="col-lg-12 grid-margin stretch-card">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="card-title">Customers</h4>
+                                        <h4 class="card-title">CustomersDetails for: <%= customersDetailsData[0].Name %></h4>
 
 
                                         <table class="table">
@@ -73,24 +75,13 @@
                                             </thead>
                                             <tbody>
 
-                                                <% for(var i=0; i < customerData.length; i++){ %>
-                                                    
+                                                <% for(var i=0; i < customersDetailsData.length; i++){ %>
                                                     <tr>
                                                         <td></td>
-                                                        <td><%= customerData[i].Id %></td>
-                                                        <td><%= customerData[i].Name %></td>
-                                                        <td>
-                                                            <form class="openCustomerDetails" action="/customersDetails" method="POST">
-
-                                                                <input type="text" name="id"
-                                                                    value="<%= customerData[i].Id %>" hidden>
-                                                                <button class="nav-link btn btn-success create-new-button d-inline-block hidebutton"
-                                                                    id="<%= customerData[i].Id %>">Open</button>
-                                                            </form>
-
-                                                        </form></td>
-                                                    </tr>
-                                                    
+                                                        <td><%= customersDetailsData[i].Id %></td>
+                                                        <td><%= customersDetailsData[i].Name %></td>
+                                                        <td></td>
+                                                      </tr>
                                                 <% } %>
 
                                             </tbody>

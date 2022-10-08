@@ -66,10 +66,21 @@ async function getCustomers(req,res) {
 
     try {
 
-        res.send(await connection.getCustomers());
+        return await connection.getCustomers();
            
     } catch (err) {
-        console.log("addnewpw err: " + err);
+        console.log("getCustomers err: " + err);
+    }
+};
+
+async function getCustomersDetails(req) {
+
+    try {
+
+        return await connection.getCustomersDetailsById(req.body.id);
+           
+    } catch (err) {
+        console.log("getCustomersDetails err: " + err);
     }
 };
 
@@ -205,5 +216,6 @@ module.exports = {
     deletePw, 
     addNewPw,
     getCustomers,
-    loadData 
+    loadData ,
+    getCustomersDetails
 }

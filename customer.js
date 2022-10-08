@@ -173,4 +173,4 @@ function getUserFromSession(req) {
 };
 
 
-module.exports = { signUp, signIn, logout, getUserFromSession, changePw }
+module.exports = { signUp, signIn, logout, getUserFromSession, changePw, setUserToSession }

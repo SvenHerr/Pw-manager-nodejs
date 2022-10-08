@@ -5,9 +5,11 @@ var express = require("express");
 var bodyParser = require("body-parser");
 const session = require('express-session');
 var app = express();
+var config = require('./config.json');
 var languageImport = require('../Pw-manager-nodejs/language');
 var user = require('../Pw-manager-nodejs/user');
 var customer = require('../Pw-manager-nodejs/customer');
+var debugHelper = require('../Pw-manager-nodejs/debugHelper');
 var administration = require('../Pw-manager-nodejs/administration'); // Change name!!!
 var language = languageImport.getEnglish();
 
@@ -17,13 +19,14 @@ const rateLimit = require('express-rate-limit');
 
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 200, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	max: 900, // Limit each IP to 900 requests per `window` (here, per 15 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-})
+    message: "Sorry, you reached the request limit! Please try again later!"
+});
 
 // Apply the rate limiting middleware to all requests
-app.use(limiter);
+//app.use(limiter);
 
 
 
@@ -55,9 +58,15 @@ app.post(function(req, res, next) {
 app.get("/", async function(req, res) {
     console.log("redirect to / (loadData)");
 
-    if (req.session.loggedIn === false) {
-        console.log("user is null1 => login");
-        return res.render("login", { errormsg: "" });
+    if (req.session.loggedIn === false || typeof req.session.loggedIn === 'undefined') {
+
+        if(config.debug){
+            debugHelper(req);
+        }
+        else{
+            console.log("user is null1 => login");
+            return res.render("login", { errormsg: "" });
+        }        
     }
 
     await administration.loadData(req, res);
@@ -74,7 +83,7 @@ app.get("/index", function(req, res) {
 });
 
 app.post("/getcustomers", async function(req, res) {
-    await administration.getCustomers(req,res);
+    res.send(await administration.getCustomers(req,res));
 });
 
 app.post("/addnewpw", async function(req, res) {
@@ -93,11 +102,11 @@ app.post("/changepwapp", async function(req, res) {
     await administration.changePwApp(req, res);
 });
 
-app.get("/login", function(req, res) {
+app.get("/login", limiter, function(req, res) {
     res.render("login", { errormsg: "" });
 });
 
-app.get("/customers", function(req, res) {
+app.get("/customers", async function(req, res) {
 
     user = customer.getUserFromSession(req);
     if (user.loggedIn === false || typeof user.loggedIn === 'undefined') {
@@ -105,15 +114,33 @@ app.get("/customers", function(req, res) {
         res.redirect("/");
         
     } else {
-        return res.render("customers", { userData: user });
+
+        let customers = await administration.getCustomers(req,res);
+
+        return res.render("customers", { userData: user, customerData: customers });
     }
 });
 
-app.post("/logout", async function(req, res) {
+app.post("/customersDetails", async function(req, res) {
+
+    user = customer.getUserFromSession(req);
+    if (user.loggedIn === false || typeof user.loggedIn === 'undefined') {
+        
+        res.redirect("/");
+        
+    } else {
+
+        let customersDetails = await administration.getCustomersDetails(req);
+
+        return res.render("customersDetails", { userData: user, customersDetailsData: customersDetails });
+    }
+});
+
+app.post("/logout", limiter, async function(req, res) {
     await customer.logout(req, res);
 });
 
-app.get("/logout", async function(req, res) {
+app.get("/logout", limiter, async function(req, res) {
     await customer.logout(req, res);
 });
 
@@ -121,7 +148,7 @@ app.post("/deletepw", async function(req, res) {
     await administration.deletePw(req, res);
 });
 
-app.post("/signup", async function(req, res) {
+app.post("/signup", limiter, async function(req, res) {
 
     try {
         let status = await customer.signUp(req, res);
@@ -140,7 +167,7 @@ app.post("/signup", async function(req, res) {
     }
 });
 
-app.post("/signin", async function(req, res) {
+app.post("/signin", limiter, async function(req, res) {
     await customer.signIn(req, res);
 });
 
@@ -148,7 +175,7 @@ app.post("/showpw", async function(req, res) {
     await administration.showPw(req, res);
 });
 
-app.get("/signup", function(req, res) {
+app.get("/signup", limiter,  function(req, res) {
     user = customer.getUserFromSession(req);
     return res.render("signup", { userData: user, errormsg: "" });
 });

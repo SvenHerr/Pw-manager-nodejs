@@ -65,6 +65,18 @@ async function getUserExists(username) {
     return rows;
 }
 
+/** Get customersdetails from db
+ * 
+ * @param {*} username 
+ * @returns true if user exists
+ */
+ async function getCustomersDetailsById(customerId) {
+
+    let rows = await query('SELECT * FROM customerdetails WHERE CustomerId = ?', [customerId]);
+
+    return rows;
+}
+
 
 /** Insert user to db
  * 
@@ -207,5 +219,6 @@ module.exports = {
     getAllPwFromUser,
     updateUserPw,
     updatePwDatensatz,
-    getCustomers 
+    getCustomers ,
+    getCustomersDetailsById
 };
