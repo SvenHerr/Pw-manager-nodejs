@@ -56,40 +56,285 @@
                                 <div class="message"></div>
                             </div>
                             <div class="col-lg-12 grid-margin stretch-card">
-                                <a href="/customers" class="nav-link btn btn-warning create-new-button d-inline-block">Zurück</a>
+                                <a href="/customers"
+                                    class="nav-link btn btn-warning create-new-button d-inline-block">Zurück</a>
                             </div>
-                            <div class="col-lg-12 grid-margin stretch-card">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">CustomersDetails for: <%= customersDetailsData[0].Name %></h4>
+
+                            
+
+                            <div class="row">
+
+                                <div class="col-md-6 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">Firmendaten</h4>
+                                            <form class="forms-sample">
+                                                <div class="form-group row">
+                                                    <label for="customername"
+                                                        class="col-sm-3 col-form-label">Firmenname</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control text-dark"
+                                                            id="customername" value="<%= customersDetailsData.Name %>"
+                                                            disabled="disabled">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="customernumber"
+                                                        class="col-sm-3 col-form-label">Kundennummer</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="email" class="form-control text-dark" value="<%= customersDetailsData.Id %>"
+                                                            id="customernumber" disabled="disabled">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="city"
+                                                        class="col-sm-3 col-form-label">Stadt</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control text-dark"
+                                                            id="city" disabled="disabled">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="street"
+                                                        class="col-sm-3 col-form-label">Straße/Nr./Plz</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control text-dark"
+                                                            id="street" disabled="disabled">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="url"
+                                                        class="col-sm-3 col-form-label">Url</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control text-dark"
+                                                            id="url" disabled="disabled">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">Ansprechpartner</h4>
+                                            <form class="forms-sample">
+                                                <div class="form-group row">
+                                                    <label for="gender"
+                                                        class="col-sm-3 col-form-label">Geschlecht</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="form-group row">
+                                                            <div class="col-sm-2">
+                                                                <div class="form-check mt-0 mb-0">
+                                                                    <label class="form-check-label">
+                                                                        <input type="radio" class="form-check-input"
+                                                                            name="gender"
+                                                                            id="gender" value="" checked=""
+                                                                            disabled="disabled"> Herr <i
+                                                                            class="input-helper"></i></label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="form-check mt-0 mb-0">
+                                                                    <label class="form-check-label">
+                                                                        <input type="radio" class="form-check-input"
+                                                                            name="gender"
+                                                                            id="gender" value="option2"
+                                                                            disabled="disabled"> Frau <i
+                                                                            class="input-helper"></i></label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label for="name"
+                                                        class="col-sm-3 col-form-label">Name</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control text-dark"
+                                                            id="name" disabled="disabled">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="surname"
+                                                        class="col-sm-3 col-form-label">Vorname</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control text-dark"
+                                                            id="surname" disabled="disabled">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="email"
+                                                        class="col-sm-3 col-form-label">Email</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="email" class="form-control text-dark"
+                                                            id="email" disabled="disabled">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="phone"
+                                                        class="col-sm-3 col-form-label">Mobile</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control text-dark"
+                                                            id="phone" disabled="disabled">
+                                                    </div>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
 
 
-                                        <table class="table">
-                                            <thead>
-                                            <tr class="">
-                                              <th>#</th>
-                                              <th>Kundennummer</th>
-                                              <th>Kundenname</th>
-                                              <th>Zuletzt aktualisiert</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
+                            </div>
 
-                                                <% for(var i=0; i < customersDetailsData.length; i++){ %>
-                                                    <tr>
-                                                        <td></td>
-                                                        <td><%= customersDetailsData[i].Id %></td>
-                                                        <td><%= customersDetailsData[i].Name %></td>
-                                                        <td></td>
-                                                      </tr>
-                                                <% } %>
+                            <div class="row">
+                                <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <div class="d-flex align-items-center align-self-start">
+                                                        <h3 class="mb-0">300€</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <div class="icon icon-box-success ">
+                                                        <span class="mdi mdi-check icon-item"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h6 class="text-muted font-weight-normal">Anzahlung</h6>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                            </tbody>
-                                          </table>
-                                        
+                                <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <div class="d-flex align-items-center align-self-start">
+                                                        <h3 class="mb-0">700€</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <div class="icon icon-box-danger ">
+                                                        <span class="mdi mdi-close icon-item"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h6 class="text-muted font-weight-normal">Design</h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <div class="d-flex align-items-center align-self-start">
+                                                        <h3 class="mb-0">700€</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <div class="icon icon-box-danger ">
+                                                        <span class="mdi mdi-close icon-item"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h6 class="text-muted font-weight-normal">Entwicklung</h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <div class="d-flex align-items-center align-self-start">
+                                                        <h3 class="mb-0">KW 40</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <div class="icon icon-box-danger ">
+                                                        <span class="mdi mdi-close icon-item"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h6 class="text-muted font-weight-normal">Fertigstellung</h6>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-12 col-xl-4 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">To do list</h4>
+                                            <div class="add-items d-flex">
+                                                <input type="text" class="form-control todo-list-input"
+                                                    placeholder="enter task..">
+                                                <button class="add btn btn-primary todo-list-add-btn">Add</button>
+                                            </div>
+                                            <div class="list-wrapper">
+                                                <ul
+                                                    class="d-flex flex-column-reverse text-white todo-list todo-list-custom">
+                                                    <li>
+                                                        <div class="form-check form-check-primary">
+                                                            <label class="form-check-label">
+                                                                <input class="checkbox" type="checkbox"> Create invoice
+                                                                <i class="input-helper"></i></label>
+                                                        </div>
+                                                        <i class="remove mdi mdi-close-box"></i>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-primary">
+                                                            <label class="form-check-label">
+                                                                <input class="checkbox" type="checkbox"> Meeting with
+                                                                Alita <i class="input-helper"></i></label>
+                                                        </div>
+                                                        <i class="remove mdi mdi-close-box"></i>
+                                                    </li>
+                                                    <li class="completed">
+                                                        <div class="form-check form-check-primary">
+                                                            <label class="form-check-label">
+                                                                <input class="checkbox" type="checkbox" checked="">
+                                                                Prepare for presentation <i
+                                                                    class="input-helper"></i></label>
+                                                        </div>
+                                                        <i class="remove mdi mdi-close-box"></i>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-primary">
+                                                            <label class="form-check-label">
+                                                                <input class="checkbox" type="checkbox"> Plan weekend
+                                                                outing <i class="input-helper"></i></label>
+                                                        </div>
+                                                        <i class="remove mdi mdi-close-box"></i>
+                                                    </li>
+                                                    <li>
+                                                        <div class="form-check form-check-primary">
+                                                            <label class="form-check-label">
+                                                                <input class="checkbox" type="checkbox"> Pick up kids
+                                                                from school <i class="input-helper"></i></label>
+                                                        </div>
+                                                        <i class="remove mdi mdi-close-box"></i>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
 
                             <%- include('partial/footer') %>
 
@@ -114,4 +359,4 @@
         </body>
 
         </html>
-<% }%>
+        <% }%>

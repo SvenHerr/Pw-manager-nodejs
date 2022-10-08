@@ -121,6 +121,22 @@ app.get("/customers", async function(req, res) {
     }
 });
 
+
+app.get("/dashboard", async function(req, res) {
+
+    user = customer.getUserFromSession(req);
+    if (user.loggedIn === false || typeof user.loggedIn === 'undefined') {
+        
+        res.redirect("/");
+        
+    } else {
+
+        let customers = await administration.getCustomers(req,res);
+
+        return res.render("dashboard", { userData: user, customerData: customers });
+    }
+});
+
 app.post("/customersDetails", async function(req, res) {
 
     user = customer.getUserFromSession(req);
@@ -132,7 +148,7 @@ app.post("/customersDetails", async function(req, res) {
 
         let customersDetails = await administration.getCustomersDetails(req);
 
-        return res.render("customersDetails", { userData: user, customersDetailsData: customersDetails });
+        return res.render("customersDetails", { userData: user, customersDetailsData: customersDetails[0] });
     }
 });
 
