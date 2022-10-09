@@ -7,8 +7,7 @@ CREATE TABLE `pw` (
   `CreateDate` date DEFAULT NULL,
   `Id` INT NOT NULL auto_increment primary key,
   `Loginname` varchar(256) COLLATE utf8_bin DEFAULT NULL,
-  `CustomerId` varchar(50) NOT NULL,
-  PRIMARY KEY (`Id`)
+  `CustomerId` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
 
 CREATE TABLE `user` (
