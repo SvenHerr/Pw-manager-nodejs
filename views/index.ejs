@@ -92,7 +92,7 @@
                                                         <label>Kunde</label>
                                                         <select id="customers" name="customerId">
                                                             <option value="0">Allgemein</option>
-                                                          </select>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -236,112 +236,90 @@
                                             </thead>
                                             <tbody>
 
-                                                <%  var customerChanged = false; 
-                                                    var currentCustomerId = 0; 
-                                                %>
-                                                <% for(var i=0; i < pwDatas.length; i++){ %>
+                                                <% var customerChanged=false; var currentCustomerId=0; %>
+                                                    <% for(var i=0; i < pwDatas.length; i++){ %>
 
-                                                    <% if(pwDatas[i].CustomerId != 0 && customerChanged){ %>
-                                                        <tr>
-                                                            <td class="py-1">
+                                                        <% if(pwDatas[i].CustomerId !=0 && customerChanged){ %>
+                                                            <tr>
+                                                                <td class="py-1">
 
-                                                                Kunde: <%= pwDatas[i].Name %>
-    
-                                                            </td>
-                                                        </tr>
-                                                    <% } %>
+                                                                    Kunde: <%= pwDatas[i].Name %>
 
-                                                    <tr>
-                                                        <td class="py-1">
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
 
-                                                            <% iconname=userData.username+".jpg"; %>
-                                                                <img src="../../assets/images/faces/<%= iconname %> "
-                                                                    alt="image" />
+                                                                <tr>
+                                                                    <td class="py-1">
 
-                                                        </td>
-                                                        <td>
-                                                            <%= pwDatas[i].Name %>
-                                                        </td>
-                                                        <td>
-                                                            <% let differentDays=0; try{ let firstDate=new
-                                                                Date(date.format(pwDatas[i].CreateDate, 'MM/DD/YYYY' )),
-                                                                secondDate=new Date(currentDate),
-                                                                timeDifference=Math.abs(secondDate.getTime() -
-                                                                firstDate.getTime());
-                                                                differentDays=Math.ceil(timeDifference / (1000 * 3600 *
-                                                                24)); }catch(err){ //console.log("defferentDays: " + err);
-                                                            differentDays = 0;
-                                                            console.log(err);
-                                                        } %>
+                                                                        <% iconname=userData.username+".jpg"; %>
+                                                                            <img src="../../assets/images/faces/<%= iconname %> "
+                                                                                alt="image" />
 
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= pwDatas[i].Name %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= moment().diff(moment(pwDatas[i].CreateDate), 'days') %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= pwDatas[i].Loginname %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p style=" margin:0px;"
+                                                                            id="tempPw<%= pwDatas[i].Id %>">*****</p>
+                                                                    </td>
 
-                                                                    <%= differentDays %>
-                                                            </td>
-                                                            <td>
-                                                                <%= pwDatas[i].Loginname %>
-                                                            </td>
-                                                            <td>
-                                                                <p style=" margin:0px;"
-                                                                id="tempPw<%= pwDatas[i].Id %>">*****</p>
-                                                        </td>
+                                                                    <td>
+                                                                        <form class="showPwFormId">
 
-                                                        <td>
-                                                            <form class="showPwFormId">
+                                                                            <input type="text" name="id"
+                                                                                value="<%= pwDatas[i].Id %>" hidden>
+                                                                            <button
+                                                                                class="nav-link btn btn-success create-new-button d-inline-block hidebutton"
+                                                                                style="display: none !important;"
+                                                                                id="HideButton<%= pwDatas[i].Id %>">Hide</button>
+                                                                            <button
+                                                                                class="nav-link btn btn-warning create-new-button d-inline-block"
+                                                                                id="ShowButton<%= pwDatas[i].Id %>">Show</button>
 
-                                                                <input type="text" name="id"
-                                                                    value="<%= pwDatas[i].Id %>" hidden>
-                                                                <button
-                                                                    class="nav-link btn btn-success create-new-button d-inline-block hidebutton"
-                                                                    style="display: none !important;"
-                                                                    id="HideButton<%= pwDatas[i].Id %>">Hide</button>
-                                                                <button
-                                                                    class="nav-link btn btn-warning create-new-button d-inline-block"
-                                                                    id="ShowButton<%= pwDatas[i].Id %>">Show</button>
+                                                                        </form>
+                                                                    </td>
+                                                                    <td>
+                                                                        <form class="copyFormId">
+                                                                            <input type="text" name="id" id="id"
+                                                                                value="<%= pwDatas[i].Id %>" hidden>
+                                                                            <button
+                                                                                class="nav-link btn btn-success create-new-button d-inline-block">Copy</button>
+                                                                        </form>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a class="nav-link btn btn-warning create-new-button d-inline-block changeapppw"
+                                                                            id="openChangeAppPassword"
+                                                                            data-changeelement="<%= pwDatas[i].Id %>"
+                                                                            data-toggle="modal"
+                                                                            data-target="#changeAppPwModalCenter"
+                                                                            aria-expanded="false" href="#">Change Pw</a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= moment().format('MM/DD/YYYY') %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a class="nav-link btn btn-danger create-new-button d-inline-block delete"
+                                                                            id="openDeletePassword"
+                                                                            data-element-id="<%= pwDatas[i].Id %>"
+                                                                            data-toggle="modal"
+                                                                            data-target="#deletePwModalCenter"
+                                                                            aria-expanded="false" href="#">Delete</a>
 
-                                                            </form>
-                                                        </td>
-                                                        <td>
-                                                            <form class="copyFormId">
-                                                                <input type="text" name="id" id="id"
-                                                                    value="<%= pwDatas[i].Id %>" hidden>
-                                                                <button
-                                                                    class="nav-link btn btn-success create-new-button d-inline-block">Copy</button>
-                                                            </form>
-                                                        </td>
-                                                        <td>
-                                                            <a class="nav-link btn btn-warning create-new-button d-inline-block changeapppw"
-                                                                id="openChangeAppPassword"
-                                                                data-changeelement="<%= pwDatas[i].Id %>"
-                                                                data-toggle="modal"
-                                                                data-target="#changeAppPwModalCenter"
-                                                                aria-expanded="false" href="#">Change Pw</a>
-                                                        </td>
-                                                        <td>
-                                                            <% var tempDate=null; try{
-                                                                tempDate=date.format(pwDatas[i].CreateDate, 'DD.MM.YYYY'
-                                                                ); }catch(err){ //console.log("defferentDays: " + err); 
-                                                                tempDate = " Error"; } %>
+                                                                    </td>
+                                                                </tr>
 
-                                                                <%= tempDate %>
-                                                        </td>
-                                                        <td>
-                                                            <a class="nav-link btn btn-danger create-new-button d-inline-block delete"
-                                                                id="openDeletePassword"
-                                                                data-element-id="<%= pwDatas[i].Id %>"
-                                                                data-toggle="modal" data-target="#deletePwModalCenter"
-                                                                aria-expanded="false" href="#">Delete</a>
-
-                                                        </td>
-                                                    </tr>
-
-                                                    <%  currentCustomerId = pwDatas[i].CustomerId;
-
-                                                        if(currentCustomerId != pwDatas[i].CustomerId){
-                                                            customerChanged = true;
-                                                        }
-                                                    
-                                                    %>
-                                                    <% } %>
+                                                                <% currentCustomerId=pwDatas[i].CustomerId;
+                                                                    if(currentCustomerId !=pwDatas[i].CustomerId){
+                                                                    customerChanged=true; } %>
+                                                                    <% } %>
                                             </tbody>
                                         </table>
                                     </div>
@@ -359,27 +337,13 @@
             <!-- page-body-wrapper ends -->
         </div>
 
-
-        <script type="text/javascript">
-            $(function () {
-                $(".delete").click(function () {
-                    var my_id_value = $(this).data('elementId');
-                    $(".modal-body #elementId").val(my_id_value);
-                }),
-
-                    $(".changeapppw").click(function () {
-                        var my_id_value = $(this).data('changeelement');
-                        $(".modal-body #changeelement").val(my_id_value);
-                    })
-            });
-        </script>
-
         <!-- container-scroller -->
         <!-- plugins:js -->
         <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
         <!-- endinject -->
         <!-- Plugin js for this page -->
         <script src="../../assets/vendors/chart.js/Chart.min.js"></script>
+        <script src="../../assets/vendors/admin.js"></script>
         <!-- End plugin js for this page -->
         <!-- inject:js -->
         <!-- End custom js for this page -->

@@ -1,12 +1,12 @@
-class User{
-    constructor(id,username,surname,lastname,pw,loggedIn){
+class User {
+    constructor (id, username, firstname, lastname, pw, loggedIn) {
         this.id = id,
         this.username = username,
-        this.surname = surname,
+        this.firstname = firstname,
         this.lastname = lastname,
         this.pw = pw;
         this.loggedIn = loggedIn;
     }
 }
 
-module.exports = User;
+export default User;
