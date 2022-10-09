@@ -31,7 +31,7 @@ async function getUser(req) {
     
     if (rows !== null) {
         if (rows.length > 0 ) {
-            return new User(rows[0].Id, rows[0].Username, rows[0].Surname, rows[0].Lastname, rows[0].Pw);
+            return new User(rows[0].Id, rows[0].Username, rows[0].Firstname, rows[0].Lastname, rows[0].Pw);
         }
     }
 
@@ -72,8 +72,8 @@ async function getUserExists(username) {
  */
 async function insertUser(user) {
     
-    await query('INSERT INTO user (username, surname, lastname, createdate, pw) VALUES (?,?,?,?,?);', 
-    [user.username, user.surname, user.lastname, helper.getCurrentDate(), user.pw]);
+    await query('INSERT INTO user (username, firstname, lastname, createdate, pw) VALUES (?,?,?,?,?);', 
+    [user.username, user.firstname, user.lastname, helper.getCurrentDate(), user.pw]);
 
 }
 

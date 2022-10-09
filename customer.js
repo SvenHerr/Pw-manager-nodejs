@@ -1,12 +1,12 @@
 // This script runs on serverside
 
 //dependencies required for the app
-var connection = require('../Pw-manager-nodejs/Database/database');
-var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
-var User = require('../Pw-manager-nodejs/user');
-var encrypt1 = require('../Pw-manager-nodejs/crypto/encrypt');
+var connection = require('./Database/database');
+var encrypt1 = require('./crypto/encrypt');
+var User = require('./user');
+var encrypt1 = require('./crypto/encrypt');
 const bcrypt = require('bcrypt');
-var languageImport = require('../Pw-manager-nodejs/language');
+var languageImport = require('./language');
 var language = languageImport.getEnglish();
 var escape = require('lodash.escape');
 
@@ -25,14 +25,14 @@ async function signUp(req) {
     if (hashedPw === null) {
         return "error: Pw hash problem!";
     }
-   
-    let user = new User(null, req.body.username, req.body.surname, req.body.lastname, hashedPw, null);
+
+    let user = new User(null, req.body.username, req.body.firstname, req.body.lastname, hashedPw, null);
 
     if (pw === null || pw1 === null) {
         return "error: Pw not found!";
     }
 
-    if (user.username === null || user.surname === null || user.lastname === null) {
+    if (user.username === null || user.firstname === null || user.lastname === null) {
         return "error: User data not found!";
     }
 
@@ -42,9 +42,9 @@ async function signUp(req) {
         if(userExists){
             return "User already exists!";
         }
-    
+
         await connection.insertUser(user);
-        
+
         req.session.pw = user.pw;
         //req.session.loggedIn = true;
 
@@ -57,10 +57,10 @@ async function signUp(req) {
 
 
 /** signin user and store to session
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
  */
 async function signIn(req, res) {
 
@@ -69,7 +69,7 @@ async function signIn(req, res) {
     }
 
     try {
-        
+
         let user = await connection.getUser(req, res);
 
         if (user === null) {
@@ -78,7 +78,7 @@ async function signIn(req, res) {
 
         setUserToSession(req, res, user);
 
-        res.redirect("/");           
+        res.redirect("/");
 
     } catch (err) {
         console.log("Error on singIn: " + err);
@@ -88,17 +88,17 @@ async function signIn(req, res) {
 
 
 /** Logout the current user from the session
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ *
+ * @param {*} req
+ * @param {*} res
+ * @returns
  */
 function logout(req, res) {
 
     req.session.loggedIn = false;
         req.session.id = 0
         req.session.username = "";
-        req.session.surname = "";
+        req.session.firstname = "";
         req.session.lastname = "";
         req.session.pw = "";
 
@@ -114,7 +114,7 @@ function setUserToSession(req, res, user) {
         req.session.loggedIn = true;
         req.session.id = user.id;
         req.session.username = user.username;
-        req.session.surname = user.surname;
+        req.session.firstname = user.firstname;
         req.session.lastname = user.lastname;
         req.session.pw = user.pw;
 
@@ -125,29 +125,29 @@ function setUserToSession(req, res, user) {
 
 
 /** Gets the current user from the session
- * 
- * @param {*} req 
- * @param {*} res 
+ *
+ * @param {*} req
+ * @param {*} res
  * @returns User object
  */
 function getUserFromSession(req) {
-    return new User(req.session.id, req.session.username, req.session.surname, req.session.lastname, null, req.session.loggedIn);
+    return new User(req.session.id, req.session.username, req.session.firstname, req.session.lastname, null, req.session.loggedIn);
 };
 
 
 
 /** Change user pw(for login etc..)
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * @param {*} req
+ * @param {*} res
+ * @returns
  */
  async function changePw(req, res) {
-    
+
     let pwList = await connection.getAllPwFromUser(res);
 
     if (req.session.loggedIn) {
         if (pwList !== null) {
-            
+
             pwList.forEach(row => async function(){
 
                 try {

@@ -1,15 +1,16 @@
 // This script runs on serverside
 
-//dependencies required for the app
+// dependencies required for the app
+require('dotenv').config();
 var express = require("express");
 const helmet = require("helmet");
 var bodyParser = require("body-parser");
 const session = require('express-session');
 var app = express();
-var languageImport = require('../Pw-manager-nodejs/language');
-var user = require('../Pw-manager-nodejs/user');
-var customer = require('../Pw-manager-nodejs/customer');
-var administration = require('../Pw-manager-nodejs/administration'); // Change name!!!
+var languageImport = require('./language');
+var user = require('./user');
+var customer = require('./customer');
+var administration = require('./administration'); // Change name!!!
 var language = languageImport.getEnglish();
 const rateLimit = require('express-rate-limit');
 
@@ -100,7 +101,6 @@ app.post("/deletepw", async function(req, res) {
 });
 
 app.post("/signup", async function(req, res) {
-
     try {
         let status = await customer.signUp(req, res);
         user = customer.getUserFromSession(req);
