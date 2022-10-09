@@ -3,11 +3,7 @@
 //dependencies required for the app
 var express = require("express");
 var bodyParser = require("body-parser");
-const dateLib = require('date-and-time');
-var connection = require('../Pw-manager-nodejs/Database/database');
 const session = require('express-session');
-const { decrypt } = require('./crypto/crypto');
-const crypto = require('crypto');
 var app = express();
 const dateObject = new Date();
 var languageImport = require('../Pw-manager-nodejs/language');
@@ -15,22 +11,13 @@ var user = require('../Pw-manager-nodejs/user');
 var customer = require('../Pw-manager-nodejs/customer');
 var administration = require('../Pw-manager-nodejs/administration'); // Change name!!!
 var language = languageImport.getEnglish();
-// current date
-const date = (`0 ${dateObject.getDate()}`).slice(-2);
-// current month
-const month = (`0 ${dateObject.getMonth() + 1}`).slice(-2);
-// current year
-const year = dateObject.getFullYear();
-
-
-
 const rateLimit = require('express-rate-limit');
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 900, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 900, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 })
 
 // Apply the rate limiting middleware to all requests
@@ -54,12 +41,22 @@ app.use(session({
 }));
 
 
-// What does it do? Do i need it?
-app.post(function(req, res, next) {
-    console.log("next() called!");
-    next();
-});
 
+function requireLogin(req, res, next) {
+    if (req.session.loggedIn) {
+        next(); // allow the next route to run
+    } else {
+        // require the user to log in
+        res.redirect("/login"); // or render a form, etc.
+    }
+}
+
+// Automatically apply the `requireLogin` middleware to all
+// routes starting with `/admin`
+app.all("/*", requireLogin, function(req, res, next) {
+    next(); // if the middleware allowed us to get here,
+    // just move on to the next route handler
+});
 
 // routing
 app.get("/", async function(req, res) {
@@ -84,7 +81,7 @@ app.get("/index", function(req, res) {
 });
 
 app.post("/getcustomers", async function(req, res) {
-    await administration.getCustomers(req,res);
+    await administration.getCustomers(req, res);
 });
 
 app.post("/addnewpw", async function(req, res) {
@@ -163,7 +160,7 @@ app.get("/documentation", function(req, res) {
 app.get("/changepw", async function(req, res) {
     user = customer.getUserFromSession(req);
     if (user.loggedIn === false || typeof user.loggedIn === 'undefined') {
-        
+
         res.redirect("/");
         //await customer.signIn(req, res);
     } else {
