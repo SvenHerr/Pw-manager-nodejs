@@ -2,6 +2,7 @@
 
 //dependencies required for the app
 var express = require("express");
+const helmet = require("helmet");
 var bodyParser = require("body-parser");
 const session = require('express-session');
 var app = express();
@@ -23,7 +24,7 @@ const limiter = rateLimit({
 // Apply the rate limiting middleware to all requests
 app.use(limiter);
 
-
+app.use(helmet());
 
 // Why do i need extended false and not true?
 //https://stackoverflow.com/questions/35931135/cannot-post-error-using-express
