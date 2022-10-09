@@ -13,6 +13,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// eslint-disable-next-line no-unused-vars
 function logError(functionName, err, errorDescriptionUser, debug = false){
     // TODO
 }

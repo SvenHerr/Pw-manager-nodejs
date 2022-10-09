@@ -10,7 +10,8 @@
     "migrate:rollback": "db-migrate down",
     "migrate:reset": "db-migrate reset",
     "migrate:create": "sh -c 'db-migrate create $0 -m migrations --sql-file'",
-    "migrate:create:windows": "db-migrate create %npm_config_name% -m migrations --sql-file"
+    "migrate:create:windows": "db-migrate create %npm_config_name% -m migrations --sql-file",
+    "lint": "eslint ."
   },
   "author": "Sven Herrmann",
   "license": "",
@@ -43,6 +44,8 @@
   },
   "homepage": "https://github.com/SvenHerr/PwTressor#readme",
   "devDependencies": {
+    "eslint": "^8.25.0",
+    "eslint-plugin-prefer-let": "^3.0.1",
     "eslint-plugin-security": "^1.5.0",
     "nodemon": "^2.0.15"
   }

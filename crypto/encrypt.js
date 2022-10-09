@@ -19,7 +19,6 @@ export default {
         return encrypted.toString('hex');
     },
 
-
     // Decrypting text
     decrypt: function(text) {
         let iv = Buffer.from(text.iv, 'hex');
@@ -32,15 +31,15 @@ export default {
 
     // function createCipher(algorithm: CipherCCMTypes, password: BinaryLike, options: CipherCCMOptions): CipherCCM;
     encryptDepr: function(text, password) {
-        var cipher = crypto.createCipher(algorithm, password, )
-        var crypted = cipher.update(text, 'utf8', 'binary')
+        let cipher = crypto.createCipher(algorithm, password, );
+        let crypted = cipher.update(text, 'utf8', 'binary');
         crypted += cipher.final('binary');
         return crypted;
     },
 
     decryptDepr: function(text, password) {
-        var decipher = crypto.createDecipher(algorithm, password)
-        var dec = decipher.update(text, 'binary', 'utf8')
+        let decipher = crypto.createDecipher(algorithm, password);
+        let dec = decipher.update(text, 'binary', 'utf8');
         dec += decipher.final('utf8');
         return dec;
     },

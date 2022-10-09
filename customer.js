@@ -14,29 +14,29 @@ async function signUp(req) {
     let pw1 = req.body.pw1;
 
     if (pw !== pw1) {
-        return "pw missmatch";
+        return 'pw missmatch';
     }
 
     let hashedPw = encrypt1.hashPw(pw);
     if (hashedPw === null) {
-        return "error: Pw hash problem!";
+        return 'error: Pw hash problem!';
     }
 
     let user = new User(null, req.body.username, req.body.firstname, req.body.lastname, hashedPw, null);
 
     if (pw === null || pw1 === null) {
-        return "error: Pw not found!";
+        return 'error: Pw not found!';
     }
 
     if (user.username === null || user.firstname === null || user.lastname === null) {
-        return "error: User data not found!";
+        return 'error: User data not found!';
     }
 
     try {
         let userExists = await connection.getUserExists(user.username);
 
         if (userExists) {
-            return "User already exists!";
+            return 'User already exists!';
         }
 
         await connection.insertUser(user);
@@ -44,11 +44,11 @@ async function signUp(req) {
         req.session.pw = user.pw;
         //req.session.loggedIn = true;
 
-        return "ok";
+        return 'ok';
     } catch (e) {
         return e;
     }
-};
+}
 
 /** signin user and store to session
  *
@@ -58,25 +58,23 @@ async function signUp(req) {
  */
 async function signIn(req, res) {
     if (req.session.loggedIn) {
-        res.redirect("/");
+        res.redirect('/');
     }
 
     try {
         let user = await connection.getUser(req, res);
 
         if (user === null) {
-            return res.render("login", { errormsg: language.loginError });
+            return res.render('login', { errormsg: language.loginError });
         }
 
         setUserToSession(req, res, user);
 
-        res.redirect("/");
+        res.redirect('/');
     } catch (err) {
-        console.log("Error on singIn: " + err);
+        console.log('Error on singIn: ' + err);
     }
-};
-
-
+}
 
 /** Logout the current user from the session
  *
@@ -86,14 +84,14 @@ async function signIn(req, res) {
  */
 function logout(req, res) {
     req.session.loggedIn = false;
-    req.session.userid = 0
-    req.session.username = "";
-    req.session.firstname = "";
-    req.session.lastname = "";
-    req.session.pw = "";
+    req.session.userid = 0;
+    req.session.username = '';
+    req.session.firstname = '';
+    req.session.lastname = '';
+    req.session.pw = '';
 
-    return res.redirect("/");
-};
+    return res.redirect('/');
+}
 
 function setUserToSession(req, res, user) {
     let hastPw = encrypt1.hashPw(req.body.pw);
@@ -105,12 +103,10 @@ function setUserToSession(req, res, user) {
         req.session.firstname = user.firstname;
         req.session.lastname = user.lastname;
         req.session.pw = user.pw;
-
     } else {
-        return res.render("login", { errormsg: language.loginError });
+        return res.render('login', { errormsg: language.loginError });
     }
 }
-
 
 /** Gets the current user from the session
  *
@@ -120,7 +116,7 @@ function setUserToSession(req, res, user) {
  */
 function getUserFromSession(req) {
     return new User(req.session.userid, req.session.username, req.session.firstname, req.session.lastname, null, req.session.loggedIn);
-};
+}
 
 /** Change user pw(for login etc..)
  * @param {*} req
@@ -132,28 +128,23 @@ async function changePw(req, res) {
 
     if (req.session.loggedIn) {
         if (pwList !== null) {
-
             pwList.forEach(row => async function () {
-
                 try {
-
                     await connection.updatePwDatensatz(req, row);
-
                 } catch (err) {
-
-                    console.log("ChangePW update sql: " + err);
+                    console.log('ChangePW update sql: ' + err);
                 }
             });
         }
     } else {
-        return res.render("login", { errormsg: "Nach Pw Änderung bitte erneut anmelden" });
+        return res.render('login', { errormsg: 'Nach Pw Änderung bitte erneut anmelden' });
     }
 
     req.session.pw = escape(req.body.newPw);
     connection.updateUserPw(req);
 
-    return res.render("login", { errormsg: language.loginErrorPwChange });
-};
+    return res.render('login', { errormsg: language.loginErrorPwChange });
+}
 
 export default {
     signUp,

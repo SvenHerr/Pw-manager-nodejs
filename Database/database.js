@@ -35,7 +35,6 @@ async function getUser(req) {
     return null;
 }
 
-
 /** Returns true if user exists in db
  * 
  * @param {*} username 
@@ -47,18 +46,16 @@ async function getUserExists(username) {
     return rows.length > 0;
 }
 
-
 /** Get customers from db
  * 
  * @param {*} username 
  * @returns true if user exists
  */
- async function getCustomers() {
+async function getCustomers() {
     let rows = await query('SELECT * FROM customer');
 
     return rows;
 }
-
 
 /** Insert user to db
  * 
@@ -68,13 +65,12 @@ async function insertUser(user) {
     await query('INSERT INTO user (username, firstname, lastname, createdate, pw) VALUES (?,?,?,?,?)', [user.username, user.firstname, user.lastname, helper.getCurrentDate(), user.pw]);
 }
 
-
 /** update user pw
  * 
  * @param {*} req 
  */
 async function updateUserPw(req){
-    var newPw = escape(req.body.newPw);
+    let newPw = escape(req.body.newPw);
 
     await query('UPDATE user SET Pw = ? WHERE Username = ?', [newPw, req.session.username]);
 }
@@ -84,30 +80,28 @@ async function updateUserPw(req){
  * @param {*} req 
  */
 async function updatePwDatensatz(req,row){
-    var oldPw = escape(req.body.oldPw);
-    var newPw = escape(req.body.newPw);
+    let oldPw = escape(req.body.oldPw);
+    let newPw = escape(req.body.newPw);
 
-    var decriptedName = decrypt(row.Name, oldPw);
-    var encriptedName = encrypt(decriptedName, newPw);
-    var decriptedPw = decrypt(row.Pw, oldPw);
-    var encriptedPw = encrypt(decriptedPw, newPw);
+    let decriptedName = decrypt(row.Name, oldPw);
+    let encriptedName = encrypt(decriptedName, newPw);
+    let decriptedPw = decrypt(row.Pw, oldPw);
+    let encriptedPw = encrypt(decriptedPw, newPw);
 
     await query('UPDATE pw SET Name = ?, Pw = ? WHERE Id = ?', [encriptedName, encriptedPw, row.Id]);
 }
-
 
 /** update pw by id
  * 
  * @param {*} req 
  */
 async function updatePwById(req) {
-    var id = escape(req.body.changeelement);
-    var newPw = escape(req.body.newPw);
-    var encriptedPw = encrypt(newPw, req.session.pw);
+    let id = escape(req.body.changeelement);
+    let newPw = escape(req.body.newPw);
+    let encriptedPw = encrypt(newPw, req.session.pw);
 
     await query('UPDATE pw SET Pw = ?, CreateDate = ? WHERE Id = ?', [encriptedPw, helper.getCurrentDate(), id]);
 }
-
 
 /** get descripted pw from db
  * 
@@ -118,14 +112,13 @@ async function getDecriptedPw(req) {
     let rows = await query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [escape(req.session.username), escape(req.body.id)]);
 
     if(rows.length === 0){
-        return "";
+        return '';
     }
 
     if (rows[0].Pw != null) {
         return decrypt(rows[0].Pw, escape(req.session.pw));
     }
 }
-
 
 /** get all pw for user from db
  * 
@@ -138,15 +131,14 @@ async function getAllPwFromUser(req) {
     return rows;
 }
 
-
 /** get pw from db
  * 
  * @param {*} req 
  */
+// eslint-disable-next-line no-unused-vars
 async function getPw(req) { 
 
 }
-
 
 /** delete pw from db
  * 
@@ -156,21 +148,18 @@ async function deletePw(id) {
     await query('DELETE FROM `pw` WHERE Id = ?', [id]);
 }
 
-
 /** insert pw into db
  * 
  * @param {*} req 
  */
 async function insertPw(req) {
-    var encryptedpw = encrypt(escape(req.body.pw), escape(req.session.pw));
-    var applicationname = encrypt(escape(req.body.applicationname), escape(req.session.pw));
-    var loginname = encrypt(req.body.loginname.toString(), req.session.pw.toString());
+    let encryptedpw = encrypt(escape(req.body.pw), escape(req.session.pw));
+    let applicationname = encrypt(escape(req.body.applicationname), escape(req.session.pw));
+    let loginname = encrypt(req.body.loginname.toString(), req.session.pw.toString());
 
     await query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate` , `CustomerId`) VALUES (?,?,?,?,?,?)', 
-    [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate(),escape(req.body.customerId)])
+        [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate(),escape(req.body.customerId)]);
 }
-
-
 
 export default { 
     conn, 

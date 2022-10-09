@@ -8,32 +8,28 @@ const iv = crypto.randomBytes(16);
 
 export const encrypt = (text, secretKey) => {
     try {
-        const key = crypto.scryptSync(secretKey, 'GfG', 32);
-        const cipher = crypto.createCipheriv(algorithm, key, iv);
-        const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);    
-        var returnObject = {iv: iv.toString('hex'), content: encrypted.toString('hex')};
+        let key = crypto.scryptSync(secretKey, 'GfG', 32);
+        let cipher = crypto.createCipheriv(algorithm, key, iv);
+        let encrypted = Buffer.concat([cipher.update(text), cipher.final()]);    
+        let returnObject = {iv: iv.toString('hex'), content: encrypted.toString('hex')};
         
         return JSON.stringify(returnObject);
-
     } catch (err) {
         console.log(err);
-        return "error";
+        return 'error';
     }
-
 };
 
 export const decrypt = (hashJson, secretKey) => {
     try {
-        
-        var hash = JSON.parse(hashJson);
-        const key = crypto.scryptSync(secretKey, 'GfG', 32);
-        const decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(hash.iv, 'hex'));
-        const decrpyted = Buffer.concat([decipher.update(Buffer.from(hash.content, 'hex')), decipher.final()]);
+        let hash = JSON.parse(hashJson);
+        let key = crypto.scryptSync(secretKey, 'GfG', 32);
+        let decipher = crypto.createDecipheriv(algorithm, key, Buffer.from(hash.iv, 'hex'));
+        let decrpyted = Buffer.concat([decipher.update(Buffer.from(hash.content, 'hex')), decipher.final()]);
 
         return decrpyted.toString();
-
     } catch (err) {
         console.log(err);
-        return "error";
+        return 'error';
     }
 };
