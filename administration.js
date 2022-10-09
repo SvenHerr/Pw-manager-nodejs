@@ -20,7 +20,6 @@ const year = dateObject.getFullYear();
 let encryptArray = []; // Darf nicht in die function rein.
 
 
-// Why does this function get called 11 Times?
 async function loadData(req, res) {
 
     try {
