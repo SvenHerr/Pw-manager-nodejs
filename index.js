@@ -61,51 +61,6 @@ app.post(function(req, res, next) {
 });
 
 
-
-// Why does this function get called 11 Times?
-async function loadData(req, res) {
-
-    try {
-
-        if(req.session.loggedIn != true){
-            return res.render("login", { errormsg: "" });
-        }
-        console.log("LoadDate Username= " + req.session.username);
-
-        let pwItemList = await connection.getAllPwFromUser(req);
-        
-        if (req.session.loggedIn) {
-
-            pwItemList.forEach(row => {
-                try {
-                    
-                    row.Name = decrypt(row.Name, req.session.pw);
-
-                    if (row.Loginname != null) {
-                        
-                        row.Loginname = decrypt(row.Loginname, req.session.pw);
-                    }
-
-                    row.Pw = decrypt(row.Pw.toString(), req.session.pw);                    
-
-                } catch (err) {
-                    console.log(err);
-                }
-            });
-
-            return res.render("index", { pwDatas: pwItemList, userData: customer.getUserFromSession(req), date: dateLib, currentDate: `${month}/${date}/${year}` });
-
-        } else {
-            return res.render("login", { errormsg: "" });
-        }   
-        
-    } catch (err) {
-        console.log("Error on load: " + err);
-    }
-};
-
-
-
 // routing
 app.get("/", async function(req, res) {
     console.log("redirect to / (loadData)");
@@ -115,7 +70,7 @@ app.get("/", async function(req, res) {
         return res.render("login", { errormsg: "" });
     }
 
-    await loadData(req, res);
+    await administration.loadData(req, res);
 });
 
 /*app.get("/test", async function (req, res) {
