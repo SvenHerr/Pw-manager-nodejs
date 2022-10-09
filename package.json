@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Local pw tressor for raspberry",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon index.js",
     "migrate": "db-migrate up",
@@ -17,7 +18,6 @@
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "crypto": "^1.0.1",
-    "date-and-time": "^2.0.1",
     "db-migrate": "^0.11.13",
     "db-migrate-mysql": "^2.2.0",
     "dotenv": "^10.0.0",
@@ -28,6 +28,7 @@
     "express-session": "^1.17.3",
     "helmet": "^6.0.0",
     "lodash.escape": "^4.0.1",
+    "moment": "^2.29.4",
     "mongoose": "^6.1.5",
     "mysql2": "^2.3.3",
     "raw-body": "^2.5.1"

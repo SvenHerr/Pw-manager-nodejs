@@ -1,13 +1,12 @@
 // This script runs on serverside
 
-var conn = require('./databaseConnection');
-var User = require('../user');
-const { encrypt, decrypt } = require('../crypto/crypto');
-var escape = require('lodash.escape');
-var helper = require('../helper');
+import conn from './databaseConnection.js';
+import User from '../user.js';
+import escape from 'lodash.escape';
+import helper from '../helper.js';
+import { encrypt, decrypt } from '../crypto/crypto.js';
+
 let connection = null;
-
-
 
 async function query(sql, params) {
     if (connection === null) {
@@ -19,14 +18,12 @@ async function query(sql, params) {
     return rows;
 }
 
-
 /** Gets user from db
  * 
  * @param {*} req 
  * @returns 
  */
 async function getUser(req) {
-
     let rows = await query('SELECT * FROM user WHERE Username = ?', [req.body.username]);
     
     if (rows !== null) {
@@ -35,7 +32,6 @@ async function getUser(req) {
         }
     }
 
-    console.log("reject");
     return null;
 }
 
@@ -46,7 +42,6 @@ async function getUser(req) {
  * @returns true if user exists
  */
 async function getUserExists(username) {
-
     let rows = await query('SELECT Id FROM user WHERE Username = ?', [username]);
 
     return rows.length > 0;
@@ -59,7 +54,6 @@ async function getUserExists(username) {
  * @returns true if user exists
  */
  async function getCustomers() {
-
     let rows = await query('SELECT * FROM customer');
 
     return rows;
@@ -71,10 +65,7 @@ async function getUserExists(username) {
  * @param {*} user 
  */
 async function insertUser(user) {
-    
-    await query('INSERT INTO user (username, firstname, lastname, createdate, pw) VALUES (?,?,?,?,?);', 
-    [user.username, user.firstname, user.lastname, helper.getCurrentDate(), user.pw]);
-
+    await query('INSERT INTO user (username, firstname, lastname, createdate, pw) VALUES (?,?,?,?,?)', [user.username, user.firstname, user.lastname, helper.getCurrentDate(), user.pw]);
 }
 
 
@@ -83,10 +74,9 @@ async function insertUser(user) {
  * @param {*} req 
  */
 async function updateUserPw(req){
-
     var newPw = escape(req.body.newPw);
+
     await query('UPDATE user SET Pw = ? WHERE Username = ?', [newPw, req.session.username]);
-    
 }
 
 /** update pw datensatz
@@ -94,7 +84,6 @@ async function updateUserPw(req){
  * @param {*} req 
  */
 async function updatePwDatensatz(req,row){
-    
     var oldPw = escape(req.body.oldPw);
     var newPw = escape(req.body.newPw);
 
@@ -104,7 +93,6 @@ async function updatePwDatensatz(req,row){
     var encriptedPw = encrypt(decriptedPw, newPw);
 
     await query('UPDATE pw SET Name = ?, Pw = ? WHERE Id = ?', [encriptedName, encriptedPw, row.Id]);
-    
 }
 
 
@@ -113,13 +101,11 @@ async function updatePwDatensatz(req,row){
  * @param {*} req 
  */
 async function updatePwById(req) {
-
     var id = escape(req.body.changeelement);
     var newPw = escape(req.body.newPw);
     var encriptedPw = encrypt(newPw, req.session.pw);
 
     await query('UPDATE pw SET Pw = ?, CreateDate = ? WHERE Id = ?', [encriptedPw, helper.getCurrentDate(), id]);
-
 }
 
 
@@ -129,7 +115,6 @@ async function updatePwById(req) {
  * @returns 
  */
 async function getDecriptedPw(req) {
-
     let rows = await query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [escape(req.session.username), escape(req.body.id)]);
 
     if(rows.length === 0){
@@ -139,7 +124,6 @@ async function getDecriptedPw(req) {
     if (rows[0].Pw != null) {
         return decrypt(rows[0].Pw, escape(req.session.pw));
     }
-
 }
 
 
@@ -149,11 +133,9 @@ async function getDecriptedPw(req) {
  * @returns 
  */
 async function getAllPwFromUser(req) {
-
     let rows = await query('SELECT * FROM pw WHERE Username =  ?', [req.session.username]);
 
     return rows;
-    
 }
 
 
@@ -171,9 +153,7 @@ async function getPw(req) {
  * @param {*} id 
  */
 async function deletePw(id) {
-
     await query('DELETE FROM `pw` WHERE Id = ?', [id]);
-
 }
 
 
@@ -182,19 +162,17 @@ async function deletePw(id) {
  * @param {*} req 
  */
 async function insertPw(req) {
-    
     var encryptedpw = encrypt(escape(req.body.pw), escape(req.session.pw));
     var applicationname = encrypt(escape(req.body.applicationname), escape(req.session.pw));
     var loginname = encrypt(req.body.loginname.toString(), req.session.pw.toString());
 
     await query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate` , `CustomerId`) VALUES (?,?,?,?,?,?)', 
     [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate(),escape(req.body.customerId)])
-
 }
 
 
 
-module.exports = { 
+export default { 
     conn, 
     getUserExists, 
     insertUser, 

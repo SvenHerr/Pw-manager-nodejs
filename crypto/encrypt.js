@@ -1,7 +1,7 @@
 // This script runs on serverside
 
 //Checking the crypto module 
-const crypto = require('crypto');
+import crypto from 'crypto';
 const algorithm = 'aes-256-cbc'; //Using AES encryption
 const key = crypto.randomBytes(32);
 const iv = crypto.randomBytes(16);
@@ -10,8 +10,7 @@ const salt = 'f844b09ff50c';
 
 //console.log(crypto.randomBytes(16));
 
-module.exports = {
-
+export default {
     //Encrypting text
     encrypt: function(text) {
         let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), Buffer.from(iv));

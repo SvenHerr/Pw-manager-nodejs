@@ -1,30 +1,23 @@
 // This script runs on serverside
 
 //dependencies required for the app
-var connection = require('./Database/database');
-var languageImport = require('./language');
-var language = languageImport.getEnglish();
-const dateLib = require('date-and-time');
-var escape = require('lodash.escape');
-const { decrypt } = require('./crypto/crypto');
-var customer = require('./customer');
-const crypto = require('crypto');
-const dateObject = new Date();
-// current date
-const date = (`0 ${dateObject.getDate()}`).slice(-2);
-// current month
-const month = (`0 ${dateObject.getMonth() + 1}`).slice(-2);
-// current year
-const year = dateObject.getFullYear();
+import connection from './Database/database.js';
+import languageImport from './language.js';
+import escape from 'lodash.escape';
+import customer from './customer.js';
+import moment from 'moment';
+import { decrypt } from './crypto/crypto.js';
+
+const language = languageImport.getEnglish();
+
 let encryptArray = []; // Darf nicht in die function rein.
 
 async function loadData(req, res) {
-
     try {
-
-        if(req.session.loggedIn != true){
+        if (req.session.loggedIn != true){
             return res.render("login", { errormsg: "" });
         }
+        
         console.log("LoadDate Username= " + req.session.username);
 
         let pwItemList = await connection.getAllPwFromUser(req);
@@ -48,8 +41,7 @@ async function loadData(req, res) {
                 }
             });
 
-            return res.render("index", { pwDatas: pwItemList, userData: customer.getUserFromSession(req), date: dateLib, currentDate: `${month}/${date}/${year}` });
-
+            return res.render("index", { pwDatas: pwItemList, userData: customer.getUserFromSession(req), moment: moment });
         } else {
             return res.render("login", { errormsg: "" });
         }
@@ -89,7 +81,7 @@ async function deletePw(req, res) {
 
     try {
 
-        if (req.body.confirmation == "yes") {
+        if (req.body.confirmation === "yes") {
 
             await connection.deletePw(req.body.elementId);
 
@@ -195,7 +187,7 @@ async function changePwApp(req, res) {
 
 
 
-module.exports = {
+export default {
     changePwApp,
     copyPw,
     showPw,

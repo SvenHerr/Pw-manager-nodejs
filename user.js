@@ -1,5 +1,5 @@
-class User{
-    constructor(id,username,firstname,lastname,pw,loggedIn){
+class User {
+    constructor(id, username, firstname, lastname, pw, loggedIn) {
         this.id = id,
         this.username = username,
         this.firstname = firstname,
@@ -9,4 +9,4 @@ class User{
     }
 }
 
-module.exports = User;
+export default User;

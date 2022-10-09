@@ -1,12 +1,12 @@
 // This script runs on serverside
 
 // https://attacomsian.com/blog/nodejs-encrypt-decrypt-data
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 const algorithm = 'aes-256-ctr';
 const iv = crypto.randomBytes(16);
 
-const encrypt = (text, secretKey) => {
+export const encrypt = (text, secretKey) => {
     try {
         const key = crypto.scryptSync(secretKey, 'GfG', 32);
         const cipher = crypto.createCipheriv(algorithm, key, iv);
@@ -22,7 +22,7 @@ const encrypt = (text, secretKey) => {
 
 };
 
-const decrypt = (hashJson, secretKey) => {
+export const decrypt = (hashJson, secretKey) => {
     try {
         
         var hash = JSON.parse(hashJson);
@@ -36,9 +36,4 @@ const decrypt = (hashJson, secretKey) => {
         console.log(err);
         return "error";
     }
-};
-
-module.exports = {
-    encrypt,
-    decrypt
 };

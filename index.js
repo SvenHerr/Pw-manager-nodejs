@@ -1,18 +1,19 @@
 // This script runs on serverside
 
 // dependencies required for the app
-require('dotenv').config();
-var express = require("express");
-const helmet = require("helmet");
-var bodyParser = require("body-parser");
-const session = require('express-session');
-var app = express();
-var languageImport = require('./language');
-var user = require('./user');
-var customer = require('./customer');
-var administration = require('./administration'); // Change name!!!
+import 'dotenv/config';
+
+import express from "express";
+import helmet from "helmet";
+import bodyParser from "body-parser";
+import session from 'express-session';
+import languageImport from './language.js';
+import user from './user.js';
+import customer from './customer.js';
+import administration from './administration.js'; // TODO: Change name !!!
+import rateLimit from 'express-rate-limit';
+const app = express();
 var language = languageImport.getEnglish();
-const rateLimit = require('express-rate-limit');
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -103,7 +104,7 @@ app.post("/deletepw", async function(req, res) {
 app.post("/signup", async function(req, res) {
     try {
         let status = await customer.signUp(req, res);
-        user = customer.getUserFromSession(req);
+        let user = customer.getUserFromSession(req);
 
         if (status == "ok") {
             console.log("werde user einloggen");
@@ -127,12 +128,12 @@ app.post("/showpw", async function(req, res) {
 });
 
 app.get("/signup", function(req, res) {
-    user = customer.getUserFromSession(req);
+    let user = customer.getUserFromSession(req);
     return res.render("signup", { userData: user, errormsg: "" });
 });
 
 app.get("/documentation", function(req, res) {
-    user = customer.getUserFromSession(req);
+    let user = customer.getUserFromSession(req);
     if (user.loggedIn == false) {
         customer.signIn(req, res);
     } else {
@@ -141,7 +142,8 @@ app.get("/documentation", function(req, res) {
 });
 
 app.get("/changepw", async function(req, res) {
-    user = customer.getUserFromSession(req);
+    let user = customer.getUserFromSession(req);
+
     if (user.loggedIn === false || typeof user.loggedIn === 'undefined') {
 
         res.redirect("/");
