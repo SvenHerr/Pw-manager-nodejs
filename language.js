@@ -1,6 +1,8 @@
 // This script runs on serverside
 
 // TODO: Do some research on how to do translation stuff in js.
+// https://www.npmjs.com/package/i18n
+// https://www.npmjs.com/package/i18next
 
 // Pleas keep in mind that you always need the same propertys in all languages
 const english = {
