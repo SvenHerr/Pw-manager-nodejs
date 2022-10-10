@@ -40,10 +40,6 @@ module.exports = {
                 'max': 1,
             }
         ],
-        'linebreak-style': [
-            'error',
-            'unix'
-        ],
         'quotes': [
             'error',
             'single'
