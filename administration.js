@@ -2,13 +2,11 @@
 
 //dependencies required for the app
 import connection from './Database/database.js';
-import languageImport from './language.js';
 import escape from 'lodash.escape';
 import customer from './customer.js';
 import moment from 'moment';
 import { decrypt } from './crypto/crypto.js';
-
-const language = languageImport.getEnglish();
+import i18next from 'i18next';
 
 let encryptArray = []; // Darf nicht in die function rein.
 
@@ -126,11 +124,11 @@ async function getDecriptedPw(req, res) {
 async function changePwApp(req, res) {
     try {
         if (escape(req.body.newPw) !== escape(req.body.newPw1)) {
-            return language.pwMissmatch;
+            return i18next.t('pwMissmatch');
         }
 
         if (escape(req.body.changeelement) === null) {
-            return language.idIsNotDefined;
+            return i18next.t('idIsNotDefined');
         }
 
         if (req.session.loggedIn) {
