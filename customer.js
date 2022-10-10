@@ -4,10 +4,8 @@
 import connection from './Database/database.js';
 import encrypt1 from './crypto/encrypt.js';
 import User from './user.js';
-import languageImport from './language.js';
 import escape from 'lodash.escape';
-
-const language = languageImport.getEnglish();
+import i18next from 'i18next';
 
 async function signUp(req) {
     let pw = req.body.pw;
@@ -65,7 +63,7 @@ async function signIn(req, res) {
         let user = await connection.getUser(req, res);
 
         if (user === null) {
-            return res.render('login', { errormsg: language.loginError });
+            return res.render('login', { errormsg: i18next.t('loginError') });
         }
 
         setUserToSession(req, res, user);
@@ -104,7 +102,7 @@ function setUserToSession(req, res, user) {
         req.session.lastname = user.lastname;
         req.session.pw = user.pw;
     } else {
-        return res.render('login', { errormsg: language.loginError });
+        return res.render('login', { errormsg: i18next.t('loginError') });
     }
 }
 
@@ -143,7 +141,7 @@ async function changePw(req, res) {
     req.session.pw = escape(req.body.newPw);
     connection.updateUserPw(req);
 
-    return res.render('login', { errormsg: language.loginErrorPwChange });
+    return res.render('login', { errormsg: i18next.t('loginErrorPwChange') });
 }
 
 export default {

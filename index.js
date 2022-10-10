@@ -7,13 +7,26 @@ import express from 'express';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import languageImport from './language.js';
 import user from './user.js';
 import customer from './customer.js';
 import administration from './administration.js'; // TODO: Change name !!!
 import rateLimit from 'express-rate-limit';
+import middleware from 'i18next-http-middleware';
+import i18next from 'i18next';
+import Backend from 'i18next-fs-backend';
+
+i18next
+    .use(Backend)
+    .use(middleware.LanguageDetector)
+    .init({
+        backend: {
+            loadPath: './locales/{{lng}}/translation.json'
+        },
+        fallbackLng: 'en',
+        preload: ['en', 'de']
+    });
+
 const app = express();
-const language = languageImport.getEnglish();
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -24,6 +37,10 @@ const limiter = rateLimit({
 
 // Apply the rate limiting middleware to all requests
 app.use(limiter);
+
+app.use(
+    middleware.handle(i18next)
+);
 
 app.use(helmet());
 
@@ -112,7 +129,7 @@ app.post('/signup', async function(req, res) {
         }
     } catch (err) {
         console.log('Error on Login: ' + err);
-        return res.render('signup', { userData: user, errormsg: language.signUpError });
+        return res.render('signup', { userData: user, errormsg: i18next.t('signup.generalError') });
     }
 });
 
