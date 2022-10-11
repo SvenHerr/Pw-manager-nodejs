@@ -29,11 +29,11 @@ i18next
 const app = express();
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 900, // Limit each IP to 900 requests per `window` (here, per 15 minutes)
-	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    message: "Sorry, you reached the request limit! Please try again later!"
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 900, // Limit each IP to 900 requests per `window` (here, per 15 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    message: 'Sorry, you reached the request limit! Please try again later!'
 });
 
 // Apply the rate limiting middleware to all requests
@@ -71,10 +71,9 @@ app.get('/', async function(req, res) {
     await administration.loadData(req, res);
 });
 
-app.post("/customersDetails", async function(req, res) {
-
-    res.send({ exists });
-}); */
+app.post('/customersDetails', async function(req, res) {
+    res.render('customersDetails', await customer.getCustomerDetails(req, res));
+}); 
 
 app.get('/index', function(req, res) {
     res.redirect('/');
