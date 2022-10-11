@@ -4,9 +4,13 @@
 import connection from './Database/database.js';
 import encrypt1 from './crypto/encrypt.js';
 import User from './user.js';
-import escape from 'lodash.escape';
-import { promisify } from 'es6-promisify';
+import sessionHandler from './sessionHandler.js';
 
+/** Sign up a new user
+ * 
+ * @param {*} req 
+ * @returns 
+ */
 async function signUp(req) {
     let pw = req.body.pw;
     let pw1 = req.body.pw1;
@@ -20,11 +24,11 @@ async function signUp(req) {
         return 'error: Pw hash problem!';
     }
 
-    let user = new User(null, req.body.username, req.body.firstname, req.body.lastname, hashedPw, null);
-
     if (pw === null || pw1 === null) {
         return 'error: Pw not found!';
     }
+
+    let user = new User(null, req.body.username, req.body.firstname, req.body.lastname, hashedPw, null);
 
     if (user.username === null || user.firstname === null || user.lastname === null) {
         return 'error: User data not found!';
@@ -39,9 +43,7 @@ async function signUp(req) {
 
         await connection.insertUser(user);
 
-        req.session.pw = user.pw;
-        let save = promisify(req.session.save.bind(req.session));
-        await save();
+        await sessionHandler.updteUserPwFromSession(req.session.pw);
 
         return 'ok';
     } catch (e) {
@@ -49,7 +51,7 @@ async function signUp(req) {
     }
 }
 
-/** signin user and store to session
+/** Signin user and store to session
  *
  * @param {*} req
  * @param {*} res
@@ -66,11 +68,11 @@ async function signIn(req, res) {
         if (user === null) {
             return res.render('login', { errormsg: req.t('loginError') });
         }
-
-        setUserToSession(req, res, user);
-
-        let save = promisify(req.session.save.bind(req.session));
-        await save();
+        try{
+            await sessionHandler.setUserToSession(req, res, user);
+        }catch(err){
+            return res.render('login', { errormsg: req.t('loginError') });
+        }
 
         res.redirect('/');
     } catch (err) {
@@ -85,32 +87,21 @@ async function signIn(req, res) {
  * @returns
  */
 async function logout(req, res) {
-    req.session.loggedIn = false;
-    req.session.userid = 0;
-    req.session.username = '';
-    req.session.firstname = '';
-    req.session.lastname = '';
-    req.session.pw = '';
-
-    let save = promisify(req.session.save.bind(req.session));
-    await save();
-
-    return res.redirect('/');
-}
-
-function setUserToSession(req, res, user) {
-    let hastPw = encrypt1.hashPw(req.body.pw);
-
-    if (hastPw === user.pw) {
-        req.session.loggedIn = true;
-        req.session.userid = user.id;
-        req.session.username = user.username;
-        req.session.firstname = user.firstname;
-        req.session.lastname = user.lastname;
-        req.session.pw = user.pw;
-    } else {
-        return res.render('login', { errormsg: req.t('loginError') });
+    try{
+        // Save default user data to session
+        await sessionHandler.deleteUserFromSession(req);
+    }catch(err){
+        console.log('Error on logout: ' + err);
     }
+
+    try{
+        // Regenerate new session
+        await sessionHandler.regenerateSession(req);
+    }catch(err){
+        console.log('Error on logout: ' + err);
+    }
+    
+    return res.redirect('/');
 }
 
 /** Gets the current user from the session
@@ -133,7 +124,7 @@ async function changePw(req, res) {
 
     if (req.session.loggedIn) {
         if (pwList !== null) {
-            pwList.forEach(row => async function () {
+            pwList.forEach(row => async function() {
                 try {
                     await connection.updatePwDatensatz(req, row);
                 } catch (err) {
@@ -145,7 +136,7 @@ async function changePw(req, res) {
         return res.render('login', { errormsg: 'Nach Pw Änderung bitte erneut anmelden' });
     }
 
-    req.session.pw = escape(req.body.newPw);
+    await sessionHandler.updteUserPwFromSession(req.body.newPw);
     connection.updateUserPw(req);
 
     return res.render('login', { errormsg: req.t('loginErrorPwChange') });
