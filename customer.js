@@ -6,6 +6,7 @@ import encrypt1 from './crypto/encrypt.js';
 import User from './user.js';
 import escape from 'lodash.escape';
 import { promisify } from 'es6-promisify';
+import session from 'express-session';
 
 async function signUp(req) {
     let pw = req.body.pw;
@@ -85,15 +86,13 @@ async function signIn(req, res) {
  * @returns
  */
 async function logout(req, res) {
-    req.session.loggedIn = false;
-    req.session.userid = 0;
-    req.session.username = '';
-    req.session.firstname = '';
-    req.session.lastname = '';
-    req.session.pw = '';
-
-    let save = promisify(req.session.save.bind(req.session));
-    await save();
+    // destroy(sid) not only destroys and re creates a new session but also deletes 
+    // the session from the file
+    req.session.destroy(req.session.id, function(err) {
+        if (err) {
+            console.log('Error on logout: ' + err);
+        }
+    });
 
     return res.redirect('/');
 }
@@ -133,7 +132,7 @@ async function changePw(req, res) {
 
     if (req.session.loggedIn) {
         if (pwList !== null) {
-            pwList.forEach(row => async function () {
+            pwList.forEach(row => async function() {
                 try {
                     await connection.updatePwDatensatz(req, row);
                 } catch (err) {
