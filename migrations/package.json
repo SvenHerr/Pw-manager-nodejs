@@ -1,0 +1,7 @@
+{
+  "name": "mysql-migrate",
+  "version": "1.0.0",
+  "description": "Local pw tressor for raspberry",
+  "main": "index.js",
+  "type": "commonjs"
+}

@@ -1,0 +1,11 @@
+{
+  "defaultEnv": "prod",
+  "prod": {
+    "driver": "mysql",
+    "host": {"ENV": "DB_SERVER"},
+    "port": {"ENV": "DB_PORT"},
+    "user": {"ENV": "DB_USERNAME"},
+    "password": {"ENV": "DB_PASSWORD"},
+    "database": {"ENV": "DB_DATABASE"}
+  }
+}

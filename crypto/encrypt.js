@@ -1,7 +1,7 @@
 // This script runs on serverside
 
 //Checking the crypto module 
-const crypto = require('crypto');
+import crypto from 'crypto';
 const algorithm = 'aes-256-cbc'; //Using AES encryption
 const key = crypto.randomBytes(32);
 const iv = crypto.randomBytes(16);
@@ -10,8 +10,7 @@ const salt = 'f844b09ff50c';
 
 //console.log(crypto.randomBytes(16));
 
-module.exports = {
-
+export default {
     //Encrypting text
     encrypt: function(text) {
         let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), Buffer.from(iv));
@@ -19,7 +18,6 @@ module.exports = {
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         return encrypted.toString('hex');
     },
-
 
     // Decrypting text
     decrypt: function(text) {
@@ -33,15 +31,15 @@ module.exports = {
 
     // function createCipher(algorithm: CipherCCMTypes, password: BinaryLike, options: CipherCCMOptions): CipherCCM;
     encryptDepr: function(text, password) {
-        var cipher = crypto.createCipher(algorithm, password, )
-        var crypted = cipher.update(text, 'utf8', 'binary')
+        let cipher = crypto.createCipher(algorithm, password, );
+        let crypted = cipher.update(text, 'utf8', 'binary');
         crypted += cipher.final('binary');
         return crypted;
     },
 
     decryptDepr: function(text, password) {
-        var decipher = crypto.createDecipher(algorithm, password)
-        var dec = decipher.update(text, 'binary', 'utf8')
+        let decipher = crypto.createDecipher(algorithm, password);
+        let dec = decipher.update(text, 'binary', 'utf8');
         dec += decipher.final('utf8');
         return dec;
     },
