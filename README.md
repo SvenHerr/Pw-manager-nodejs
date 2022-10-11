@@ -3,6 +3,11 @@ Pw-Manager-Nodejs-opensource
 
 This is my first project with nodejs! Please keep that in mind.
 
+How to install?
+    -Windows:
+        
+    -Mac:
+
 # English
 This Pw- Manager was created by me in NodeJs. This is my first project with NodeJs, Express and Crypto.
 A mysql db is also required.
