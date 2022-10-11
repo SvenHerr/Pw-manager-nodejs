@@ -1,4 +1,4 @@
-// This script runs on serverside
+// This script runs on serversider
 
 //dependencies required for the app
 import connection from './Database/database.js';
@@ -6,13 +6,13 @@ import escape from 'lodash.escape';
 import customer from './customer.js';
 import moment from 'moment';
 import { decrypt } from './crypto/crypto.js';
-import i18next from 'i18next';
+import { promisify } from 'es6-promisify';
 
 let encryptArray = []; // Darf nicht in die function rein.
 
 async function loadData(req, res) {
     try {
-        if (req.session.loggedIn != true){
+        if (!req.session.loggedIn) {
             return res.render('login', { errormsg: '' });
         }
         
@@ -35,7 +35,10 @@ async function loadData(req, res) {
                 }
             });
 
-            return res.render('index', { pwDatas: pwItemList, userData: customer.getUserFromSession(req), moment: moment });
+            let errormsg = req.session.errormsg;
+            req.session.errormsg = undefined;
+
+            return res.render('index', { errormsg, pwDatas: pwItemList, userData: customer.getUserFromSession(req), moment: moment });
         } else {
             return res.render('login', { errormsg: '' });
         }
@@ -121,33 +124,38 @@ async function getDecriptedPw(req, res) {
  * @param {*} res
  * @returns
  */
-async function changePwApp(req, res) {
+async function changePw(req, res) {
     try {
         if (escape(req.body.newPw) !== escape(req.body.newPw1)) {
-            return i18next.t('pwMissmatch');
+            req.session.errormsg = req.t('pwMissmatch');
         }
 
         if (escape(req.body.changeelement) === null) {
-            return i18next.t('idIsNotDefined');
+            req.session.errormsg = req.t('idIsNotDefined');
         }
 
         if (req.session.loggedIn) {
             await connection.updatePwById(req);
-
-            res.redirect('/');
         }
-    }
-    catch (err) {
+    } catch (err) {
         console.log('Error in changePwApp: ' + err);
     }
+
+    let save = promisify(req.session.save.bind(req.session));
+    await save();
+    res.redirect('/');
 }
 
 export default {
-    changePwApp,
-    copyPw,
-    showPw,
-    deletePw,
-    addNewPw,
     loadData,
-    getCustomers 
+    routes: {
+        post: {
+            getCustomers,
+            addNewPw,
+            copyPw,
+            changePw,
+            deletePw,
+            showPw
+        }
+    },
 };
