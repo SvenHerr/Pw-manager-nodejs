@@ -86,6 +86,19 @@ async function signIn(req, res) {
  * @returns
  */
 async function logout(req, res) {
+    req.session.loggedIn = false;
+    req.session.userid = 0;
+    req.session.username = '';
+    req.session.firstname = '';
+    req.session.lastname = '';
+    req.session.pw = '';
+
+    let save = promisify(req.session.save.bind(req.session));
+    await save();
+
+    return res.redirect('/');
+}
+/*async function logout(req, res) {
     // destroy(sid) not only destroys and re creates a new session but also deletes 
     // the session from the file
     req.session.destroy(req.session.id, function(err) {
@@ -95,7 +108,7 @@ async function logout(req, res) {
     });
 
     return res.redirect('/');
-}
+}*/
 
 function setUserToSession(req, res, user) {
     let hastPw = encrypt1.hashPw(req.body.pw);
