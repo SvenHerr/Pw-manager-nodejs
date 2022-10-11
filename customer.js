@@ -147,7 +147,11 @@ async function changePw(req, res) {
 export default {
     signUp,
     signIn,
-    logout,
+    routes: {
+        post: {
+            logout
+        }
+    },
     getUserFromSession,
     changePw
 };
