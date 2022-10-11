@@ -5,7 +5,7 @@ import connection from './Database/database.js';
 import encrypt1 from './crypto/encrypt.js';
 import User from './user.js';
 import escape from 'lodash.escape';
-import i18next from 'i18next';
+import { promisify } from 'es6-promisify';
 
 async function signUp(req) {
     let pw = req.body.pw;
@@ -40,7 +40,8 @@ async function signUp(req) {
         await connection.insertUser(user);
 
         req.session.pw = user.pw;
-        //req.session.loggedIn = true;
+        let save = promisify(req.session.save.bind(req.session));
+        await save();
 
         return 'ok';
     } catch (e) {
@@ -63,10 +64,13 @@ async function signIn(req, res) {
         let user = await connection.getUser(req, res);
 
         if (user === null) {
-            return res.render('login', { errormsg: i18next.t('loginError') });
+            return res.render('login', { errormsg: req.t('loginError') });
         }
 
         setUserToSession(req, res, user);
+
+        let save = promisify(req.session.save.bind(req.session));
+        await save();
 
         res.redirect('/');
     } catch (err) {
@@ -80,13 +84,16 @@ async function signIn(req, res) {
  * @param {*} res
  * @returns
  */
-function logout(req, res) {
+async function logout(req, res) {
     req.session.loggedIn = false;
     req.session.userid = 0;
     req.session.username = '';
     req.session.firstname = '';
     req.session.lastname = '';
     req.session.pw = '';
+
+    let save = promisify(req.session.save.bind(req.session));
+    await save();
 
     return res.redirect('/');
 }
@@ -102,7 +109,7 @@ function setUserToSession(req, res, user) {
         req.session.lastname = user.lastname;
         req.session.pw = user.pw;
     } else {
-        return res.render('login', { errormsg: i18next.t('loginError') });
+        return res.render('login', { errormsg: req.t('loginError') });
     }
 }
 
@@ -141,17 +148,17 @@ async function changePw(req, res) {
     req.session.pw = escape(req.body.newPw);
     connection.updateUserPw(req);
 
-    return res.render('login', { errormsg: i18next.t('loginErrorPwChange') });
+    return res.render('login', { errormsg: req.t('loginErrorPwChange') });
 }
 
 export default {
     signUp,
-    signIn,
     routes: {
         post: {
-            logout
+            logout,
+            signIn,
+            changePw
         }
     },
-    getUserFromSession,
-    changePw
+    getUserFromSession
 };

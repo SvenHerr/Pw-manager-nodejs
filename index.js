@@ -13,6 +13,7 @@ import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 import FileStore from 'session-file-store';
 import routes from './routes.js';
+import cache from './cache.js';
 
 const SessionFileStore = FileStore(session);
 
@@ -43,14 +44,17 @@ app.use(
     middleware.handle(i18next)
 );
 
+app.use(cache());
+
 app.use(helmet());
 
 // Why do i need extended false and not true?
-//https://stackoverflow.com/questions/35931135/cannot-post-error-using-express
+// https://stackoverflow.com/questions/35931135/cannot-post-error-using-express
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use('/login', require('./login'))
+
 app.set('view engine', 'ejs');
-//render css files
+
+// render css files
 app.use(express.static('public'));
 
 // Is only stored on server.
@@ -60,14 +64,15 @@ app.use(session({
     saveUninitialized: true,
     store: new SessionFileStore({
         path: './sessions',
-        ttl: 5 // 15 minutes	
-    }),
+        ttl: 15 * 60, // 15 minutes
+        reapAsync: true
+    })
 }));
 
 // routing
 routes(app);
 
-//set app to listen on port 3001
+// set app to listen on port 3001
 app.listen(3001, function() {
     console.log('server is running on port 3001');
 });

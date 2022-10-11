@@ -1,6 +1,6 @@
 {
   "loginErrorPwChange": "Nach Pw Änderung bitte erneut anmelden",
-  "pwMissmatch": "Pw fehler",
+  "pwMissmatch": "Die beiden Passwörter stimmen nicht überein",
   "idIsNotDefined": "error: Id wurde nicht gesetzt",
   "errorLogin": "Bitte einloggen!",
   "loggedOut": "Erfolgreich abgemeldet!",
