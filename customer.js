@@ -5,6 +5,7 @@ import connection from './Database/database.js';
 import encrypt1 from './crypto/encrypt.js';
 import User from './user.js';
 import sessionHandler from './sessionHandler.js';
+import LoginError from './LoginError.js';
 
 /** Sign up a new user
  * 
@@ -15,40 +16,38 @@ async function signUp(req) {
     let pw = req.body.pw;
     let pw1 = req.body.pw1;
 
+    if (pw === null || pw1 === null) {
+        throw new Error('Error: Pw not found!');  
+    }
+
     if (pw !== pw1) {
-        return 'pw missmatch';
+        throw new LoginError('signup.pwMissmage'); 
     }
 
     let hashedPw = encrypt1.hashPw(pw);
     if (hashedPw === null) {
-        return 'error: Pw hash problem!';
-    }
-
-    if (pw === null || pw1 === null) {
-        return 'error: Pw not found!';
-    }
+        throw new Error('Error: Pw hash problem!'); 
+    }    
 
     let user = new User(null, req.body.username, req.body.firstname, req.body.lastname, hashedPw, null);
 
     if (user.username === null || user.firstname === null || user.lastname === null) {
-        return 'error: User data not found!';
+        throw new Error('Error: User data not found!'); 
     }
 
-    try {
-        let userExists = await connection.getUserExists(user.username);
+    let userExists = await connection.getUserExists(user.username);
 
-        if (userExists) {
-            return 'User already exists!';
-        }
+    if (userExists) {
+        throw new LoginError('signup.userAlreadyExists', ''); 
+    }
 
+    try{
         await connection.insertUser(user);
-
-        await sessionHandler.updteUserPwFromSession(req.session.pw);
-
-        return 'ok';
-    } catch (e) {
-        return e;
+    }catch(err){
+        return err;
     }
+
+    await sessionHandler.updteUserPwFromSession(req.session.pw);  
 }
 
 /** Signin user and store to session

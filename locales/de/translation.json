@@ -21,6 +21,8 @@
     "passwordRepeat": "Passwort wiederholen",
     "register": "Registrieren",
     "login": "Anmelden",
-    "generalError": "Registrierung fehlgeschlagen!"
+    "generalError": "Registrierung fehlgeschlagen!",
+    "userAlreadyExists": "Benutzer existiert bereits!",
+    "pwMissmatch":"Die beiden Passwörter stimmen nicht überein"
   }
 }

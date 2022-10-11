@@ -21,6 +21,8 @@
     "passwordRepeat": "Repeat password",
     "register": "Signup",
     "login": "Login",
-    "generalError": "Sign up error!"
+    "generalError": "Sign up error!",
+    "userAlreadyExists": "User already exists!",
+    "pwMissmatch":"Pw missmage"
   }
 }
