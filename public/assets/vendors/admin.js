@@ -1,5 +1,8 @@
 $(function () {
-    console.log('test2');
+    var text = $('#errorMessage').text();
+    if (text) {
+        showmessage({ content: text });
+    }
 
     $(document).on('click', '.delete', function () {
         var my_id_value = $(this).data('elementId');
