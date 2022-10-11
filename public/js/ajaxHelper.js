@@ -16,7 +16,7 @@ $(document).ready(function() {
             data: data,
             cache: false,
             datatype: "json",
-            url: '/showpw',
+            url: '/administration/showpw',
             success: function(result) {
 
                 $('#tempPw' + id).text(result);
@@ -48,7 +48,7 @@ $(document).ready(function() {
             data: data,
             cache: false,
             datatype: "json",
-            url: '/copypw',
+            url: '/administration/copypw',
             success: function(result) {
                 console.log("Here are the response in json format: " + result);
 
@@ -130,7 +130,7 @@ $(document).ready(function() {
             type: 'POST',
             cache: false,
             datatype: "json",
-            url: '/getcustomers',
+            url: '/administration/getcustomers',
             success: function(result) {
 
                 if (result === null)

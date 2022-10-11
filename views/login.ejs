@@ -13,7 +13,7 @@
                     <div class="card col-lg-4 mx-auto">
                         <div class="card-body px-5 py-5">
                             <h3 class="card-title text-left mb-3"><%= t("login.title") %></h3>
-                            <form action="/signin" method="POST">
+                            <form action="/customer/signin" method="POST">
                                 <div class="form-group">
                                     <label><%= t("login.username") %> *</label>
                                     <input type="text" id="username" name="username" class="form-control p_input"
@@ -38,7 +38,7 @@
                                     <button type="submit" class="btn btn-secondary btn-block enter-btn"><%= t("login.register") %></button>
                                 </div>
                             </form>
-                            <% if(errormsg.length> 0){ %>
+                            <% if(errormsg.length > 0){ %>
 
                                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                     <strong>

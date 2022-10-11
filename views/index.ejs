@@ -30,7 +30,7 @@
                         <ul class="navbar-nav navbar-nav-right">
                             <li class="nav-item dropdown d-none d-lg-block">
 
-                                <form action="/logout" method="POST">
+                                <form action="/customer/logout" method="POST">
 
                                     <input type="text" name="newtask" placeholder="add new task" hidden>
                                     <button
@@ -71,7 +71,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form action="/addnewpw" method="post">
+                                            <form action="/administration/addnewpw" method="post">
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label>App/Webseite-Name</label>
@@ -116,7 +116,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form action="/changepw" method="POST">
+                                            <form action="/customer/changepw" method="POST">
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label>Old pw</label>
@@ -157,7 +157,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form action="/changepwapp" method="POST">
+                                            <form action="/administration/changepw" method="POST">
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label>New pw</label>
@@ -194,7 +194,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form action="/deletepw" method="POST">
+                                            <form action="/administration/deletepw" method="POST">
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label>Pw wirklich unwiederruflich löschen? (Type "yes")</label>
@@ -327,6 +327,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <div id="errorMessage"><%= errormsg %></div>
 
                     <%- include('partial/footer') %>
 
