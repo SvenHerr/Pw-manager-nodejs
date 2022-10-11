@@ -1,66 +1,73 @@
 // This script runs on clientside
 
-$(document).ready(function() {
-  $('.showPwFormId').submit(function(e) {
-    e.preventDefault();
+$(document).ready(function () {
+    $(".showPwFormId").submit(function (e) {
+        e.preventDefault();
 
-    var id = this.id.value;
+        var id = this.id.value;
 
-    var data = {id : id};
+        var data = { id: id };
 
-    $.ajax({
-      type : 'POST',
-      data : data,
-      cache : false,
-      datatype : "json",
-      url : '/administration/showpw',
-      success : function(result) {
-        $('#tempPw' + id).text(result);
-        if (result == "*****") {
-          $('#ShowButton' + id).text('Show');
-          $('#ShowButton' + id).removeClass('btn-success');
-          $('#ShowButton' + id).addClass('btn-warning');
-
-        } else {
-          $('#ShowButton' + id).text('Hide');
-          $('#ShowButton' + id).removeClass('btn-warning');
-          $('#ShowButton' + id).addClass('btn-success');
-        }
-      }
+        $.ajax({
+            type: "POST",
+            data: data,
+            cache: false,
+            datatype: "json",
+            url: "/administration/showpw",
+            success: function (result) {
+                $("#tempPw" + id).text(result);
+                if (result == "*****") {
+                    $("#ShowButton" + id).text("Show");
+                    $("#ShowButton" + id).removeClass("btn-success");
+                    $("#ShowButton" + id).addClass("btn-warning");
+                } else {
+                    $("#ShowButton" + id).text("Hide");
+                    $("#ShowButton" + id).removeClass("btn-warning");
+                    $("#ShowButton" + id).addClass("btn-success");
+                }
+            },
+        });
     });
-  });
 
-  $('.copyFormId').submit(function(e) {
-    e.preventDefault();
+    $(".copyFormId").submit(function (e) {
+        e.preventDefault();
 
-    var data = {id : this.id.value};
+        var data = { id: this.id.value };
 
-    $.ajax({
-      type : 'POST',
-      data : data,
-      cache : false,
-      datatype : "json",
-      url : '/administration/copypw',
-      success : function(result) {
-        console.log("Here are the response in json format: " + result);
+        $.ajax({
+            type: "POST",
+            data: data,
+            cache: false,
+            datatype: "json",
+            url: "/administration/copypw",
+            success: function (result) {
+                console.log("Here are the response in json format: " + result);
 
-        if (result != "" && result != "error" && result != null) {
-          copy(result);
+                if (result != "" && result != "error" && result != null) {
+                    copy(result);
 
-          showmessage({type : 'success', speed : 200, content : 'Pw copy'});
-        }
-      },
-      error : function(error) {
-        showmessage({type : 'danger', speed : 200, content : 'Pw not copy'});
+                    showmessage({
+                        type: "success",
+                        speed: 200,
+                        content: "Pw copy",
+                    });
+                }
+            },
+            error: function (error) {
+                showmessage({
+                    type: "danger",
+                    speed: 200,
+                    content: "Pw not copy",
+                });
 
-        if (error != null) {
-          console.log(error);
-        }
-      }
+                if (error != null) {
+                    console.log(error);
+                }
+            },
+        });
     });
-  });
 
-  /*$('#exampleModalCenter').on('shown.bs.modal', function(e) {
+    /*$('#exampleModalCenter').on('shown.bs.modal', function(e) {
       e.preventDefault();
       var target = $('#sharewithdiv');
 
@@ -103,37 +110,42 @@ $(document).ready(function() {
       });
   });*/
 
-  $('#exampleModalCenter').on('shown.bs.modal', function(e) {
-    e.preventDefault();
-    var target = $('#customers');
-    console.log("Test");
+    $("#exampleModalCenter").on("shown.bs.modal", function (e) {
+        e.preventDefault();
+        var target = $("#customers");
+        console.log("Test");
 
-    $.ajax({
-      type : 'POST',
-      cache : false,
-      datatype : "json",
-      url : '/administration/getcustomers',
-      success : function(result) {
-        if (result === null)
-          return;
+        $.ajax({
+            type: "POST",
+            cache: false,
+            datatype: "json",
+            url: "/administration/getcustomers",
+            success: function (result) {
+                if (result === null) return;
 
-        if (result.length <= 0)
-          return;
+                if (result.length <= 0) return;
 
-        var resultString = '<option value="0">Allgemein</option>';
-        result.forEach(element => {
+                var resultString = '<option value="0">Allgemein</option>';
+                result.forEach((element) => {
+                    resultString +=
+                        '<option value="' +
+                        element.Id +
+                        '">' +
+                        element.Name +
+                        "</option>";
+                });
 
-                           resultString += '<option value="' + element.Id +
-                                           '">' + element.Name + '</option>'});
+                target.html(resultString);
+            },
+            error: function (error) {
+                console.log("error: " + error);
 
-        target.html(resultString);
-      },
-      error : function(error) {
-        console.log("error: " + error);
-
-        showmessage(
-            {type : 'danger', speed : 200, content : 'error: Customers'});
-      }
+                showmessage({
+                    type: "danger",
+                    speed: 200,
+                    content: "error: Customers",
+                });
+            },
+        });
     });
-  });
 });
