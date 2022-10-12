@@ -3,27 +3,39 @@
   "version": "1.0.0",
   "description": "Local pw tressor for raspberry",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon --ignore sessions index.js",
+    "migrate": "db-migrate up",
+    "migrate:rollback": "db-migrate down",
+    "migrate:reset": "db-migrate reset",
+    "migrate:create": "sh -c 'db-migrate create $0 -m migrations --sql-file'",
+    "migrate:create:windows": "db-migrate create %npm_config_name% -m migrations --sql-file",
+    "lint": "eslint ."
   },
   "author": "Sven Herrmann",
   "license": "",
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "body-parser": "^1.18.0",
-    "crypto": "^1.0.1",
-    "date-and-time": "^2.0.1",
+    "body-parser": "^1.20.0",
+    "db-migrate": "^0.11.13",
+    "db-migrate-mysql": "^2.2.0",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "express-limit": "^0.1.0",
     "express-rate-limit": "^6.6.0",
     "express-session": "^1.17.3",
+    "helmet": "^6.0.0",
+    "i18next": "^21.10.0",
+    "i18next-fs-backend": "^1.1.5",
+    "i18next-http-middleware": "^3.2.1",
     "lodash.escape": "^4.0.1",
+    "moment": "^2.29.4",
     "mongoose": "^6.1.5",
-    "mysql": "^2.18.1",
-    "raw-body": "^2.5.1"
+    "mysql2": "^2.3.3",
+    "raw-body": "^2.5.1",
+    "session-file-store": "^1.5.0"
   },
   "repository": {
     "type": "git",
@@ -35,6 +47,9 @@
   },
   "homepage": "https://github.com/SvenHerr/PwTressor#readme",
   "devDependencies": {
+    "eslint": "^8.25.0",
+    "eslint-plugin-prefer-let": "^3.0.1",
+    "eslint-plugin-security": "^1.5.0",
     "nodemon": "^2.0.15"
   }
 }

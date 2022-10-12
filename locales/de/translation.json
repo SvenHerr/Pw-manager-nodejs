@@ -1,0 +1,26 @@
+{
+  "loginErrorPwChange": "Nach Pw Änderung bitte erneut anmelden",
+  "pwMissmatch": "Die beiden Passwörter stimmen nicht überein",
+  "idIsNotDefined": "error: Id wurde nicht gesetzt",
+  "errorLogin": "Bitte einloggen!",
+  "loggedOut": "Erfolgreich abgemeldet!",
+  "login": {
+    "title": "Login",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "generalError": "Login fehlgeschlagen!"
+  },
+  "signup": {
+    "title": "Registrieren",
+    "username": "Benutzername",
+    "firstname": "Vorname",
+    "lastname": "Nachname",
+    "password": "Passwort",
+    "passwordRepeat": "Passwort wiederholen",
+    "register": "Registrieren",
+    "login": "Anmelden",
+    "generalError": "Registrierung fehlgeschlagen!"
+  }
+}

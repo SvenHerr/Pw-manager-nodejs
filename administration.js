@@ -1,170 +1,161 @@
-// This script runs on serverside
+// This script runs on serversider
 
 //dependencies required for the app
-var connection = require('../Pw-manager-nodejs/database');
-var conn = require('../Pw-manager-nodejs/databaseConnection'); // wieder löschen!
+import connection from './Database/database.js';
+import escape from 'lodash.escape';
+import customer from './customer.js';
+import moment from 'moment';
+import { decrypt } from './crypto/crypto.js';
+import { promisify } from 'es6-promisify';
 
-const dateObject = new Date();
-var languageImport = require('../Pw-manager-nodejs/language');
-const { encrypt, decrypt } = require('./crypto');
-const dateLib = require('date-and-time');
-const session = require('express-session');
-var language = languageImport.getEnglish();
+let encryptArray = []; // Darf nicht in die function rein.
 
-// current date
-const date = (`0 ${dateObject.getDate()}`).slice(-2);
-// current month
-const month = (`0 ${dateObject.getMonth() + 1}`).slice(-2);
-// current year
-const year = dateObject.getFullYear();
-var escape = require('lodash.escape');
-
-var encryptArray = [];
-
-
-function addNewPw(req, res) {
-
+async function loadData(req, res) {
     try {
-        connection.addPw(req,res);
-    } catch (err) {
-        console.log("addnewpw err: " + err);
-    }
-};
-
-function deletePw(req, res) {
-    
-    try{
-        if (req.body.confirmation == "yes") {
-            connection.deletePw(req.body.elementI,res);
+        if (!req.session.loggedIn) {
+            return res.render('login', { errormsg: '' });
         }
-    }catch(err){
-        console.log("deletePw err: " + err);
-    }
-};
+        
+        console.log('LoadDate Username= ' + req.session.username);
 
-function showPw(req, res) {
-    var decryptedPw = "";
+        let pwItemList = await connection.getAllPwFromUser(req);
 
-    if (encryptArray.includes(req.body.id)) {
+        if (req.session.loggedIn) {
+            pwItemList.forEach(row => {
+                try {
+                    row.Name = decrypt(row.Name, req.session.pw);
 
-        const index = encryptArray.indexOf(req.body.id);
-        if (index > -1) {
-            encryptArray.splice(index, 1);
-        }
-
-        res.send(escape("*****"));
-
-    } else {
-        encryptArray.push(req.body.id);
-
-        const index = encryptArray.indexOf(req.body.id);
-
-        var temp = encryptArray[index];
-
-        if (temp != null) {
-
-            //connection.getPw(req,res);
-
-            conn.query('SELECT * FROM pw WHERE Username =  ? AND Id = ?', [req.session.username, req.body.id], (err, rows) => {
-
-                if (err != null) {
-                    console.log("showpw sql error");
-                }
-
-                if (rows[0] != null) {
-                    if (rows[0].Pw != null) {
-                        decryptedPw = decrypt(rows[0].Pw, req.session.pw);
-                        res.send(escape(decryptedPw));
+                    if (row.Loginname != null) {
+                        row.Loginname = decrypt(row.Loginname, req.session.pw);
                     }
+
+                    row.Pw = decrypt(row.Pw.toString(), req.session.pw);
+                } catch (err) {
+                    console.log(err);
                 }
             });
 
+            let errormsg = req.session.errormsg;
+            req.session.errormsg = undefined;
+
+            return res.render('index', { errormsg, pwDatas: pwItemList, userData: customer.getUserFromSession(req), moment: moment });
         } else {
-            console.log("encryptArray on index is null");
+            return res.render('login', { errormsg: '' });
         }
+    } catch (err) {
+        console.log('Error on load: ' + err);
     }
-};
+}
 
-function copyPw(req, res) {
-    pwcopycalled = true;
-    if (req.session.loggedIn) {
-        connection.query('SELECT Pw FROM pw WHERE Id =  ?', [req.body.id], function(err, rows) {
+async function getCustomers(req,res) {
+    try {
+        res.send(await connection.getCustomers());
+    } catch (err) {
+        console.log('addnewpw err: ' + err);
+    }
+}
 
-            if (rows[0] != null) {
-                encryptedPwCopy = decrypt(rows[0].Pw, req.session.pw);
-                res.send(escape(encryptedPwCopy));
-            } else {
-                res.send(escape("error"));
+async function addNewPw(req, res) {
+    try {
+        await connection.insertPw(req, res);
+
+        res.redirect('/');
+    } catch (err) {
+        console.log('addnewpw err: ' + err);
+    }
+}
+
+async function deletePw(req, res) {
+    try {
+        if (req.body.confirmation === 'yes') {
+            await connection.deletePw(req.body.elementId);
+
+            res.redirect('/');
+        }
+    } catch (err) {
+        console.log('deletePw err: ' + err);
+    }
+}
+
+async function showPw(req, res) {
+    try{
+        if (encryptArray.includes(req.body.id)) {
+            let index = encryptArray.indexOf(req.body.id);
+            if (index > -1) {
+                encryptArray.splice(index, 1);
             }
-        });
+
+            res.send(escape('*****'));
+        } else {
+            encryptArray.push(req.body.id);
+
+            let index = encryptArray.indexOf(req.body.id);
+
+            if (encryptArray[index] != null) {
+                return await getDecriptedPw(req, res);
+            }
+        }
+    }catch(err){
+        console.log('Error in ShowPw: ' + err);
     }
-};
+}
 
-function changePw(req, res) {
-    var oldPw = escape(req.body.oldPw);
-    var newPw = escape(req.body.newPw);
+async function copyPw(req, res) {
+    return await getDecriptedPw(req, res);
+}
 
-    connection.query('SELECT * FROM pw WHERE User =  ?', [req.session.username], function(err, complete) {
-        currentDate = `${month}/${date}/${year}`;
+async function getDecriptedPw(req, res) {
+    try{
+        if (req.session.loggedIn) {
+            let decryptedPw = await connection.getDecriptedPw(req, res);
+
+            if(decryptedPw !== null){
+                res.send(escape(decryptedPw));
+            }
+        }
+    }catch(err){
+        console.log('Error in getDecriptedPw: ' + err);
+    }
+}
+
+/**
+ * Changes the pw from row
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+async function changePw(req, res) {
+    try {
+        if (escape(req.body.newPw) !== escape(req.body.newPw1)) {
+            req.session.errormsg = req.t('pwMissmatch');
+        }
+
+        if (escape(req.body.changeelement) === null) {
+            req.session.errormsg = req.t('idIsNotDefined');
+        }
 
         if (req.session.loggedIn) {
-            if (complete != null) {
-                complete.forEach(row => {
-
-                    var decriptedName = decrypt(row.Name, oldPw);
-                    var encriptedName = encrypt(decriptedName, newPw);
-                    var decriptedPw = decrypt(row.Pw, oldPw);
-                    var encriptedPw = encrypt(decriptedPw, newPw);
-
-                    try {
-                        connection.query('UPDATE pw SET Name = ?, Pw = ? WHERE Id = ?', [encriptedName, encriptedPw, row.Id]);
-                    } catch (err) {
-                        console.log("ChangePW update sql: " + err);
-                    }
-                });
-            }
-        } else {
-            return res.render("login", { errormsg: "Nach Pw Änderung bitte erneut anmelden" });
+            await connection.updatePwById(req);
         }
-    });
-
-    req.session.pw = newPw;
-    connection.query('UPDATE user SET Pw = ? WHERE Username = ?', [newPw, req.session.username]);
-
-    return res.render("login", { errormsg: language.loginErrorPwChange });
-};
-
-function changePwApp(req, res) {
-    var newPw = req.body.newPw;
-    var newPwConfirmation = req.body.newPw1;
-    var id = req.body.changeelement;
-
-    if (newPw != newPwConfirmation) {
-        return language.pwMissmatch;
+    } catch (err) {
+        console.log('Error in changePwApp: ' + err);
     }
 
-    if (id == null) {
-        return language.idIsNotDefined;
-    }
+    let save = promisify(req.session.save.bind(req.session));
+    await save();
+    res.redirect('/');
+}
 
-    var currentDate = new Date();
-    currentDate = dateLib.format(currentDate, 'YYYY-MM-DD');
-
-    if (req.session.loggedIn) {
-
-        var encriptedPw = encrypt(newPw.toString(), req.session.pw);
-
-        try {
-            connection.query('UPDATE pw SET Pw = ?, CreateDate = ? WHERE Id = ?', [encriptedPw, currentDate, id]);
-        } catch (err) {
-            console.log("ChangePW update sql: " + err);
+export default {
+    loadData,
+    routes: {
+        post: {
+            getCustomers,
+            addNewPw,
+            copyPw,
+            changePw,
+            deletePw,
+            showPw
         }
-
-    } else {
-        console.log("ChangePW else!");
-    }
-    console.log("redirect to / (changePwApp)");
-    res.redirect("/");
+    },
 };
-
-module.exports = { changePwApp, changePw, copyPw, showPw, deletePw, addNewPw }

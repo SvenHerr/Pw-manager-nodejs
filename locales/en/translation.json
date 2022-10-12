@@ -1,0 +1,26 @@
+{
+  "loginErrorPwChange": "Changed pw please login again",
+  "pwMissmatch": "The passwords do not match",
+  "idIsNotDefined": "error: Id is not defined",
+  "errorLogin": "Please login!",
+  "loggedOut": "Logged out!",
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "login": "Login",
+    "register": "Signup",
+    "generalError": "Login error!"
+  },
+  "signup": {
+    "title": "Signup",
+    "username": "Username",
+    "firstname": "Firstname",
+    "lastname": "Lastname",
+    "password": "Password",
+    "passwordRepeat": "Repeat password",
+    "register": "Signup",
+    "login": "Login",
+    "generalError": "Sign up error!"
+  }
+}
