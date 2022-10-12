@@ -3,14 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "login.js",
+  "type": "module",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "type": "module"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "jest": "^29.1.2",
-    "save-dev": "^0.0.1-security"
+    "save-dev": "^0.0.1-security",
+    "type": "module"
   }
 }
