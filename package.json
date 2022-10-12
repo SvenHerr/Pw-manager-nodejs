@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon --ignore sessions index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "db-migrate up",
     "migrate:rollback": "db-migrate down",
     "migrate:reset": "db-migrate reset",
