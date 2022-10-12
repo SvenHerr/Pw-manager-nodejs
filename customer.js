@@ -5,7 +5,6 @@ import connection from './Database/database.js';
 import encrypt1 from './crypto/encrypt.js';
 import User from './user.js';
 import sessionHandler from './sessionHandler.js';
-import LoginError from './LoginError.js';
 
 /** Sign up a new user
  * 
@@ -17,30 +16,38 @@ async function signUp(req) {
     let pw1 = req.body.pw1;
 
     if (pw === null || pw1 === null) {
-        throw new Error('Error: Pw not found!');  
+        sessionHandler.setErrormsgToSession(req, 'signup.pwNotFound');
+        return false;
     }
 
     if (pw !== pw1) {
-        throw new LoginError('signup.pwMissmage'); 
+        sessionHandler.setErrormsgToSession(req, 'signup.pwMissmage'); 
+        return false;
     }
 
     let hashedPw = encrypt1.hashPw(pw);
     if (hashedPw === null) {
-        throw new Error('Error: Pw hash problem!'); 
+        sessionHandler.setErrormsgToSession(req, 'signup.pwHashProblem'); 
+        return false;
     }    
 
     let user = new User(null, req.body.username, req.body.firstname, req.body.lastname, hashedPw, null);
 
     if (user.username === null || user.firstname === null || user.lastname === null) {
-        throw new Error('Error: User data not found!'); 
+        sessionHandler.setErrormsgToSession(req, 'signup.pwHashProblem'); 
+        return false;
     }
 
-    let userExists = await connection.getUserExists(user.username);
-
-    if (userExists) {
-        throw new LoginError('signup.userAlreadyExists', ''); 
+    try{
+        if (await connection.getUserExists(user.username)) {
+            sessionHandler.setErrormsgToSession(req, 'signup.userAlreadyExists');
+            return false;
+        }
+    }catch(err){
+        console.log('Error on signUp: ' + err);
+        return err;
     }
-
+    
     try{
         await connection.insertUser(user);
     }catch(err){
@@ -48,6 +55,8 @@ async function signUp(req) {
     }
 
     await sessionHandler.updteUserPwFromSession(req.session.pw);  
+
+    return true;
 }
 
 /** Signin user and store to session
@@ -65,7 +74,7 @@ async function signIn(req, res) {
         let user = await connection.getUser(req, res);
 
         if (user === null) {
-            return res.render('login', { errormsg: req.t('loginError') });
+            return res.render('login', { errormsg: req.t('login.generalError') });
         }
         try{
             await sessionHandler.setUserToSession(req, res, user);

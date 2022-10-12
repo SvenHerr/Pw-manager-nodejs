@@ -60,6 +60,18 @@ async function updteUserPwFromSession(req) {
     await saveSession(req);
 }
 
+async function setErrormsgToSession(req, msg) {
+    req.session.errormsg = msg;
+    await saveSession(req);
+}
+
+async function getErrorFromSession(req) {
+    let errormsg = req.session.errormsg;
+    req.session.errormsg = '';
+    await saveSession(req);
+    return errormsg ?? '';
+}
+
 /** Save session
  * 
  * @param {*} req 
@@ -73,5 +85,7 @@ export default {
     setUserToSession,
     deleteUserFromSession,
     updteUserPwFromSession,
-    regenerateSession
+    regenerateSession,
+    setErrormsgToSession,
+    getErrorFromSession
 };
