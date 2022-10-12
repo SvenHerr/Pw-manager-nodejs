@@ -20,7 +20,7 @@ there is a table installscript provided.
 
 The design template comes from Bootstrapdash, some adjustments were made by me.
 Template link: Bootstrapdash.com/demo/corona-free/jquery/template/index.html
-The main focus of the project is the logic and function of the Pw Tressor.
+The main focus of the project is the logic and function of the Pw Tresor.
 
 Updates that will follow are:
 - Generate secure pw automatic function.
@@ -32,7 +32,7 @@ im open to suggestions and happy to hear from you
 [message me](mailto:githubprojects@herrmannsven.de?subject=[GitHub]%20Source%20Han%20Sans)
 
 # German
-Dieser Pw Tressor wurde von mir in NodeJs erstellt. Das ist mein erstes Projekt mit NodeJs, Express und Crypto.
+Dieser Pw Tresor wurde von mir in NodeJs erstellt. Das ist mein erstes Projekt mit NodeJs, Express und Crypto.
 Außerdem wird eine mysql Db benötigt.
 
 Was kann der Password- Manager?
@@ -46,7 +46,7 @@ Was kann der Password- Manager?
 
 Das Design Template stammt von Bootstrapdash einige Anpassungen wurden von mir durchgeführt. 
 Template-Link: Bootstrapdash.com/demo/corona-free/jquery/template/index.html
-Der schwerpunkt des Projektes liegt mir aber an der Logik und funktion des Pw Tressores.
+Der schwerpunkt des Projektes liegt mir aber an der Logik und funktion des Pw Tresores.
 
 Updates die folgen werden sind:
 - generate secure pw automatic function.

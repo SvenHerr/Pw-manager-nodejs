@@ -1,6 +1,9 @@
+// This script runs on serversider
+
 import user from './user.js';
 import customer from './customer.js';
 import administration from './administration.js'; // TODO: Change name !!!
+import sessionHandler from './sessionHandler.js';
 
 export default function (app) {
     let routes = { customer, administration };
@@ -10,7 +13,7 @@ export default function (app) {
     
         if (!req.session.loggedIn) {
             console.log('user is null1 => login');
-            return res.render('login', { errormsg: '' });
+            return res.render('login', { errormsg: await sessionHandler.getErrorFromSession(req) });
         }
     
         await administration.loadData(req, res);
@@ -22,14 +25,12 @@ export default function (app) {
     
     app.post('/signup', async function(req, res) {
         try {
-            let status = await customer.signUp(req, res);
-            let user = customer.getUserFromSession(req);
-    
-            if (status == 'ok') {
+            if (await customer.signUp(req, res)) {
                 console.log('werde user einloggen');
                 await customer.signIn(req, res);
             } else {
-                return res.render('signup', { userData: user, errormsg: status });
+                let msg = await sessionHandler.getErrorFromSession(req);
+                return res.render('signup', { userData: customer.getUserFromSession(req), errormsg: msg });
             }
         } catch (err) {
             console.log('Error on Login: ' + err);
@@ -38,8 +39,7 @@ export default function (app) {
     });
     
     app.get('/signup', function(req, res) {
-        let user = customer.getUserFromSession(req);
-        return res.render('signup', { userData: user, errormsg: '' });
+        return res.render('signup', { userData: customer.getUserFromSession(req), errormsg: '' });
     });
     
     app.get('/documentation', function(req, res) {
@@ -83,8 +83,15 @@ export default function (app) {
         }
     });
     
+    // Catch for all other posts routes and redirect to default page
     app.post('*', function(req, res) {
-        console.log('redirect to / (*2)');
+        console.log('catch all posts and redirect to index');
         return res.redirect('/');
+    });
+
+    // Catch for all other routes and redirect to default page
+    app.get('*', function(req, res) {
+        console.log('catch all and redirect to index');
+        return res.redirect('/index');
     });
 }
