@@ -23,7 +23,7 @@
     "login": "Login",
     "generalError": "Sign up error!",
     "userAlreadyExists": "User already exists!",
-    "pwMissmatch":"Pw missmage",
+    "pwMissmatch": "Pw missmage",
     "pwNotFound": "Error: Pw not found!",
     "pwHashProblem": "pw hash problem",
     "userDataNotFound": "Error: User data not found!"
