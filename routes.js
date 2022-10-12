@@ -1,3 +1,5 @@
+// This script runs on serversider
+
 import user from './user.js';
 import customer from './customer.js';
 import administration from './administration.js'; // TODO: Change name !!!
@@ -81,8 +83,15 @@ export default function (app) {
         }
     });
     
+    // Catch for all other posts routes and redirect to default page
     app.post('*', function(req, res) {
-        console.log('redirect to / (*2)');
+        console.log('catch all posts and redirect to index');
         return res.redirect('/');
+    });
+
+    // Catch for all other routes and redirect to default page
+    app.get('*', function(req, res) {
+        console.log('catch all and redirect to index');
+        return res.redirect('/index');
     });
 }

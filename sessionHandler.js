@@ -1,4 +1,5 @@
-import encrypt1 from './crypto/encrypt.js';
+// This script runs on serverside
+
 import { promisify } from 'es6-promisify';
 import escape from 'lodash.escape';
 
@@ -10,20 +11,14 @@ import escape from 'lodash.escape';
  * @returns 
  */
 async function setUserToSession(req, res, user) {
-    let hastPw = encrypt1.hashPw(req.body.pw);
+    req.session.loggedIn = true;
+    req.session.userid = user.id;
+    req.session.username = user.username;
+    req.session.firstname = user.firstname;
+    req.session.lastname = user.lastname;
+    req.session.pw = user.pw;
 
-    if (hastPw === user.pw) {
-        req.session.loggedIn = true;
-        req.session.userid = user.id;
-        req.session.username = user.username;
-        req.session.firstname = user.firstname;
-        req.session.lastname = user.lastname;
-        req.session.pw = user.pw;
-
-        await saveSession(req);
-    } else {
-        throw new Error('Pw missmatch!');    
-    }
+    await saveSession(req);
 }
 
 /** Delte user data from session

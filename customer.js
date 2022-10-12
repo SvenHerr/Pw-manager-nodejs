@@ -76,8 +76,11 @@ async function signIn(req, res) {
         if (user === null) {
             return res.render('login', { errormsg: req.t('login.generalError') });
         }
+
         try{
-            await sessionHandler.setUserToSession(req, res, user);
+            if(user.pw === encrypt1.hashPw(req.body.pw)){
+                await sessionHandler.setUserToSession(req,res, user);
+            }
         }catch(err){
             return res.render('login', { errormsg: req.t('loginError') });
         }
