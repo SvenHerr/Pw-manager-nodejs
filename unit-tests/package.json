@@ -1,0 +1,16 @@
+{
+  "name": "unit-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "login.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jest": "^29.1.2",
+    "save-dev": "^0.0.1-security"
+  }
+}
