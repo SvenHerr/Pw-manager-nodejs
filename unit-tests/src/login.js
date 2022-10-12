@@ -14,4 +14,5 @@ const mathOperations = {
     }
 };
 
-module.exports = mathOperations;
+export default {mathOperations} ;
+//module.exports = mathOperations;
