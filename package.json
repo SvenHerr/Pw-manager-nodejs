@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon --ignore sessions index.js",
-    "test": "index.js",
+    "test": "nodemon --ignore sessions index.js",
     "migrate": "db-migrate up",
     "migrate:rollback": "db-migrate down",
     "migrate:reset": "db-migrate reset",
