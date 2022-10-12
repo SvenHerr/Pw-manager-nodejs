@@ -1,56 +1,56 @@
 // This script runs on serversider
 
 // dependencies required for the app
-import {promisify} from 'es6-promisify';
-import escape from 'lodash.escape';
-import moment from 'moment';
+import { promisify } from "es6-promisify";
+import escape from "lodash.escape";
+import moment from "moment";
 
-import {decrypt} from './crypto/crypto.js';
-import customer from './customer.js';
-import connection from './Database/database.js';
+import { decrypt } from "./crypto/crypto.js";
+import customer from "./customer.js";
+import connection from "./Database/database.js";
 
 let encryptArray = []; // Darf nicht in die function rein.
 
 async function loadData(req, res) {
-  try {
-    if (!req.session.loggedIn) {
-      return; // res.render('login', { errormsg: '' });
-    }
-
-    console.log('LoadDate Username= ' + req.session.username);
-
-    let pwItemList = await connection.getAllPwFromUser(req);
-
-    if (req.session.loggedIn) {
-      pwItemList.forEach(row => {
-        try {
-          row.Name = decrypt(row.Name, req.session.pw);
-
-          if (row.Loginname != null) {
-            row.Loginname = decrypt(row.Loginname, req.session.pw);
-          }
-
-          row.Pw = decrypt(row.Pw.toString(), req.session.pw);
-        } catch (err) {
-          console.log(err);
+    try {
+        if (!req.session.loggedIn) {
+            return; // res.render('login', { errormsg: '' });
         }
-      });
 
-      let errormsg = req.session.errormsg;
-      req.session.errormsg = undefined;
+        console.log("LoadDate Username= " + req.session.username);
 
-      return res.render('index', {
-        errormsg,
-        pwDatas : pwItemList,
-        userData : customer.getUserFromSession(req),
-        moment : moment
-      });
-    } else {
-      return; // res.render('login', { errormsg: '' });
+        let pwItemList = await connection.getAllPwFromUser(req);
+
+        if (req.session.loggedIn) {
+            pwItemList.forEach((row) => {
+                try {
+                    row.Name = decrypt(row.Name, req.session.pw);
+
+                    if (row.Loginname != null) {
+                        row.Loginname = decrypt(row.Loginname, req.session.pw);
+                    }
+
+                    row.Pw = decrypt(row.Pw.toString(), req.session.pw);
+                } catch (err) {
+                    console.log(err);
+                }
+            });
+
+            let errormsg = req.session.errormsg;
+            req.session.errormsg = undefined;
+
+            return res.render("index", {
+                errormsg,
+                pwDatas: pwItemList,
+                userData: customer.getUserFromSession(req),
+                moment: moment,
+            });
+        } else {
+            return; // res.render('login', { errormsg: '' });
+        }
+    } catch (err) {
+        console.log("Error on load: " + err);
     }
-  } catch (err) {
-    console.log('Error on load: ' + err);
-  }
 }
 
 /**
@@ -60,72 +60,74 @@ async function loadData(req, res) {
  * @param {*} res
  */
 async function getCustomers(req, res) {
-  try {
-    res.send(await connection.getCustomers());
-  } catch (err) {
-    console.log('addnewpw err: ' + err);
-  }
+    try {
+        res.send(await connection.getCustomers());
+    } catch (err) {
+        console.log("addnewpw err: " + err);
+    }
 }
 
 async function addNewPw(req, res) {
-  try {
-    await connection.insertPw(req, res);
+    try {
+        await connection.insertPw(req, res);
 
-    res.redirect('/');
-  } catch (err) {
-    console.log('addnewpw err: ' + err);
-  }
+        res.redirect("/");
+    } catch (err) {
+        console.log("addnewpw err: " + err);
+    }
 }
 
 async function deletePw(req, res) {
-  try {
-    if (req.body.confirmation === 'yes') {
-      await connection.deletePw(req.body.elementId);
+    try {
+        if (req.body.confirmation === "yes") {
+            await connection.deletePw(req.body.elementId);
 
-      res.redirect('/');
+            res.redirect("/");
+        }
+    } catch (err) {
+        console.log("deletePw err: " + err);
     }
-  } catch (err) {
-    console.log('deletePw err: ' + err);
-  }
 }
 
 async function showPw(req, res) {
-  try {
-    if (encryptArray.includes(req.body.id)) {
-      let index = encryptArray.indexOf(req.body.id);
-      if (index > -1) {
-        encryptArray.splice(index, 1);
-      }
+    try {
+        if (encryptArray.includes(req.body.id)) {
+            let index = encryptArray.indexOf(req.body.id);
+            if (index > -1) {
+                encryptArray.splice(index, 1);
+            }
 
-      res.send(escape('*****'));
-    } else {
-      encryptArray.push(req.body.id);
+            res.send(escape("*****"));
+        } else {
+            encryptArray.push(req.body.id);
 
-      let index = encryptArray.indexOf(req.body.id);
+            let index = encryptArray.indexOf(req.body.id);
 
-      if (encryptArray[index] != null) {
-        return await getDecriptedPw(req, res);
-      }
+            if (encryptArray[index] != null) {
+                return await getDecriptedPw(req, res);
+            }
+        }
+    } catch (err) {
+        console.log("Error in ShowPw: " + err);
     }
-  } catch (err) {
-    console.log('Error in ShowPw: ' + err);
-  }
 }
 
-async function copyPw(req, res) { return await getDecriptedPw(req, res); }
+async function copyPw(req, res) {
+    return await getDecriptedPw(req, res);
+}
 
 async function getDecriptedPw(req, res) {
-  try {
-    if (req.session.loggedIn) {
-      let decryptedPw = await connection.getDecriptedPw(req, res);
+    try {
+        if (req.session.loggedIn) {
+            let decryptedPw = await connection.getDecriptedPw(req, res);
 
-      if (decryptedPw !== null) {
-        res.send(escape(decryptedPw));
-      }
+            if (decryptedPw !== null) {
+                res.send(escape(decryptedPw));
+            }
+        }
+    } catch (err) {
+        console.log("Error in getDecriptedPw: " + err);
     }
-  } catch (err) {
-    console.log('Error in getDecriptedPw: ' + err);
-  }
 }
 
 /**
@@ -135,28 +137,30 @@ async function getDecriptedPw(req, res) {
  * @returns
  */
 async function changePw(req, res) {
-  try {
-    if (escape(req.body.newPw) !== escape(req.body.newPw1)) {
-      req.session.errormsg = req.t('pwMissmatch');
+    try {
+        if (escape(req.body.newPw) !== escape(req.body.newPw1)) {
+            req.session.errormsg = req.t("pwMissmatch");
+        }
+
+        if (escape(req.body.changeelement) === null) {
+            req.session.errormsg = req.t("idIsNotDefined");
+        }
+
+        if (req.session.loggedIn) {
+            await connection.updatePwById(req);
+        }
+    } catch (err) {
+        console.log("Error in changePwApp: " + err);
     }
 
-    if (escape(req.body.changeelement) === null) {
-      req.session.errormsg = req.t('idIsNotDefined');
-    }
-
-    if (req.session.loggedIn) {
-      await connection.updatePwById(req);
-    }
-  } catch (err) {
-    console.log('Error in changePwApp: ' + err);
-  }
-
-  let save = promisify(req.session.save.bind(req.session));
-  await save();
-  res.redirect('/');
+    let save = promisify(req.session.save.bind(req.session));
+    await save();
+    res.redirect("/");
 }
 
 export default {
-  loadData,
-  routes: {post: {getCustomers, addNewPw, copyPw, changePw, deletePw, showPw}},
+    loadData,
+    routes: {
+        post: { getCustomers, addNewPw, copyPw, changePw, deletePw, showPw },
+    },
 };
