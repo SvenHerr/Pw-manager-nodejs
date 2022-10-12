@@ -1,7 +1,7 @@
 {
-  "name": "sven-pw-tressor",
+  "name": "sven-pw-tresor",
   "version": "1.0.0",
-  "description": "Local pw tressor for raspberry",
+  "description": "Local pw tresor for raspberry",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -20,8 +20,11 @@
     "body-parser": "^1.18.0",
     "crypto": "^1.0.1",
     "date-and-time": "^2.4.1",
+    "db-migrate": "^0.11.13",
+    "db-migrate-mysql": "^2.2.0",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.8",
+    "es6-promisify": "^7.0.0",
     "express": "^4.18.1",
     "express-limit": "^0.1.0",
     "express-rate-limit": "^6.6.0",
@@ -39,13 +42,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SvenHerr/PwTressor.git"
+    "url": "git+https://github.com/SvenHerr/PwTresor.git"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/SvenHerr/PwTressor/issues"
+    "url": "https://github.com/SvenHerr/PwTresor/issues"
   },
-  "homepage": "https://github.com/SvenHerr/PwTressor#readme",
+  "homepage": "https://github.com/SvenHerr/PwTresor#readme",
   "devDependencies": {
     "eslint": "^8.25.0",
     "eslint-plugin-prefer-let": "^3.0.1",
