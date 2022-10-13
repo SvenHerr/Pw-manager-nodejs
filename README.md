@@ -63,10 +63,12 @@ schreibt mir gerne bei Fragen und Anregungen.
 ![image](https://user-images.githubusercontent.com/19588101/156414790-b5d313c6-4b84-4b38-bb9b-102850d1563d.png)
 
 
+<br>
 
-
-Credit for frontend Design: https://www.bootstrapdash.com
-Template used for project: https://www.bootstrapdash.com/demo/corona-free/jquery/template/index.html
-
-
+<b>Credits</b>
+- frontend Design: <a href="https://www.bootstrapdash.com" >Bootstrapdash</a>
+- Template used for project: <a href="https://www.bootstrapdash.com/demo/corona-free/jquery/template/index.html" >Corona-Free</a> 
+<br>
+<br>
+<b>Special thanks to </b> <a href="https://github.com/myMartek" >MyMartek</a> for all the codereviews.
 
