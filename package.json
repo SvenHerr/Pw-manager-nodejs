@@ -36,6 +36,7 @@
         "i18next-fs-backend": "^1.1.5",
         "i18next-http-middleware": "^3.2.1",
         "lodash.escape": "^4.0.1",
+        "mock-req-res": "^1.2.1",
         "moment": "^2.29.4",
         "mongoose": "^6.1.5",
         "mysql2": "^2.3.3",

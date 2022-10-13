@@ -8,6 +8,7 @@ import { Builder, Browser, By, Key, until } from 'selenium-webdriver';
 import chromedriver from 'chromedriver';
 
 import assert from 'assert';
+import helper from '../helper.js';
 
 // describe test
 describe('Log in default user', function () {
