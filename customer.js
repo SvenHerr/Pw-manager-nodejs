@@ -21,40 +21,40 @@ async function signUp(req) {
     }
 
     if (pw !== pw1) {
-        sessionHandler.setErrormsgToSession(req, 'signup.pwMissmage'); 
+        sessionHandler.setErrormsgToSession(req, 'signup.pwMissmage');
         return false;
     }
 
     let hashedPw = encrypt1.hashPw(pw);
     if (hashedPw === null) {
-        sessionHandler.setErrormsgToSession(req, 'signup.pwHashProblem'); 
+        sessionHandler.setErrormsgToSession(req, 'signup.pwHashProblem');
         return false;
-    }    
+    }
 
     let user = new User(null, req.body.username, req.body.firstname, req.body.lastname, hashedPw, null);
 
     if (user.username === null || user.firstname === null || user.lastname === null) {
-        sessionHandler.setErrormsgToSession(req, 'signup.pwHashProblem'); 
+        sessionHandler.setErrormsgToSession(req, 'signup.pwHashProblem');
         return false;
     }
 
-    try{
+    try {
         if (await connection.getUserExists(user.username)) {
             sessionHandler.setErrormsgToSession(req, 'signup.userAlreadyExists');
             return false;
         }
-    }catch(err){
+    } catch (err) {
         console.log('Error on signUp: ' + err);
         return err;
     }
-    
-    try{
+
+    try {
         await connection.insertUser(user);
-    }catch(err){
+    } catch (err) {
         return err;
     }
 
-    await sessionHandler.updteUserPwFromSession(req.session.pw);  
+    await sessionHandler.updteUserPwFromSession(req.session.pw);
 
     return true;
 }
@@ -68,26 +68,33 @@ async function signUp(req) {
 async function signIn(req, res) {
     if (req.session.loggedIn) {
         res.redirect('/');
+        return false;
     }
 
     try {
         let user = await connection.getUser(req, res);
 
         if (user === null) {
-            return res.render('login', { errormsg: req.t('login.generalError') });
+            sessionHandler.setErrormsgToSession(req.t('login.generalError'));
+            return false;
+            //return res.render('login', { errormsg: req.t('login.generalError') });
         }
 
-        try{
-            if(user.pw === encrypt1.hashPw(req.body.pw)){
-                await sessionHandler.setUserToSession(req,res, user);
+        try {
+            if (user.pw === encrypt1.hashPw(req.body.pw)) {
+                await sessionHandler.setUserToSession(req, res, user);
+                res.redirect('/');
+                return true;
             }
-        }catch(err){
-            return res.render('login', { errormsg: req.t('loginError') });
+        } catch (err) {
+            sessionHandler.setErrormsgToSession(req.t('login.loginError'));
+            return false;
+            //return res.render('login', { errormsg: req.t('loginError') });
         }
 
-        res.redirect('/');
     } catch (err) {
         console.log('Error on singIn: ' + err);
+        return false;
     }
 }
 
@@ -98,21 +105,18 @@ async function signIn(req, res) {
  * @returns
  */
 async function logout(req, res) {
-    try{
+    try {
         // Save default user data to session
         await sessionHandler.deleteUserFromSession(req);
-    }catch(err){
+        await sessionHandler.regenerateSession(req);
+
+        return true;
+    } catch (err) {
         console.log('Error on logout: ' + err);
+        return false;
     }
 
-    try{
-        // Regenerate new session
-        await sessionHandler.regenerateSession(req);
-    }catch(err){
-        console.log('Error on logout: ' + err);
-    }
-    
-    return res.redirect('/');
+    //return res.redirect('/');
 }
 
 /** Gets the current user from the session
