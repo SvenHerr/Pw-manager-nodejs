@@ -19,6 +19,7 @@ async function setUserToSession(req, res, user) {
     req.session.pw = user.pw;
 
     await saveSession(req);
+    return true;
 }
 
 /** Delte user data from session
@@ -64,14 +65,14 @@ async function getErrorFromSession(req) {
     let errormsg = req.session.errormsg;
     req.session.errormsg = '';
     await saveSession(req);
-    return errormsg ?? '';
+    return errormsg ? ? '';
 }
 
 /** Save session
  * 
  * @param {*} req 
  */
-async function saveSession(req){
+async function saveSession(req) {
     let save = promisify(req.session.save.bind(req.session));
     await save();
 }
