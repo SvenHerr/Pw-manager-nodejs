@@ -54,6 +54,7 @@
     "homepage": "https://github.com/SvenHerr/Pw-manager-nodejs#readme",
     "devDependencies": {
         "chai": "^4.3.6",
+        "chromedriver": "^106.0.1",
         "eslint": "^8.25.0",
         "eslint-plugin-prefer-let": "^3.0.1",
         "eslint-plugin-security": "^1.5.0",
