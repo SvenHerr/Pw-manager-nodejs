@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "start": "nodemon --ignore sessions index.js",
-        "test": "mocha --no-timeouts tests/*.spec.js",
+        "test": "mocha --no-timeouts tests/*/*.spec.js",
         "coverage": "nyc --reporter=text npm test",
         "migrate": "db-migrate up",
         "migrate:rollback": "db-migrate down",
