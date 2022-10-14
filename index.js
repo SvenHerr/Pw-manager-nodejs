@@ -28,7 +28,7 @@ i18next
         preload: ['en', 'de']
     });
 
-const app = express();
+const app = express().disable('x-powered-by');
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
