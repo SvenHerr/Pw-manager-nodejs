@@ -10,6 +10,12 @@ import { promisify } from 'es6-promisify';
 
 let encryptArray = []; // Darf nicht in die function rein.
 
+/** Load pw data in index page
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 async function loadData(req, res) {
     try {
         if (!req.session.loggedIn) {
@@ -60,6 +66,11 @@ async function getCustomers(req,res) {
     }
 }
 
+/** Add new pw
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 async function addNewPw(req, res) {
     try {
         await connection.insertPw(req, res);
@@ -70,6 +81,11 @@ async function addNewPw(req, res) {
     }
 }
 
+/** Deletes the pw 
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 async function deletePw(req, res) {
     try {
         if (req.body.confirmation === 'yes') {
@@ -82,6 +98,12 @@ async function deletePw(req, res) {
     }
 }
 
+/** Show the pw in index page
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 async function showPw(req, res) {
     try{
         if (encryptArray.includes(req.body.id)) {
@@ -105,10 +127,21 @@ async function showPw(req, res) {
     }
 }
 
+/** Get the pw from row
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 async function copyPw(req, res) {
     return await getDecriptedPw(req, res);
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 async function getDecriptedPw(req, res) {
     try{
         if (req.session.loggedIn) {

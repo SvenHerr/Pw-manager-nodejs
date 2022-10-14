@@ -18,7 +18,8 @@ async function setUserToSession(req, res, user) {
     req.session.lastname = user.lastname;
     req.session.pw = user.pw;
 
-    await saveSession(req);
+    await saveSession(req);  
+    return true; 
 }
 
 /** Delte user data from session
@@ -55,11 +56,21 @@ async function updteUserPwFromSession(req) {
     await saveSession(req);
 }
 
+/** Set error message to session
+ * 
+ * @param {*} req 
+ * @param {*} msg 
+ */
 async function setErrormsgToSession(req, msg) {
     req.session.errormsg = msg;
     await saveSession(req);
 }
 
+/** Get error message from session
+ * 
+ * @param {*} req 
+ * @returns 
+ */
 async function getErrorFromSession(req) {
     let errormsg = req.session.errormsg;
     req.session.errormsg = '';
@@ -71,7 +82,7 @@ async function getErrorFromSession(req) {
  * 
  * @param {*} req 
  */
-async function saveSession(req){
+async function saveSession(req) {
     let save = promisify(req.session.save.bind(req.session));
     await save();
 }
