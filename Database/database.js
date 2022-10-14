@@ -57,6 +57,17 @@ async function getCustomers() {
     return rows;
 }
 
+/** Get customersdetails from db
+ * 
+ * @param {*} username 
+ * @returns true if user exists
+ */
+async function getCustomersDetailsById(customerId) {
+    let rows = await query('SELECT * FROM customerdetails WHERE CustomerId = ?', [customerId]);
+
+    return rows;
+}
+
 /** Insert user to db
  * 
  * @param {*} user 
@@ -174,5 +185,6 @@ export default {
     getAllPwFromUser,
     updateUserPw,
     updatePwDatensatz,
-    getCustomers 
+    getCustomers ,
+    getCustomersDetailsById
 };

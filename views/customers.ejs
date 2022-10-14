@@ -1,0 +1,126 @@
+<% if(userData.loggedIn==true){ %>
+
+    <% naviActive="customers" %>
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <%- include('partial/head') %>
+        </head>
+
+        <body>
+
+            <div class="container-scroller">
+                <!-- partial:../../partials/_sidebar.html -->
+                <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                    <%- include('partial/nav') %>
+                </nav>
+                <!-- partial -->
+                <div class="container-fluid page-body-wrapper">
+
+                    <nav class="navbar p-0 fixed-top d-flex flex-row">
+                        <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
+                            <p>PW Tressor Sven</p>
+                        </div>
+                        <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
+                            <button class="navbar-toggler navbar-toggler align-self-center" type="button"
+                                data-toggle="minimize">
+
+                            </button>
+
+                            <ul class="navbar-nav navbar-nav-right">
+                                <li class="nav-item dropdown d-none d-lg-block">
+
+                                    <form action="/logout" method="POST">
+
+                                        <input type="text" name="newtask" placeholder="add new task" hidden>
+                                        <button
+                                            class="nav-link btn btn-danger create-new-button d-inline-block">Logout</button>
+
+                                    </form>
+
+                                </li>
+                            </ul>
+                            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
+                                type="button" data-toggle="offcanvas">
+                                <span class="mdi mdi-format-line-spacing"></span>
+                            </button>
+                        </div>
+                    </nav>
+                    <!-- partial -->
+                    <div class="main-panel">
+
+                        <div class="content-wrapper">
+                            <div class="page-header">
+                                <h3 class="page-title">Customers Admin</h3>
+                                <div class="message"></div>
+                            </div>
+
+                            <div class="col-lg-12 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Customers</h4>
+
+
+                                        <table class="table">
+                                            <thead>
+                                            <tr class="">
+                                              <th>#</th>
+                                              <th>Kundennummer</th>
+                                              <th>Kundenname</th>
+                                              <th>Zuletzt aktualisiert</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                <% for(var i=0; i < customerData.length; i++){ %>
+                                                    
+                                                    <tr>
+                                                        <td></td>
+                                                        <td><%= customerData[i].Id %></td>
+                                                        <td><%= customerData[i].Name %></td>
+                                                        <td>
+                                                            <form class="openCustomerDetails" action="/customersDetails" method="POST">
+
+                                                                <input type="text" name="id"
+                                                                    value="<%= customerData[i].Id %>" hidden>
+                                                                <button class="nav-link btn btn-success create-new-button d-inline-block hidebutton"
+                                                                    id="<%= customerData[i].Id %>">Open</button>
+                                                            </form>
+
+                                                        </form></td>
+                                                    </tr>
+                                                    
+                                                <% } %>
+
+                                            </tbody>
+                                          </table>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <%- include('partial/footer') %>
+
+
+                                <!-- partial -->
+                        </div>
+                        <!-- main-panel ends -->
+                    </div>
+                    <!-- page-body-wrapper ends -->
+                </div>
+
+                <!-- container-scroller -->
+                <!-- plugins:js -->
+                <script src="/js/automaticlogout.js"></script>
+                <script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
+                <!-- endinject -->
+                <!-- Plugin js for this page -->
+                <script src="../../assets/vendors/chart.js/Chart.min.js"></script>
+                <!-- End plugin js for this page -->
+                <!-- inject:js -->
+                <!-- End custom js for this page -->
+        </body>
+
+        </html>
+<% }%>
