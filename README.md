@@ -64,18 +64,12 @@ schreibt mir gerne bei Fragen und Anregungen.
 
 <br>
 
-<b>Sources: </b>
-- <a href="https://medium.com/better-programming/unit-testing-essentials-for-express-api-a-step-by-step-guide-ab4950d3763b">Unit-Tests medium</a>
- 
-
 <br>
 
-<b>Credit for frontend Design:</b> 
-- <a href="https://www.bootstrapdash.com">Bootstrapdash</a>
-- <a href="https://www.bootstrapdash.com/demo/corona-free/jquery/template/index.html">Template used for project</a>
-
+<b>Credits</b>
+- frontend Design: <a href="https://www.bootstrapdash.com" >Bootstrapdash</a>
+- Template used for project: <a href="https://www.bootstrapdash.com/demo/corona-free/jquery/template/index.html" >Corona-Free</a> 
 <br>
-<b>Special thanks to <a href="https://github.com/myMartek"> MyMartek</a> for all the codereviews and support.
-
-
+<br>
+<b>Special thanks to </b> <a href="https://github.com/myMartek" >MyMartek</a> for all the codereviews.
 
