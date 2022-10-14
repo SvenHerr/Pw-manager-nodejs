@@ -1,14 +1,9 @@
-import should1 from 'chai';
-const should = should1.should();
-
-//const {Builder, By, until} = require('selenium-webdriver');
 import { Builder, Browser, By, Key, until } from 'selenium-webdriver';
 import chromedriver from 'chromedriver';
 
 import assert from 'assert';
 
 async function login(driver) {
-    // open chrome browser
     try {
         // navigate to to this website
         await driver.get('http://localhost:3001/');
@@ -41,6 +36,37 @@ async function login(driver) {
     return true;
 }
 
+async function logout(driver) {
+    try {
+        // find element
+        await driver.findElement(By.className('card-title'));
+
+        // click logout button
+        //await driver.wait(until.elementIsVisible(driver.findElement(By.id('logoutButton'))), 10000);
+        await driver.findElement(By.id('logoutButton')).click();
+           
+        /* wait for the page to load the search result untill the page
+          has the title for login */
+        await driver.wait(until.elementIsVisible(driver.findElement(By.className('card-title'))), 10000);
+
+        // Get the pagetitle of the current Page
+        let loginTitle = await driver.findElement(By.className('card-title')).getText();
+
+        // assert that the current pageTitle is equal to 'Reflect run - Google Search'
+        assert.strictEqual(loginTitle, 'Login');
+        if (loginTitle) {
+            console.log('Page Title:', loginTitle);
+        }
+    } 
+    catch (error) {
+        console.log(error);
+        return false;
+    }
+
+    return true;
+}
+
 export default {
-    login
+    login,
+    logout
 };
