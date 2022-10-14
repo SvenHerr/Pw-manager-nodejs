@@ -1,6 +1,6 @@
 // import chromedriver so that selenium can by itself open a chrome driver
 
-import { Builder, Browser} from 'selenium-webdriver';
+import { Builder, Browser } from 'selenium-webdriver';
 import chromedriver from 'chromedriver';
 import assert from 'assert';
 import helper from './helper/helper.js';
