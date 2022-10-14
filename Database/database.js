@@ -155,7 +155,7 @@ async function deletePw(id) {
 async function insertPw(req) {
     let encryptedpw = encrypt(escape(req.body.pw), escape(req.session.pw));
     let applicationname = encrypt(escape(req.body.applicationname), escape(req.session.pw));
-    let loginname = encrypt(req.body.loginname.toString(), req.session.pw.toString());
+    let loginname = encrypt(escape(req.body.loginname), req.session.pw.toString());
 
     await query('INSERT INTO `pw`(`Username`, `Name`, `Pw`, `Loginname`, `CreateDate` , `CustomerId`) VALUES (?,?,?,?,?,?)', 
         [escape(req.session.username), applicationname, encryptedpw, loginname, helper.getCurrentDate(),escape(req.body.customerId)]);
