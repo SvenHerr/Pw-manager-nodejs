@@ -1,7 +1,6 @@
 // import chromedriver so that selenium can by itself open a chrome driver
 
 import { Builder, Browser } from 'selenium-webdriver';
-import chromedriver from 'chromedriver';
 import helper from './helper/helper.js';
 import {describe, it, before, after} from 'mocha';
 
