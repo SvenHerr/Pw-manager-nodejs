@@ -23,7 +23,7 @@
     "login": "Anmelden",
     "generalError": "Registrierung fehlgeschlagen!",
     "userAlreadyExists": "Benutzer existiert bereits!",
-    "pwMissmatch":"Die beiden Passwörter stimmen nicht überein",
+    "pwMissmatch": "Die beiden Passwörter stimmen nicht überein",
     "pwNotFound": "Error: Pw wurde nicht gefunden!",
     "pwHashProblem": "Pw Hash Problem",
     "userDataNotFound": "Error: User Daten nicht gefunden!"
