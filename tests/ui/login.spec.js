@@ -22,7 +22,6 @@ describe('Test Login and Logout', function () {
         try {
             let loginStatus = await helper.login(driver);
             loginStatus.should.be.true;
-            loginStatus.
         } 
         catch (error) {
             console.log(error);
