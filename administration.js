@@ -13,7 +13,7 @@ let encryptArray = []; // Darf nicht in die function rein.
 async function loadData(req, res) {
     try {
         if (!req.session.loggedIn) {
-            return res.render('login', { errormsg: '' });
+            return;//res.render('login', { errormsg: '' });
         }
         
         console.log('LoadDate Username= ' + req.session.username);
@@ -40,13 +40,18 @@ async function loadData(req, res) {
 
             return res.render('index', { errormsg, pwDatas: pwItemList, userData: customer.getUserFromSession(req), moment: moment });
         } else {
-            return res.render('login', { errormsg: '' });
+            return; //res.render('login', { errormsg: '' });
         }
     } catch (err) {
         console.log('Error on load: ' + err);
     }
 }
 
+/** Returns customers list to ajax call
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 async function getCustomers(req,res) {
     try {
         res.send(await connection.getCustomers());

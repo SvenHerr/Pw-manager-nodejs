@@ -47,7 +47,9 @@ app.use(
 
 app.use(cache());
 
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: process.env.HTTPS === 'true' || process.env.HTTPS === true ? true : false,
+}));
 
 // Why do i need extended false and not true?
 // https://stackoverflow.com/questions/35931135/cannot-post-error-using-express
