@@ -2,8 +2,8 @@
 
 import { Builder, Browser } from 'selenium-webdriver';
 import chromedriver from 'chromedriver';
-import assert from 'assert';
 import helper from './helper/helper.js';
+import {describe, it, before, after} from 'mocha';
 
 // describe test
 describe('Test Login and Logout', function () {
