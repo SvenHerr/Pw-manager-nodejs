@@ -1,14 +1,14 @@
 // This script runs on serverside
 
-import { promisify } from 'es6-promisify';
-import escape from 'lodash.escape';
+import { promisify } from "es6-promisify";
+import escape from "lodash.escape";
 
 /**
  * Set user data to session
- * @param {*} req 
- * @param {*} res 
- * @param {*} user 
- * @returns 
+ * @param {*} req
+ * @param {*} res
+ * @param {*} user
+ * @returns
  */
 async function setUserToSession(req, res, user) {
     req.session.loggedIn = true;
@@ -21,34 +21,39 @@ async function setUserToSession(req, res, user) {
     await saveSession(req);
 }
 
-/** Delte user data from session
- * 
- * @param {*} req 
+/**
+ * Delte user data from session
+ *
+ * @param {*} req
  */
 async function deleteUserFromSession(req) {
     req.session.loggedIn = false;
     req.session.userid = 0;
-    req.session.username = '';
-    req.session.firstname = '';
-    req.session.lastname = '';
-    req.session.pw = '';
+    req.session.username = "";
+    req.session.firstname = "";
+    req.session.lastname = "";
+    req.session.pw = "";
 
     await saveSession(req);
 }
 
-/** Regenerate session
- * 
- * @param {*} req 
+/**
+ * Regenerate session
+ *
+ * @param {*} req
  */
 async function regenerateSession(req) {
-    let regeneratedSession = promisify(req.session.regenerate.bind(req.session));
+    let regeneratedSession = promisify(
+        req.session.regenerate.bind(req.session)
+    );
     await regeneratedSession();
     await saveSession(req);
 }
 
-/** Update pw from session
- * 
- * @param {*} req 
+/**
+ * Update pw from session
+ *
+ * @param {*} req
  */
 async function updteUserPwFromSession(req) {
     req.session.pw = escape(req.body.newPw);
@@ -62,16 +67,17 @@ async function setErrormsgToSession(req, msg) {
 
 async function getErrorFromSession(req) {
     let errormsg = req.session.errormsg;
-    req.session.errormsg = '';
+    req.session.errormsg = "";
     await saveSession(req);
-    return errormsg ?? '';
+    return errormsg ?? "";
 }
 
-/** Save session
- * 
- * @param {*} req 
+/**
+ * Save session
+ *
+ * @param {*} req
  */
-async function saveSession(req){
+async function saveSession(req) {
     let save = promisify(req.session.save.bind(req.session));
     await save();
 }
@@ -82,5 +88,5 @@ export default {
     updteUserPwFromSession,
     regenerateSession,
     setErrormsgToSession,
-    getErrorFromSession
+    getErrorFromSession,
 };
