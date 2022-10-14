@@ -15,40 +15,48 @@ async function signUp(req) {
     let pw = req.body.pw;
     let pw1 = req.body.pw1;
 
+    if (pw === null || pw1 === null) {
+        sessionHandler.setErrormsgToSession(req, 'signup.pwNotFound');
+        return false;
+    }
+
     if (pw !== pw1) {
-        return 'pw missmatch';
+        sessionHandler.setErrormsgToSession(req, 'signup.pwMissmage'); 
+        return false;
     }
 
     let hashedPw = encrypt1.hashPw(pw);
     if (hashedPw === null) {
-        return 'error: Pw hash problem!';
-    }
-
-    if (pw === null || pw1 === null) {
-        return 'error: Pw not found!';
-    }
+        sessionHandler.setErrormsgToSession(req, 'signup.pwHashProblem'); 
+        return false;
+    }    
 
     let user = new User(null, req.body.username, req.body.firstname, req.body.lastname, hashedPw, null);
 
     if (user.username === null || user.firstname === null || user.lastname === null) {
-        return 'error: User data not found!';
+        sessionHandler.setErrormsgToSession(req, 'signup.pwHashProblem'); 
+        return false;
     }
 
-    try {
-        let userExists = await connection.getUserExists(user.username);
-
-        if (userExists) {
-            return 'User already exists!';
+    try{
+        if (await connection.getUserExists(user.username)) {
+            sessionHandler.setErrormsgToSession(req, 'signup.userAlreadyExists');
+            return false;
         }
-
-        await connection.insertUser(user);
-
-        await sessionHandler.updteUserPwFromSession(req.session.pw);
-
-        return 'ok';
-    } catch (e) {
-        return e;
+    }catch(err){
+        console.log('Error on signUp: ' + err);
+        return err;
     }
+    
+    try{
+        await connection.insertUser(user);
+    }catch(err){
+        return err;
+    }
+
+    await sessionHandler.updteUserPwFromSession(req.session.pw);  
+
+    return true;
 }
 
 /** Signin user and store to session
@@ -66,10 +74,13 @@ async function signIn(req, res) {
         let user = await connection.getUser(req, res);
 
         if (user === null) {
-            return res.render('login', { errormsg: req.t('loginError') });
+            return res.render('login', { errormsg: req.t('login.generalError') });
         }
+
         try{
-            await sessionHandler.setUserToSession(req, res, user);
+            if(user.pw === encrypt1.hashPw(req.body.pw)){
+                await sessionHandler.setUserToSession(req,res, user);
+            }
         }catch(err){
             return res.render('login', { errormsg: req.t('loginError') });
         }

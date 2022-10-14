@@ -20,7 +20,7 @@ there is a table installscript provided.
 
 The design template comes from Bootstrapdash, some adjustments were made by me.
 Template link: Bootstrapdash.com/demo/corona-free/jquery/template/index.html
-The main focus of the project is the logic and function of the Pw Tressor.
+The main focus of the project is the logic and function of the Pw Tresor.
 
 Updates that will follow are:
 - Generate secure pw automatic function.
@@ -32,7 +32,7 @@ im open to suggestions and happy to hear from you
 [message me](mailto:githubprojects@herrmannsven.de?subject=[GitHub]%20Source%20Han%20Sans)
 
 # German
-Dieser Pw Tressor wurde von mir in NodeJs erstellt. Das ist mein erstes Projekt mit NodeJs, Express und Crypto.
+Dieser Pw Tresor wurde von mir in NodeJs erstellt. Das ist mein erstes Projekt mit NodeJs, Express und Crypto.
 Außerdem wird eine mysql Db benötigt.
 
 Was kann der Password- Manager?
@@ -46,7 +46,7 @@ Was kann der Password- Manager?
 
 Das Design Template stammt von Bootstrapdash einige Anpassungen wurden von mir durchgeführt. 
 Template-Link: Bootstrapdash.com/demo/corona-free/jquery/template/index.html
-Der schwerpunkt des Projektes liegt mir aber an der Logik und funktion des Pw Tressores.
+Der schwerpunkt des Projektes liegt mir aber an der Logik und funktion des Pw Tresores.
 
 Updates die folgen werden sind:
 - generate secure pw automatic function.
@@ -63,10 +63,12 @@ schreibt mir gerne bei Fragen und Anregungen.
 ![image](https://user-images.githubusercontent.com/19588101/156414790-b5d313c6-4b84-4b38-bb9b-102850d1563d.png)
 
 
+<br>
 
-
-Credit for frontend Design: https://www.bootstrapdash.com
-Template used for project: https://www.bootstrapdash.com/demo/corona-free/jquery/template/index.html
-
-
+<b>Credits</b>
+- frontend Design: <a href="https://www.bootstrapdash.com" >Bootstrapdash</a>
+- Template used for project: <a href="https://www.bootstrapdash.com/demo/corona-free/jquery/template/index.html" >Corona-Free</a> 
+<br>
+<br>
+<b>Special thanks to </b> <a href="https://github.com/myMartek" >MyMartek</a> for all the codereviews.
 
