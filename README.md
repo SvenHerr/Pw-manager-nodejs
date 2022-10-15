@@ -3,9 +3,18 @@ Pw-Manager-Nodejs-opensource
 
 This is my first project with nodejs! Please keep that in mind.
 
-# Install with docker
+# Install //Fully description will follow soon
+<b>Without Docker</b>
+- Download Zip
+- ....
+<br>
+<b>With Docker</b><br>
 https://hub.docker.com/r/svenherrmann/pw-manager-nodejs
+<br>
 docker pull svenherrmann/pw-manager-nodejs
+<br>
+<br>
+
 
 # English
 This Pw- Manager was created by me in NodeJs. This is my first project with NodeJs, Express and Crypto.
