@@ -1,6 +1,22 @@
 version: '3'
 
 services:
+    pwmanger:
+        build: .
+        ports:
+            - "3002:3001"
+        restart: unless-stopped
+        environment:
+            DB_PORT: 3306
+            DB_SERVER: 'mysql'
+            DB_DATABASE: '${DB_DATABASE}'
+            DB_USERNAME: '${DB_USERNAME}'
+            DB_PASSWORD: '${DB_PASSWORD}'
+            SECRET: '${SECRET}'
+            HTTPS: '${HTTPS}'
+        networks:
+            - default
+
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -14,6 +30,7 @@ services:
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
         volumes:
             - 'mysql:/var/lib/mysql'
+        restart: unless-stopped
         networks:
             - default
         healthcheck:
