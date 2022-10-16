@@ -8,4 +8,4 @@ RUN rm -rf node_modules
 RUN rm -f .env
 RUN npm install
 
-CMD [ "node", "." ]
+CMD [ "npm", "run", "docker" ]
