@@ -1,7 +1,7 @@
 # Pw-manager-nodejs
 Pw-Manager-Nodejs-opensource
 
-This is my first project with nodejs! Please keep that in mind.
+
 
 # Install //Fully description will follow soon
 <b>Without Docker</b>
