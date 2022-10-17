@@ -1,9 +1,9 @@
 // This script runs on serversider
 
-import user from './user.js';
-import customer from './customer.js';
-import administration from './administration.js'; // TODO: Change name !!!
-import sessionHandler from './sessionHandler.js';
+import user from '../models/user.js';
+import customer from '../controllers/customer.js';
+import administration from '../controllers/administration.js'; // TODO: Change name !!!
+import sessionHandler from '../sessionHandler.js';
 
 export default function (app) {
     let routes = { customer, administration };
@@ -61,6 +61,10 @@ export default function (app) {
             return res.render('changepw', { userData: user });
         }
     });
+
+    app.get('/status', async function(req, res) {
+        res.status(200).end();
+    });
     
     // here you set all routes that would end in cannot get/... or cannot post/... to default page could also be you own error page
     // ---->cant use this or it will call loadData around 10 times for no reason.
@@ -90,8 +94,8 @@ export default function (app) {
     });
 
     // Catch for all other routes and redirect to default page
-    app.get('*', function(req, res) {
+    /*app.get('*', function(req, res) {
         console.log('catch all and redirect to index');
         return res.redirect('/index');
-    });
+    });*/
 }

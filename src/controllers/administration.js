@@ -1,11 +1,11 @@
 // This script runs on serversider
 
 //dependencies required for the app
-import connection from './Database/database.js';
+import connection from './../Database/database.js';
 import escape from 'lodash.escape';
 import customer from './customer.js';
 import moment from 'moment';
-import { decrypt } from './crypto/crypto.js';
+import { decrypt } from './../crypto/crypto.js';
 import { promisify } from 'es6-promisify';
 
 let encryptArray = []; // Darf nicht in die function rein.

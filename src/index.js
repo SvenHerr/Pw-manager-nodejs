@@ -12,7 +12,7 @@ import middleware from 'i18next-http-middleware';
 import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 import FileStore from 'session-file-store';
-import routes from './routes.js';
+import routes from './routes/routes.js';
 import cache from './cache.js';
 
 const SessionFileStore = FileStore(session);
@@ -54,10 +54,11 @@ app.use(helmet({
 // https://stackoverflow.com/questions/35931135/cannot-post-error-using-express
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.set('views','./src/views');
 app.set('view engine', 'ejs');
 
 // render css files
-app.use(express.static('public'));
+app.use(express.static('src/public'));
 
 // Is only stored on server.
 app.use(session({
