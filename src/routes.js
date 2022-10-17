@@ -1,6 +1,6 @@
 // This script runs on serversider
 
-import user from './user.js';
+import user from './models/user.js';
 import customer from './customer.js';
 import administration from './administration.js'; // TODO: Change name !!!
 import sessionHandler from './sessionHandler.js';
@@ -60,6 +60,10 @@ export default function (app) {
         } else {
             return res.render('changepw', { userData: user });
         }
+    });
+
+    app.get('/status', async function(req, res) {
+        res.status(200).end();
     });
     
     // here you set all routes that would end in cannot get/... or cannot post/... to default page could also be you own error page

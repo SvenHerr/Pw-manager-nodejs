@@ -54,10 +54,11 @@ app.use(helmet({
 // https://stackoverflow.com/questions/35931135/cannot-post-error-using-express
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.set('views','./src/views');
 app.set('view engine', 'ejs');
 
 // render css files
-app.use(express.static('public'));
+app.use(express.static('src/public'));
 
 // Is only stored on server.
 app.use(session({

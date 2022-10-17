@@ -5,7 +5,7 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "start": "nodemon --ignore sessions index.js",
+        "start": "nodemon --ignore sessions ./src/index.js",
         "docker": "run-s migrate start",
         "test": "mocha --no-timeouts tests/*/*.spec.js",
         "coverage": "nyc --reporter=text npm test",

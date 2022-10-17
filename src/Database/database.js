@@ -1,7 +1,7 @@
 // This script runs on serverside
 
 import conn from './databaseConnection.js';
-import User from '../user.js';
+import User from '../models/user.js';
 import escape from 'lodash.escape';
 import helper from '../helper.js';
 import { encrypt, decrypt } from '../crypto/crypto.js';
