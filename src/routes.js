@@ -94,8 +94,8 @@ export default function (app) {
     });
 
     // Catch for all other routes and redirect to default page
-    app.get('*', function(req, res) {
+    /*app.get('*', function(req, res) {
         console.log('catch all and redirect to index');
         return res.redirect('/index');
-    });
+    });*/
 }
