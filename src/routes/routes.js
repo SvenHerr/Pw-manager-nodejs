@@ -1,9 +1,9 @@
 // This script runs on serversider
 
-import user from './models/user.js';
-import customer from './customer.js';
-import administration from './administration.js'; // TODO: Change name !!!
-import sessionHandler from './sessionHandler.js';
+import user from '../models/user.js';
+import customer from '../controllers/customer.js';
+import administration from '../controllers/administration.js'; // TODO: Change name !!!
+import sessionHandler from '../sessionHandler.js';
 
 export default function (app) {
     let routes = { customer, administration };

@@ -1,10 +1,10 @@
 // This script runs on serverside
 
 //dependencies required for the app
-import connection from './Database/database.js';
-import encrypt1 from './crypto/encrypt.js';
-import User from './models/user.js';
-import sessionHandler from './sessionHandler.js';
+import connection from './../Database/database.js';
+import encrypt1 from './../crypto/encrypt.js';
+import User from './../models/user.js';
+import sessionHandler from './../sessionHandler.js';
 
 /** Sign up a new user
  * 

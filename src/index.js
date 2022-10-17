@@ -12,7 +12,7 @@ import middleware from 'i18next-http-middleware';
 import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 import FileStore from 'session-file-store';
-import routes from './routes.js';
+import routes from './routes/routes.js';
 import cache from './cache.js';
 
 const SessionFileStore = FileStore(session);
