@@ -19,11 +19,33 @@ let encryptArray = []; // Darf nicht in die function rein.
 async function loadData(req, res) {
     try {
         if (!req.session.loggedIn) {
-            return;//res.render('login', { errormsg: '' });
+            return;
         }
         
         console.log('LoadDate Username= ' + req.session.username);
 
+        let pwItemList = [];
+
+        if (req.session.loggedIn) {
+            let errormsg = req.session.errormsg;
+            req.session.errormsg = undefined;
+
+            return res.render('index', { errormsg, pwDatas: pwItemList, userData: customer.getUserFromSession(req), moment: moment });
+        } else {
+            return;
+        }
+    } catch (err) {
+        console.log('Error on load: ' + err);
+    }
+}
+
+/** Returns customers list to ajax call
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function getPwList(req,res) {
+    try {
         let pwItemList = await connection.getAllPwFromUser(req);
 
         if (req.session.loggedIn) {
@@ -35,21 +57,19 @@ async function loadData(req, res) {
                         row.Loginname = decrypt(row.Loginname, req.session.pw);
                     }
 
-                    row.Pw = decrypt(row.Pw.toString(), req.session.pw);
+                    //row.Pw = decrypt(row.Pw.toString(), req.session.pw);
+                    row.Pw = '*****';
                 } catch (err) {
                     console.log(err);
                 }
             });
 
-            let errormsg = req.session.errormsg;
-            req.session.errormsg = undefined;
-
-            return res.render('index', { errormsg, pwDatas: pwItemList, userData: customer.getUserFromSession(req), moment: moment });
+            return res.send(pwItemList);
         } else {
-            return; //res.render('login', { errormsg: '' });
+            return; 
         }
     } catch (err) {
-        console.log('Error on load: ' + err);
+        console.log('get pws err: ' + err);
     }
 }
 
@@ -193,7 +213,8 @@ export default {
             copyPw,
             changePw,
             deletePw,
-            showPw
+            showPw,
+            getPwList
         }
-    },
+    }
 };

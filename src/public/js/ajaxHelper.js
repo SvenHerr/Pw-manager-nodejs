@@ -1,8 +1,8 @@
 // This script runs on clientside
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-    $('.showPwFormId').submit(function(e) {
+    $('.showPwFormId').submit(function (e) {
         e.preventDefault();
 
         var id = this.id.value;
@@ -17,7 +17,7 @@ $(document).ready(function() {
             cache: false,
             datatype: "json",
             url: '/administration/showpw',
-            success: function(result) {
+            success: function (result) {
 
                 $('#tempPw' + id).text(result);
                 if (result == "*****") {
@@ -36,7 +36,7 @@ $(document).ready(function() {
 
 
 
-    $('.copyFormId').submit(function(e) {
+    $('.copyFormId').submit(function (e) {
         e.preventDefault();
 
         var data = {
@@ -49,7 +49,7 @@ $(document).ready(function() {
             cache: false,
             datatype: "json",
             url: '/administration/copypw',
-            success: function(result) {
+            success: function (result) {
                 console.log("Here are the response in json format: " + result);
 
                 if (result != "" && result != "error" && result != null) {
@@ -62,14 +62,14 @@ $(document).ready(function() {
                     });
                 }
             },
-            error: function(error) {
+            error: function (error) {
                 showmessage({
                     type: 'danger',
                     speed: 200,
                     content: 'Pw not copy'
                 });
 
-                if(error != null){
+                if (error != null) {
                     console.log(error);
                 }
             }
@@ -78,76 +78,32 @@ $(document).ready(function() {
 
 
 
-    /*$('#exampleModalCenter').on('shown.bs.modal', function(e) {
-        e.preventDefault();
-        var target = $('#sharewithdiv');
-
-        $.ajax({
-            type: 'POST',
-            cache: false,
-            datatype: "json",
-            url: '/sharewith',
-            success: function(result) {
-                console.log("Here are the response in json format: " + result);
-                if (result != null) {
-                    console.log("result is not null");
-                    if (result.length > 0) {
-                        console.log("result length > 0");
-                        console.log("result length: " + result.length);
-                        var resultString = "";
-                        var count = 0;
-                        result.forEach(element => {
-                            count += 1;
-                            resultString += '<div class="form-group">' +
-                                '<label class="col-sm-5 col-form-label">' + element.Username + '</label>' +
-                                '<button type="submit" id="' + element.Id + '" class="btn btn-primary">Share</button>' +
-                                '</div>'
-                        });
-                        console.log("count: " + count);
-                        console.log(resultString);
-                        target.html(resultString);
-                    }
-                }
-            },
-            error: function(error) {
-                showmessage({
-                    type: 'danger',
-                    speed: 200,
-                    content: 'Pw not copy'
-                });
-            }
-        });
-    });*/
-
-
-
-    $('#exampleModalCenter').on('shown.bs.modal', function(e) {
+    $('#exampleModalCenter').on('shown.bs.modal', function (e) {
         e.preventDefault();
         var target = $('#customers');
-        console.log("Test");
-
+        
         $.ajax({
             type: 'POST',
             cache: false,
             datatype: "json",
             url: '/administration/getcustomers',
-            success: function(result) {
+            success: function (result) {
 
                 if (result === null)
                     return;
 
                 if (result.length <= 0)
                     return;
-            
+
                 var resultString = '<option value="0">Allgemein</option>';
                 result.forEach(element => {
-                    
-                    resultString += '<option value="'+element.Id+'">'+element.Name+'</option>'
-                });                    
-                
-                target.html(resultString);                
+
+                    resultString += '<option value="' + element.Id + '">' + element.Name + '</option>'
+                });
+
+                target.html(resultString);
             },
-            error: function(error) {
+            error: function (error) {
                 console.log("error: " + error);
 
                 showmessage({
@@ -161,4 +117,109 @@ $(document).ready(function() {
 
 
 
+    //Load data at beginning.
+    $(document).ready(function (e) {
+        //e.preventDefault();
+        var target = $('#pwlist');
+        console.log("ich wurde aufgerufen");
+        $.ajax({
+            type: 'POST',
+            cache: false,
+            datatype: "json",
+            url: '/administration/getpwlist',
+            success: function (result) {
+
+                if (result === null)
+                    return;
+
+                if (result.length <= 0)
+                    return;
+
+                var resultString = '';
+                result.forEach(element => {
+
+                    resultString += 
+                    `
+                    <tr>
+                        <td class="py-1">
+
+                        `+ 'TODO'+`
+
+                        </td>
+                        <td>
+                        `+ element.Name+`
+                        </td>
+                        <td>
+                            ` +'TODO'+`
+                        </td>
+                        <td>
+                            `+ element.Loginname+`
+                        </td>
+                        <td>
+                            <p style=" margin:0px;"
+                                id="tempPw`+ element.Id+`">*****</p>
+                        </td>
+
+                        <td>
+                            <form class="showPwFormId" id="showPwFormId">
+
+                                <input type="text" name="id"
+                                    value="`+ element.Id+`" hidden>
+                                <button
+                                    class="nav-link btn btn-success create-new-button d-inline-block hidebutton"
+                                    style="display: none !important;"
+                                    id="HideButton` +element.Id+`">Hide</button>
+                                <button
+                                    class="nav-link btn btn-warning create-new-button d-inline-block"
+                                    id="ShowButton` +element.Id+`">Show</button>
+
+                            </form>
+                        </td>
+                        <td>
+                            <form class="copyFormId">
+                                <input type="text" name="id" id="id"
+                                    value="`+ element.Id+`" hidden>
+                                <button
+                                    class="nav-link btn btn-success create-new-button d-inline-block">Copy</button>
+                            </form>
+                        </td>
+                        <td>
+                            <a class="nav-link btn btn-warning create-new-button d-inline-block changeapppw"
+                                id="openChangeAppPassword"
+                                data-changeelement="`+ element.Id+`"
+                                data-toggle="modal"
+                                data-target="#changeAppPwModalCenter"
+                                aria-expanded="false" href="#">Change Pw</a>
+                        </td>
+                        <td>
+                            ` +'TODO'+`
+                        </td>
+                        <td>
+                            <a class="nav-link btn btn-danger create-new-button d-inline-block delete"
+                                id="openDeletePassword"
+                                data-element-id="` +element.Id+`"
+                                data-toggle="modal"
+                                data-target="#deletePwModalCenter"
+                                aria-expanded="false" href="#">Delete</a>
+
+                        </td>
+                    </tr> `
+                });
+
+                target.html(resultString);
+            },
+            error: function (error) {
+                console.log("error: " + error);
+
+                showmessage({
+                    type: 'danger',
+                    speed: 200,
+                    content: 'error: Customers'
+                });
+            }
+        });
+    });
+
+
+    
 });

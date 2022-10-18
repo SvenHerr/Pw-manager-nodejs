@@ -32,7 +32,7 @@
 
                                 <form action="/customer/logout" method="POST">
 
-                                    <input type="text" name="newtask" placeholder="add new task" hidden>
+                                    <input type="text" hidden>
                                     <button id="logoutButton"
                                         class="nav-link btn btn-danger create-new-button d-inline-block">Logout</button>
 
@@ -71,7 +71,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form action="/administration/addnewpw" method="post">
+                                            <form action="/administration/addnewpw" id="addnewpwform" method="post">
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label>App/Webseite-Name</label>
@@ -116,7 +116,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form action="/customer/changepw" method="POST">
+                                            <form action="/customer/changepw" id="changepwform" method="POST">
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label>Old pw</label>
@@ -194,7 +194,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form action="/administration/deletepw" method="POST">
+                                            <form action="/administration/deletepw" id="deletepwform" method="POST">
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label>Pw wirklich unwiederruflich löschen? (Type "yes")</label>
@@ -234,7 +234,7 @@
                                                     <th> Delete </th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="pwlist">
 
                                                 <% var customerChanged=false; var currentCustomerId=0; %>
                                                     <% for(var i=0; i < pwDatas.length; i++){ %>
@@ -261,7 +261,8 @@
                                                                         <%= pwDatas[i].Name %>
                                                                     </td>
                                                                     <td>
-                                                                        <%= moment().diff(moment(pwDatas[i].CreateDate), 'days') %>
+                                                                        <%= moment().diff(moment(pwDatas[i].CreateDate), 'days'
+                                                                            ) %>
                                                                     </td>
                                                                     <td>
                                                                         <%= pwDatas[i].Loginname %>
@@ -272,7 +273,7 @@
                                                                     </td>
 
                                                                     <td>
-                                                                        <form class="showPwFormId">
+                                                                        <form class="showPwFormId" id="showPwFormId">
 
                                                                             <input type="text" name="id"
                                                                                 value="<%= pwDatas[i].Id %>" hidden>
@@ -328,7 +329,9 @@
                         </div>
                     </div>
 
-                    <div id="errorMessage"><%= errormsg %></div>
+                    <div id="errorMessage">
+                        <%= errormsg %>
+                    </div>
 
                     <%- include('partial/footer') %>
 
@@ -349,6 +352,41 @@
         <!-- End plugin js for this page -->
         <!-- inject:js -->
         <!-- End custom js for this page -->
+
+        <!-- Script necessary for websocket-->
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io();
+            /*
+            var addnewpwform = document.getElementById('addnewpwform');
+            addnewpwform.addEventListener('submit', function (e) {
+                //e.preventDefault();
+                socket.emit('refresh');
+            });
+
+            var changepwform = document.getElementById('changepwform');
+            changepwform.addEventListener('submit', function (e) {
+                //e.preventDefault();
+                socket.emit('refresh');
+            });
+
+            var deletepwform = document.getElementById('deletepwform');
+            deletepwform.addEventListener('submit', function (e) {
+                //e.preventDefault();
+                socket.emit('refresh');
+            });
+
+
+
+            socket.on('refresh', function (msg) {
+                var item = document.createElement('li');
+                item.textContent = msg;
+                messages.appendChild(item);
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+            */
+
+        </script>
     </body>
 
     </html>
