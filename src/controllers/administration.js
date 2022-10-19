@@ -22,15 +22,13 @@ async function loadData(req, res) {
             return;
         }
         
-        console.log('LoadDate Username= ' + req.session.username);
-
-        let pwItemList = [];
+        console.log('LoadDate Username= ' + req.session.username);       
 
         if (req.session.loggedIn) {
             let errormsg = req.session.errormsg;
             req.session.errormsg = undefined;
 
-            return res.render('index', { errormsg, pwDatas: pwItemList, userData: customer.getUserFromSession(req), moment: moment });
+            return res.render('index', { errormsg, userData: customer.getUserFromSession(req), moment: moment });
         } else {
             return;
         }

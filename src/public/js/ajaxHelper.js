@@ -118,7 +118,6 @@ $(document).ready(function () {
 
 
     //Load data at beginning.
-    $(document).ready(function (e) {
         //e.preventDefault();
         var target = $('#pwlist');
         console.log("ich wurde aufgerufen");
@@ -161,7 +160,7 @@ $(document).ready(function () {
                         </td>
 
                         <td>
-                            <form class="showPwFormId" id="showPwFormId">
+                            <form class="showPwFormId">
 
                                 <input type="text" name="id"
                                     value="`+ element.Id+`" hidden>
@@ -218,7 +217,7 @@ $(document).ready(function () {
                 });
             }
         });
-    });
+    
 
 
     

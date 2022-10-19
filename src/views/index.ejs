@@ -236,91 +236,7 @@
                                             </thead>
                                             <tbody id="pwlist">
 
-                                                <% var customerChanged=false; var currentCustomerId=0; %>
-                                                    <% for(var i=0; i < pwDatas.length; i++){ %>
-
-                                                        <% if(pwDatas[i].CustomerId !=0 && customerChanged){ %>
-                                                            <tr>
-                                                                <td class="py-1">
-
-                                                                    Kunde: <%= pwDatas[i].Name %>
-
-                                                                </td>
-                                                            </tr>
-                                                            <% } %>
-
-                                                                <tr>
-                                                                    <td class="py-1">
-
-                                                                        <% iconname=userData.username+".jpg"; %>
-                                                                            <img src="../../assets/images/faces/<%= iconname %> "
-                                                                                alt="image" />
-
-                                                                    </td>
-                                                                    <td>
-                                                                        <%= pwDatas[i].Name %>
-                                                                    </td>
-                                                                    <td>
-                                                                        <%= moment().diff(moment(pwDatas[i].CreateDate), 'days'
-                                                                            ) %>
-                                                                    </td>
-                                                                    <td>
-                                                                        <%= pwDatas[i].Loginname %>
-                                                                    </td>
-                                                                    <td>
-                                                                        <p style=" margin:0px;"
-                                                                            id="tempPw<%= pwDatas[i].Id %>">*****</p>
-                                                                    </td>
-
-                                                                    <td>
-                                                                        <form class="showPwFormId" id="showPwFormId">
-
-                                                                            <input type="text" name="id"
-                                                                                value="<%= pwDatas[i].Id %>" hidden>
-                                                                            <button
-                                                                                class="nav-link btn btn-success create-new-button d-inline-block hidebutton"
-                                                                                style="display: none !important;"
-                                                                                id="HideButton<%= pwDatas[i].Id %>">Hide</button>
-                                                                            <button
-                                                                                class="nav-link btn btn-warning create-new-button d-inline-block"
-                                                                                id="ShowButton<%= pwDatas[i].Id %>">Show</button>
-
-                                                                        </form>
-                                                                    </td>
-                                                                    <td>
-                                                                        <form class="copyFormId">
-                                                                            <input type="text" name="id" id="id"
-                                                                                value="<%= pwDatas[i].Id %>" hidden>
-                                                                            <button
-                                                                                class="nav-link btn btn-success create-new-button d-inline-block">Copy</button>
-                                                                        </form>
-                                                                    </td>
-                                                                    <td>
-                                                                        <a class="nav-link btn btn-warning create-new-button d-inline-block changeapppw"
-                                                                            id="openChangeAppPassword"
-                                                                            data-changeelement="<%= pwDatas[i].Id %>"
-                                                                            data-toggle="modal"
-                                                                            data-target="#changeAppPwModalCenter"
-                                                                            aria-expanded="false" href="#">Change Pw</a>
-                                                                    </td>
-                                                                    <td>
-                                                                        <%= moment().format('MM/DD/YYYY') %>
-                                                                    </td>
-                                                                    <td>
-                                                                        <a class="nav-link btn btn-danger create-new-button d-inline-block delete"
-                                                                            id="openDeletePassword"
-                                                                            data-element-id="<%= pwDatas[i].Id %>"
-                                                                            data-toggle="modal"
-                                                                            data-target="#deletePwModalCenter"
-                                                                            aria-expanded="false" href="#">Delete</a>
-
-                                                                    </td>
-                                                                </tr>
-
-                                                                <% currentCustomerId=pwDatas[i].CustomerId;
-                                                                    if(currentCustomerId !=pwDatas[i].CustomerId){
-                                                                    customerChanged=true; } %>
-                                                                    <% } %>
+                                               
                                             </tbody>
                                         </table>
                                     </div>
@@ -354,39 +270,7 @@
         <!-- End custom js for this page -->
 
         <!-- Script necessary for websocket-->
-        <script src="/socket.io/socket.io.js"></script>
-        <script>
-            var socket = io();
-            /*
-            var addnewpwform = document.getElementById('addnewpwform');
-            addnewpwform.addEventListener('submit', function (e) {
-                //e.preventDefault();
-                socket.emit('refresh');
-            });
-
-            var changepwform = document.getElementById('changepwform');
-            changepwform.addEventListener('submit', function (e) {
-                //e.preventDefault();
-                socket.emit('refresh');
-            });
-
-            var deletepwform = document.getElementById('deletepwform');
-            deletepwform.addEventListener('submit', function (e) {
-                //e.preventDefault();
-                socket.emit('refresh');
-            });
-
-
-
-            socket.on('refresh', function (msg) {
-                var item = document.createElement('li');
-                item.textContent = msg;
-                messages.appendChild(item);
-                window.scrollTo(0, document.body.scrollHeight);
-            });
-            */
-
-        </script>
+        
     </body>
 
     </html>

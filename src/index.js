@@ -14,8 +14,6 @@ import Backend from 'i18next-fs-backend';
 import FileStore from 'session-file-store';
 import routes from './routes/routes.js';
 import cache from './cache.js';
-import http  from 'http';
-import websocketRoutes from './routes/websocketRoutes.js';
 
 const SessionFileStore = FileStore(session);
 
@@ -31,7 +29,6 @@ i18next
     });
 
 const app = express().disable('x-powered-by');
-const server = http.Server(app);
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -77,9 +74,8 @@ app.use(session({
 
 // routing
 routes(app);
-websocketRoutes(server);
 
 // set app to listen on port 3001
-server.listen(3001, function() {
+app.listen(3001, function() {
     console.log('server is running on port 3001');
 });
