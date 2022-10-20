@@ -2,7 +2,39 @@
 
 $(document).ready(function () {
 
-    $('.showPwFormId').submit(function (e) {
+    /*$('.showPwFormId').submit(function (e) {
+        e.preventDefault();
+
+        var id = this.id.value;
+
+        var data = {
+            id: id
+        };
+
+        $.ajax({
+            type: 'POST',
+            data: data,
+            cache: false,
+            datatype: "json",
+            url: '/administration/showpw',
+            success: function (result) {
+
+                $('#tempPw' + id).text(result);
+                if (result == "*****") {
+                    $('#ShowButton' + id).text('Show');
+                    $('#ShowButton' + id).removeClass('btn-success');
+                    $('#ShowButton' + id).addClass('btn-warning');
+
+                } else {
+                    $('#ShowButton' + id).text('Hide');
+                    $('#ShowButton' + id).removeClass('btn-warning');
+                    $('#ShowButton' + id).addClass('btn-success');
+                }
+            }
+        });
+    });*/
+
+    $('.showPwFormId').on('submit', function (e) {
         e.preventDefault();
 
         var id = this.id.value;
