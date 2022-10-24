@@ -169,7 +169,7 @@ $(document).ready(function () {
                 var resultString = '';
                 result.forEach(element => {
 
-                    resultString += 
+                    target.append( 
                     `
                     <tr>
                         <td class="py-1">
@@ -234,10 +234,10 @@ $(document).ready(function () {
                                 aria-expanded="false" href="#">Delete</a>
 
                         </td>
-                    </tr> `
+                    </tr> `);
                 });
 
-                target.html(resultString);
+                //target.html(resultString);   
             },
             error: function (error) {
                 console.log("error: " + error);
