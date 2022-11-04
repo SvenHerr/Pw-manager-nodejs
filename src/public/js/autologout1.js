@@ -2,7 +2,7 @@
 
 // https://stackoverflow.com/questions/23023916/how-to-implement-auto-logout-in-javascript
 
-var timoutWarning = 840000; // Display warning in 14 Mins.
+/*var timoutWarning = 840000; // Display warning in 14 Mins.
 var timoutNow = 60000; // Warning has been shown, give the user 1 minute to interact
 var logoutUrl = "http://192.168.2.170:3001/logout"; // URL to logout page.
 
@@ -35,4 +35,4 @@ function IdleWarning() {
 // Logout the user.
 function IdleTimeout() {
     window.location = logoutUrl;
-}
+}*/

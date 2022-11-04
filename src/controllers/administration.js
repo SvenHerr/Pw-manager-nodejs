@@ -1,11 +1,11 @@
 // This script runs on serversider
 
 //dependencies required for the app
-import connection from './Database/database.js';
+import connection from './../Database/database.js';
 import escape from 'lodash.escape';
 import customer from './customer.js';
 import moment from 'moment';
-import { decrypt } from './crypto/crypto.js';
+import { decrypt } from './../crypto/crypto.js';
 import { promisify } from 'es6-promisify';
 
 let encryptArray = []; // Darf nicht in die function rein.
@@ -19,11 +19,31 @@ let encryptArray = []; // Darf nicht in die function rein.
 async function loadData(req, res) {
     try {
         if (!req.session.loggedIn) {
-            return;//res.render('login', { errormsg: '' });
+            return;
         }
         
-        console.log('LoadDate Username= ' + req.session.username);
+        console.log('LoadDate Username= ' + req.session.username);       
 
+        if (req.session.loggedIn) {
+            let errormsg = req.session.errormsg;
+            req.session.errormsg = undefined;
+
+            return res.render('index', { errormsg, userData: customer.getUserFromSession(req), moment: moment });
+        } else {
+            return;
+        }
+    } catch (err) {
+        console.log('Error on load: ' + err);
+    }
+}
+
+/** Returns customers list to ajax call
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function getPwList(req,res) {
+    try {
         let pwItemList = await connection.getAllPwFromUser(req);
 
         if (req.session.loggedIn) {
@@ -35,21 +55,19 @@ async function loadData(req, res) {
                         row.Loginname = decrypt(row.Loginname, req.session.pw);
                     }
 
-                    row.Pw = decrypt(row.Pw.toString(), req.session.pw);
+                    //row.Pw = decrypt(row.Pw.toString(), req.session.pw);
+                    row.Pw = '*****';
                 } catch (err) {
                     console.log(err);
                 }
             });
 
-            let errormsg = req.session.errormsg;
-            req.session.errormsg = undefined;
-
-            return res.render('index', { errormsg, pwDatas: pwItemList, userData: customer.getUserFromSession(req), moment: moment });
+            return res.send(pwItemList);
         } else {
-            return; //res.render('login', { errormsg: '' });
+            return; 
         }
     } catch (err) {
-        console.log('Error on load: ' + err);
+        console.log('get pws err: ' + err);
     }
 }
 
@@ -193,7 +211,8 @@ export default {
             copyPw,
             changePw,
             deletePw,
-            showPw
+            showPw,
+            getPwList
         }
-    },
+    }
 };

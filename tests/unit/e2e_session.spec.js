@@ -2,8 +2,8 @@
 
 import chai from 'chai';
 let expect = chai.expect;
-import sessionHandler from '../../sessionHandler.js';
-import User from '../../user.js';
+import sessionHandler from '../../src/sessionHandler.js';
+import User from '../../src/models/user.js';
 import session from 'express-session';
 import { mockRequest, mockResponse } from 'mock-req-res';
 import assert from 'assert';

@@ -1,4 +1,4 @@
-import { Builder, Browser, By, Key, until } from 'selenium-webdriver';
+import { By, Key, until } from 'selenium-webdriver';
 import chromedriver from 'chromedriver';
 
 import assert from 'assert';
