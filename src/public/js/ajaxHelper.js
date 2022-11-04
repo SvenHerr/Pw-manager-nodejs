@@ -34,7 +34,7 @@ $(document).ready(function () {
         });
     });*/
 
-    $('.showPwFormId').on('submit', function (e) {
+    $(document).on('submit', '.showPwFormId', function (e) {
         e.preventDefault();
 
         var id = this.id.value;
@@ -50,7 +50,7 @@ $(document).ready(function () {
             datatype: "json",
             url: '/administration/showpw',
             success: function (result) {
-
+                
                 $('#tempPw' + id).text(result);
                 if (result == "*****") {
                     $('#ShowButton' + id).text('Show');
