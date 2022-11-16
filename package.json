@@ -34,7 +34,7 @@
         "express-session": "^1.17.3",
         "helmet": "^6.0.0",
         "i18next": "^21.10.0",
-        "i18next-fs-backend": "^1.1.5",
+        "i18next-fs-backend": "^1.2.0",
         "i18next-http-middleware": "^3.2.1",
         "lodash.escape": "^4.0.1",
         "mock-req-res": "^1.2.1",
